@@ -12,6 +12,7 @@ import {
   FileText,
   Camera,
   Trash2,
+  CaseUpper,
 } from "lucide-react";
 import { RootState } from "../store";
 import {
@@ -19,6 +20,8 @@ import {
   fetchPatients,
   deletePatientAsync,
 } from "../store/slices/patientsSlice";
+import { fetchVisitsAsync } from "../store/slices/visitsSlice";
+
 import { format } from "date-fns";
 import { getDocs, collection } from "firebase/firestore";
 import { db } from "../config/firebase";
@@ -30,7 +33,10 @@ const PatientProfile: React.FC = () => {
   const { patients, loading } = useSelector(
     (state: RootState) => state.patients
   );
+  const { visits } = useSelector((state: RootState) => state.visits);
   const [patient, setPatient] = useState<any>(null);
+
+  const patientVisits = visits[id || ""] || [];
 
   const [activeTab, setActiveTab] = useState<
     "details" | "history" | "payments" | "reminders" | "media"
@@ -50,27 +56,10 @@ const PatientProfile: React.FC = () => {
   }, [id, patients, dispatch]);
 
   useEffect(() => {
-    if (!patient?.id) return;
-    if (patient?.visits) return;
-    let ignore = false;
-
-    const fetchVisits = async () => {
-      const snap = await getDocs(
-        collection(db, `patients/${patient.id}/visits`)
-      );
-      const visits = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      if (!ignore) {
-        // attach visits once; won't re-trigger because of the guard above
-        setPatient((prev) => (prev ? { ...prev, visits } : prev));
-      }
-    };
-
-    fetchVisits();
-
-    return () => {
-      ignore = true;
-    };
-  }, [patient?.id]);
+    if (patient?.id && !visits[patient.id]) {
+      dispatch(fetchVisitsAsync(patient.id) as any);
+    }
+  }, [patient?.id, visits, dispatch]);
 
   if (loading) {
     return (
@@ -138,9 +127,8 @@ const PatientProfile: React.FC = () => {
     { id: "media", label: "Media", icon: Camera },
   ];
 
-  const completedVisits = (patient?.visits ?? []).filter((v) => v.completed);
-  const pendingVisits = (patient?.visits?.length ?? 0) - completedVisits.length;
-
+  const completedVisits = patientVisits.filter((v) => v.completed);
+  const pendingVisits = patientVisits.length - completedVisits.length;
   const totalEarned = completedVisits.length * (patient?.chargePerVisit ?? 0);
   const totalDue = 0; // TODO: Calculate total due based on visits and payments
 
@@ -158,7 +146,17 @@ const PatientProfile: React.FC = () => {
             </button>
             <div>
               <h1 className="text-xl font-bold">{patient.name}</h1>
-              <p className="text-primary-100 text-sm">{patient.condition}</p>
+              <p className="text-primary-100 text-sm capitalize">
+                {patient.condition}
+              </p>
+              <p className="text-primary-100 text-gray-500 text-sm font-medium">
+                {patientVisits.length}{" "}
+                {patientVisits.length === 1 ? (
+                  <span>visit</span>
+                ) : (
+                  <span>visits</span>
+                )}
+              </p>
             </div>
           </div>
           <div className="flex space-x-2">
@@ -302,24 +300,21 @@ const PatientProfile: React.FC = () => {
 
             <div className="bg-white rounded-lg shadow-sm">
               <div className="p-4 border-b">
-                <h3 className="font-semibold">Visit History</h3>
+                <h3 className="font-semibold">
+                  Visit History ({patientVisits.length})
+                </h3>
               </div>
               <div className="divide-y">
-                {patient?.visits?.map((visit) => (
+                {patientVisits.map((visit) => (
                   <div
                     key={visit.id}
                     className="p-4 flex items-center justify-between"
                   >
                     <div>
                       <p className="font-medium">
-                        {visit.date.toDate
-                          ? format(visit.date.toDate(), " EEEE, dd MMM ")
-                          : format(
-                              new Date(visit.date.seconds * 1000),
-                              "MMM dd, yyyy"
-                            )}
+                        {format(new Date(visit.date), "EEEE, dd MMM yyyy")}
                       </p>
-                      {/* <p className="text-sm text-gray-600">
+                      {/* <p className="text-sm text-gray-500">
                         {visit.completed ? "Completed" : "Pending"}
                       </p> */}
                       <p className="text-sm text-gray-500">
@@ -327,18 +322,18 @@ const PatientProfile: React.FC = () => {
                       </p>
                     </div>
                     <div className="text-right">
-                      {visit.paymentReceived && (
+                      {/* {visit.paymentReceived && visit.paymentReceived > 0 && (
                         <p className="font-medium text-green-600">
                           ₹{visit.paymentReceived}
                         </p>
-                      )}
+                      )} */}
                       <p className="text-sm text-gray-500">
-                        ₹ {patient.chargePerVisit}
+                        ₹{patient?.chargePerVisit || 0}
                       </p>
                     </div>
                   </div>
                 ))}
-                {patient?.visits?.length === 0 && (
+                {patientVisits.length === 0 && (
                   <div className="p-8 text-center text-gray-500">
                     No visits recorded yet
                   </div>

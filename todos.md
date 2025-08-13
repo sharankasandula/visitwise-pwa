@@ -2,14 +2,16 @@
 - [x] Configure Git
 - [x] Edit Patient
 - [x] Delete Patient
-- [ ] Visits CRUD
+- [x] Visits CRUD
 - [ ] Record Payments
   - [ ] Add Payments to Patients
 - [ ] Reminders
+- [ ] Modal to write notes for the visit
+- [ ] Integrate Calendar View to view visits in Patient Profile - react day picker (https://react-day-picker.js.org/)
 - [ ] Clean up visits ui in Home page
-- [ ] Integrate Calendar View to view visits in Patient Profile
 - [ ] Media uploads
 - [ ] Refactor Patient details
 - [ ] Integrate auth
 - [ ] deploy for testing - Netlify
 - [ ] testing
+- [ ] import patients from contacts

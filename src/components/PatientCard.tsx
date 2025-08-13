@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Archive, Navigation, Phone } from "lucide-react";
 import { Patient, setPatientActiveStatus } from "../store/slices/patientsSlice";
+import { fetchVisitsAsync } from "../store/slices/visitsSlice";
 import { RootState } from "../store";
 import CalendarStrip from "./CalendarStrip";
 
@@ -15,18 +16,21 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
   const navigate = useNavigate();
   const { visits } = useSelector((state: RootState) => state.visits);
 
+  // Fetch visits when component mounts
+  useEffect(() => {
+    if (!visits[patient.id]) {
+      dispatch(fetchVisitsAsync(patient.id) as any);
+    }
+  }, [dispatch, patient.id, visits]);
+
   const handleArchive = () => {
     dispatch(
       setPatientActiveStatus({
         patientId: patient.id,
         isActive: !patient.isActive,
-      })
+      }) as any
     );
   };
-
-  // const handleNavigate = () => {
-  //   window.open(patient.googleMapsLink, "_blank");
-  // };
 
   const handleCall = () => {
     window.open(`tel:${patient.phone}`, "_self");

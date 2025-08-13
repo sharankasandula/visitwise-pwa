@@ -39,16 +39,16 @@ const Home: React.FC = () => {
     activeTab === "active" ? activePatients : archivedPatients;
 
   // Calculate visits this month
-  const currentMonth = new Date().getMonth();
-  const currentYear = new Date().getFullYear();
-  const visitsThisMonth = visits.filter((visit) => {
-    const visitDate = new Date(visit.date);
-    return (
-      visitDate.getMonth() === currentMonth &&
-      visitDate.getFullYear() === currentYear &&
-      visit.completed
-    );
-  }).length;
+  // const currentMonth = new Date().getMonth();
+  // const currentYear = new Date().getFullYear();
+  // const visitsThisMonth = visits.filter((visit) => {
+  //   const visitDate = new Date(visit.date);
+  //   return (
+  //     visitDate.getMonth() === currentMonth &&
+  //     visitDate.getFullYear() === currentYear &&
+  //     visit.completed
+  //   );
+  // }).length;
 
   return (
     <div className="min-h-screen">
