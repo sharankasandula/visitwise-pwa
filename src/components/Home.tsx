@@ -19,17 +19,16 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(fetchPatients());
+    dispatch(fetchPatients() as any);
   }, [dispatch]);
 
-  // Search handler
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
     setSearchTerm(term);
     if (term.trim() === "") {
-      dispatch(fetchPatients());
+      dispatch(fetchPatients() as any);
     } else {
-      dispatch(searchPatients(term));
+      dispatch(searchPatients(term) as any);
     }
   };
 

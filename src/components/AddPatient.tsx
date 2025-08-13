@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ChevronDown, Save, X } from "lucide-react";
-import { addPatient, Patient } from "../store/slices/patientsSlice";
+import { addPatientAsync, NewPatient } from "../store/slices/patientsSlice";
 
 const AddPatient: React.FC = () => {
   const dispatch = useDispatch();
@@ -77,10 +77,6 @@ const AddPatient: React.FC = () => {
       newErrors.name = "Patient name is required";
     }
 
-    if (!formData.gender) {
-      newErrors.gender = "Gender selection is required";
-    }
-
     if (!formData.chargePerVisit || parseFloat(formData.chargePerVisit) <= 0) {
       newErrors.chargePerVisit = "Valid charge per visit is required";
     }
@@ -112,8 +108,7 @@ const AddPatient: React.FC = () => {
       return;
     }
     try {
-      const newPatient: Patient = {
-        id: "",
+      const newPatient: NewPatient = {
         name: formData.name.trim(),
         age: formData.age ? parseInt(formData.age) : null,
         gender: formData.gender,
@@ -125,7 +120,6 @@ const AddPatient: React.FC = () => {
         protocol: formData.protocol.trim() || "",
         notes: formData.notes.trim() || "",
         isActive: true,
-        createdAt: new Date().toISOString(),
         dailyVisitReminderEnabled: formData.dailyVisitReminderEnabled,
         paymentCollectionReminderEnabled:
           formData.paymentCollectionReminderEnabled,
@@ -133,7 +127,7 @@ const AddPatient: React.FC = () => {
         followUpReminderDays: formData.followUpReminderDays,
       };
 
-      dispatch(addPatient(newPatient));
+      dispatch(addPatientAsync(newPatient) as any);
       navigate("/");
     } catch (error) {
       console.error("Error adding patient:", error);
@@ -509,6 +503,11 @@ const AddPatient: React.FC = () => {
             <X className="w-5 h-5 mr-2" />
             Cancel
           </button>
+          {errors.submit && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <p className="text-red-600 text-sm">{errors.submit}</p>
+            </div>
+          )}
           <button
             type="submit"
             disabled={isSubmitting}
@@ -531,11 +530,6 @@ const AddPatient: React.FC = () => {
             )}
           </button>
         </div>
-        {errors.submit && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-600 text-sm">{errors.submit}</p>
-          </div>
-        )}
       </form>
     </div>
   );

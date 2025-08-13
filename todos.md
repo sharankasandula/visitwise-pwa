@@ -1,5 +1,5 @@
-- [X] Add Patient
-- [ ] Configure Git
+- [x] Add Patient
+- [x] Configure Git
 - [ ] Edit Patient
 - [ ] Delete Patient
 - [ ] Record Payments

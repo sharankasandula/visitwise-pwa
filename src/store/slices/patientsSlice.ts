@@ -34,6 +34,22 @@ interface PatientsState {
   error: string | null;
 }
 
+export type NewPatient = Omit<Patient, "id" | "createdAt">;
+
+export const addPatientAsync = createAsyncThunk(
+  "patients/addPatientAsync",
+  async (data: NewPatient, { rejectWithValue }) => {
+    try {
+      const createdAt = new Date().toISOString();
+      const payload = { ...data, createdAt };
+      const docRef = await addDoc(collection(db, "patients"), payload);
+      return { id: docRef.id, ...payload } as Patient;
+    } catch (err: any) {
+      return rejectWithValue(err?.message ?? "Failed to add patient");
+    }
+  }
+);
+
 export const fetchPatients = createAsyncThunk(
   "patients/fetchPatients",
   async () => {
@@ -66,32 +82,6 @@ export const setPatientActiveStatus = createAsyncThunk(
   }
 );
 
-// export async function addTestPatient() {
-//   try {
-//     const patient = {
-//       name: "John Doe",
-//       phone: "9848022338",
-//       addressCoordinates: "12.9715987,77.594566",
-//       googleMapsLink: "https://maps.google.com/?q=12.9715987,77.594566",
-//       chargePerVisit: 500,
-//       totalPackage: 1000,
-//       condition: "back pain",
-//       protocol: "daily exercises",
-//       notes: "Patient needs to follow up weekly.",
-//       isActive: true,
-//       createdAt: "2025-08-11T12:25:02.065Z",
-//       dailyVisitReminderEnabled: true,
-//       paymentCollectionReminderEnabled: true,
-//       followUpReminderEnabled: true,
-//       followUpReminderDays: 10,
-//     };
-//     const docRef = await addDoc(collection(db, "patients"), patient);
-//     console.log("Patient added with ID:", docRef.id);
-//   } catch (error) {
-//     console.error("Error adding patient:", error);
-//   }
-// }
-
 const patientsSlice = createSlice({
   name: "patients",
   initialState: {
@@ -100,9 +90,6 @@ const patientsSlice = createSlice({
     error: null as string | null,
   },
   reducers: {
-    addPatient: (state, action: PayloadAction<Patient>) => {
-      state.patients.push(action.payload);
-    },
     updatePatient: (state, action: PayloadAction<Patient>) => {
       const index = state.patients.findIndex((p) => p.id === action.payload.id);
       if (index !== -1) {
@@ -121,6 +108,11 @@ const patientsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(addPatientAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
       .addCase(fetchPatients.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -129,6 +121,16 @@ const patientsSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
+      .addCase(
+        addPatientAsync.fulfilled,
+        (state, action: PayloadAction<Patient>) => {
+          state.loading = false;
+          const id = action.payload.id;
+          if (!state.patients.some((p) => p.id === id)) {
+            state.patients.push(action.payload);
+          }
+        }
+      )
       .addCase(
         setPatientActiveStatus.fulfilled,
         (
@@ -157,6 +159,13 @@ const patientsSlice = createSlice({
           state.patients = action.payload;
         }
       )
+      .addCase(addPatientAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as string) ||
+          action.error.message ||
+          "Failed to add patient";
+      })
       .addCase(fetchPatients.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch patients";
@@ -168,11 +177,6 @@ const patientsSlice = createSlice({
   },
 });
 
-export const {
-  addPatient,
-  updatePatient,
-  deletePatient,
-  setLoading,
-  setError,
-} = patientsSlice.actions;
+export const { updatePatient, deletePatient, setLoading, setError } =
+  patientsSlice.actions;
 export default patientsSlice.reducer;
