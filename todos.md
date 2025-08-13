@@ -1,12 +1,12 @@
 - [x] Add Patient
 - [x] Configure Git
-- [ ] Edit Patient
-- [ ] Delete Patient
+- [x] Edit Patient
+- [x] Delete Patient
+- [ ] Visits CRUD
 - [ ] Record Payments
   - [ ] Add Payments to Patients
 - [ ] Reminders
 - [ ] Clean up visits ui in Home page
-- [ ] Add Visits from Home page
 - [ ] Integrate Calendar View to view visits in Patient Profile
 - [ ] Media uploads
 - [ ] Refactor Patient details

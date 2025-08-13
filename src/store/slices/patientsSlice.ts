@@ -5,6 +5,7 @@ import {
   addDoc,
   doc,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../../config/firebase";
 
@@ -46,6 +47,33 @@ export const addPatientAsync = createAsyncThunk(
       return { id: docRef.id, ...payload } as Patient;
     } catch (err: any) {
       return rejectWithValue(err?.message ?? "Failed to add patient");
+    }
+  }
+);
+
+export const updatePatientAsync = createAsyncThunk(
+  "patients/updatePatientAsync",
+  async (data: Patient, { rejectWithValue }) => {
+    try {
+      const { id, ...updateData } = data;
+      const patientRef = doc(db, "patients", id);
+      await updateDoc(patientRef, updateData);
+      return data;
+    } catch (err: any) {
+      return rejectWithValue(err?.message ?? "Failed to update patient");
+    }
+  }
+);
+
+export const deletePatientAsync = createAsyncThunk(
+  "patients/deletePatientAsync",
+  async (patientId: string, { rejectWithValue }) => {
+    try {
+      const patientRef = doc(db, "patients", patientId);
+      await deleteDoc(patientRef);
+      return patientId;
+    } catch (err: any) {
+      return rejectWithValue(err?.message ?? "Failed to delete patient");
     }
   }
 );
@@ -112,8 +140,15 @@ const patientsSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-
+      .addCase(updatePatientAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(fetchPatients.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deletePatientAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
@@ -128,6 +163,18 @@ const patientsSlice = createSlice({
           const id = action.payload.id;
           if (!state.patients.some((p) => p.id === id)) {
             state.patients.push(action.payload);
+          }
+        }
+      )
+      .addCase(
+        updatePatientAsync.fulfilled,
+        (state, action: PayloadAction<Patient>) => {
+          state.loading = false;
+          const index = state.patients.findIndex(
+            (p) => p.id === action.payload.id
+          );
+          if (index !== -1) {
+            state.patients[index] = action.payload;
           }
         }
       )
@@ -153,6 +200,15 @@ const patientsSlice = createSlice({
         }
       )
       .addCase(
+        deletePatientAsync.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.loading = false;
+          state.patients = state.patients.filter(
+            (p) => p.id !== action.payload
+          );
+        }
+      )
+      .addCase(
         searchPatients.fulfilled,
         (state, action: PayloadAction<Patient[]>) => {
           state.loading = false;
@@ -166,9 +222,24 @@ const patientsSlice = createSlice({
           action.error.message ||
           "Failed to add patient";
       })
+      .addCase(updatePatientAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as string) ||
+          action.error.message ||
+          "Failed to update patient";
+      })
       .addCase(fetchPatients.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch patients";
+      })
+
+      .addCase(deletePatientAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as string) ||
+          action.error.message ||
+          "Failed to delete patient";
       })
       .addCase(searchPatients.rejected, (state, action) => {
         state.loading = false;

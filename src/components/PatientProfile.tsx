@@ -11,11 +11,13 @@ import {
   DollarSign,
   FileText,
   Camera,
+  Trash2,
 } from "lucide-react";
 import { RootState } from "../store";
 import {
   setPatientActiveStatus,
   fetchPatients,
+  deletePatientAsync,
 } from "../store/slices/patientsSlice";
 import { format } from "date-fns";
 import { getDocs, collection } from "firebase/firestore";
@@ -40,7 +42,7 @@ const PatientProfile: React.FC = () => {
       setPatient(foundPatient);
     } else {
       // If not found, fetch from server
-      dispatch(fetchPatients()).then((action: any) => {
+      dispatch(fetchPatients() as any).then((action: any) => {
         const fetchedPatient = action.payload.find((p: any) => p.id === id);
         setPatient(fetchedPatient || null);
       });
@@ -95,8 +97,28 @@ const PatientProfile: React.FC = () => {
 
   const handleArchive = () => {
     console.log("Archiving patient:", patient.id);
-    dispatch(setPatientActiveStatus(patient.id, !patient.isActive));
+    dispatch(setPatientActiveStatus(patient.id, !patient.isActive) as any);
     navigate("/");
+  };
+
+  const handleEdit = () => {
+    navigate(`/edit-patient/${patient.id}`);
+  };
+
+  const handleDelete = async () => {
+    if (
+      window.confirm(
+        `Are you sure you want to delete ${patient.name}? This action cannot be undone.`
+      )
+    ) {
+      try {
+        await dispatch(deletePatientAsync(patient.id) as any);
+        navigate("/");
+      } catch (error) {
+        console.error("Error deleting patient:", error);
+        // You could add a toast notification here
+      }
+    }
   };
 
   const handleCall = () => {
@@ -143,11 +165,23 @@ const PatientProfile: React.FC = () => {
             <button
               onClick={handleArchive}
               className="p-2 hover:bg-primary-700 rounded-full transition-colors"
+              title="Archive Patient"
             >
               <Archive className="w-5 h-5" />
             </button>
-            <button className="p-2 hover:bg-primary-700 rounded-full transition-colors">
+            <button
+              onClick={handleEdit}
+              className="p-2 hover:bg-primary-700 rounded-full transition-colors"
+              title="Edit Patient"
+            >
               <Edit className="w-5 h-5" />
+            </button>
+            <button
+              onClick={handleDelete}
+              className="p-2 hover:bg-red-600 rounded-full transition-colors"
+              title="Delete Patient"
+            >
+              <Trash2 className="w-5 h-5" />
             </button>
           </div>
         </div>
@@ -438,7 +472,7 @@ const PatientProfile: React.FC = () => {
           <div className="space-y-4">
             <div className="bg-white rounded-lg p-4 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold">Progress Media</h3>
+                <h3 className="font-semibold">Feature yet to be implemented</h3>
                 <button className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
                   <Camera className="w-4 h-4" />
                   <span>Add Media</span>

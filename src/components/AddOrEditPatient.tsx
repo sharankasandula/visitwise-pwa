@@ -1,12 +1,29 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, ChevronDown, Save, X } from "lucide-react";
-import { addPatientAsync, NewPatient } from "../store/slices/patientsSlice";
+import {
+  addPatientAsync,
+  updatePatientAsync,
+  Patient,
+  NewPatient,
+} from "../store/slices/patientsSlice";
+import { RootState } from "../store";
 
-const AddPatient: React.FC = () => {
+const AddOrEditPatient: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { patientId } = useParams<{ patientId: string }>();
+  const { id } = useParams<{ id: string }>();
+  const isEditing = Boolean(patientId || id);
+  const currentPatientId = patientId || id;
+
+  // Get patient data if editing
+  const existingPatient = useSelector((state: RootState) =>
+    currentPatientId
+      ? state.patients.patients.find((p) => p.id === currentPatientId)
+      : null
+  );
 
   const [formData, setFormData] = useState({
     name: "",
@@ -29,6 +46,29 @@ const AddPatient: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGenderDropdownOpen, setIsGenderDropdownOpen] = useState(false);
 
+  // Load existing patient data when editing
+  useEffect(() => {
+    if (existingPatient) {
+      setFormData({
+        name: existingPatient.name || "",
+        age: existingPatient.age?.toString() || "",
+        gender: existingPatient.gender || "",
+        phone: existingPatient.phone || "",
+        addressCoordinates: existingPatient.addressCoordinates || "",
+        googleMapsLink: existingPatient.googleMapsLink || "",
+        chargePerVisit: existingPatient.chargePerVisit?.toString() || "",
+        condition: existingPatient.condition || "",
+        protocol: existingPatient.protocol || "",
+        notes: existingPatient.notes || "",
+        dailyVisitReminderEnabled: existingPatient.dailyVisitReminderEnabled,
+        paymentCollectionReminderEnabled:
+          existingPatient.paymentCollectionReminderEnabled,
+        followUpReminderEnabled: existingPatient.followUpReminderEnabled,
+        followUpReminderDays: existingPatient.followUpReminderDays,
+      });
+    }
+  }, [existingPatient]);
+
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -39,6 +79,7 @@ const AddPatient: React.FC = () => {
       ...prev,
       [name]: value,
     }));
+
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -101,44 +142,76 @@ const AddPatient: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
-    try {
-      const newPatient: NewPatient = {
-        name: formData.name.trim(),
-        age: formData.age ? parseInt(formData.age) : null,
-        gender: formData.gender,
-        phone: formData.phone.trim() || null,
-        addressCoordinates: formData.addressCoordinates.trim(),
-        googleMapsLink: formData.googleMapsLink.trim(),
-        chargePerVisit: parseFloat(formData.chargePerVisit),
-        condition: formData.condition.trim() || "",
-        protocol: formData.protocol.trim() || "",
-        notes: formData.notes.trim() || "",
-        isActive: true,
-        dailyVisitReminderEnabled: formData.dailyVisitReminderEnabled,
-        paymentCollectionReminderEnabled:
-          formData.paymentCollectionReminderEnabled,
-        followUpReminderEnabled: formData.followUpReminderEnabled,
-        followUpReminderDays: formData.followUpReminderDays,
-      };
 
-      dispatch(addPatientAsync(newPatient) as any);
+    setIsSubmitting(true);
+
+    try {
+      if (isEditing && existingPatient) {
+        // Update existing patient
+        const updatedPatient: Patient = {
+          ...existingPatient,
+          name: formData.name.trim(),
+          age: formData.age ? parseInt(formData.age) : null,
+          gender: formData.gender,
+          phone: formData.phone.trim() || null,
+          addressCoordinates: formData.addressCoordinates.trim() || "",
+          googleMapsLink: formData.googleMapsLink.trim() || "",
+          chargePerVisit: parseFloat(formData.chargePerVisit),
+          condition: formData.condition.trim() || "",
+          protocol: formData.protocol.trim() || "",
+          notes: formData.notes.trim() || "",
+          dailyVisitReminderEnabled: formData.dailyVisitReminderEnabled,
+          paymentCollectionReminderEnabled:
+            formData.paymentCollectionReminderEnabled,
+          followUpReminderEnabled: formData.followUpReminderEnabled,
+          followUpReminderDays: formData.followUpReminderDays,
+        };
+
+        await dispatch(updatePatientAsync(updatedPatient) as any);
+      } else {
+        // Add new patient
+        const newPatient: NewPatient = {
+          name: formData.name.trim(),
+          age: formData.age ? parseInt(formData.age) : null,
+          gender: formData.gender,
+          phone: formData.phone.trim() || null,
+          addressCoordinates: formData.addressCoordinates.trim() || "",
+          googleMapsLink: formData.googleMapsLink.trim() || "",
+          chargePerVisit: parseFloat(formData.chargePerVisit),
+          condition: formData.condition.trim() || "",
+          protocol: formData.protocol.trim() || "",
+          notes: formData.notes.trim() || "",
+          isActive: true,
+          dailyVisitReminderEnabled: formData.dailyVisitReminderEnabled,
+          paymentCollectionReminderEnabled:
+            formData.paymentCollectionReminderEnabled,
+          followUpReminderEnabled: formData.followUpReminderEnabled,
+          followUpReminderDays: formData.followUpReminderDays,
+        };
+
+        await dispatch(addPatientAsync(newPatient) as any);
+      }
+
       navigate("/");
     } catch (error) {
-      console.error("Error adding patient:", error);
-      setErrors({ submit: "Failed to add patient. Please try again." });
+      console.error("Error saving patient:", error);
+      setErrors({
+        submit: `Failed to ${
+          isEditing ? "update" : "add"
+        } patient. Please try again.`,
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
-
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen">
       {/* Header */}
       <div className="bg-primary-600 bg-gray-700 text-white p-4 flex items-center">
         <button
@@ -147,7 +220,9 @@ const AddPatient: React.FC = () => {
         >
           <ArrowLeft className="w-6 h-6" />
         </button>
-        <h1 className="text-xl font-bold">Add New Patient</h1>
+        <h1 className="text-xl font-bold">
+          {isEditing ? "Edit Patient" : "Add New Patient"}
+        </h1>
       </div>
 
       <form onSubmit={handleSubmit} className="p-4 space-y-6">
@@ -176,10 +251,9 @@ const AddPatient: React.FC = () => {
                 <p className="mt-1 text-sm text-red-600">{errors.name}</p>
               )}
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Age (optional)
+                Age
               </label>
               <input
                 type="number"
@@ -197,10 +271,9 @@ const AddPatient: React.FC = () => {
                 <p className="mt-1 text-sm text-red-600">{errors.age}</p>
               )}
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Gender
+                Gender *
               </label>
               <div className="relative">
                 <button
@@ -264,7 +337,6 @@ const AddPatient: React.FC = () => {
                 placeholder="+91 9876543210"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Address Coordinates
@@ -278,7 +350,6 @@ const AddPatient: React.FC = () => {
                 placeholder="Enter address coordinates (e.g., 12.9715987,77.594566)"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Google Maps Link
@@ -503,15 +574,10 @@ const AddPatient: React.FC = () => {
             <X className="w-5 h-5 mr-2" />
             Cancel
           </button>
-          {errors.submit && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <p className="text-red-600 text-sm">{errors.submit}</p>
-            </div>
-          )}
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`flex-1 flex items-center justify-center bg-amber-700 py-3 px-4 rounded-lg transition-colors ${
+            className={`flex-1 flex items-center justify-center py-3 px-4 bg-amber-700 rounded-lg transition-colors ${
               isSubmitting
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-primary-600 hover:bg-primary-700"
@@ -519,20 +585,26 @@ const AddPatient: React.FC = () => {
           >
             {isSubmitting ? (
               <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue mr-2"></div>
-                Adding Patient...
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                {isEditing ? "Updating..." : "Adding Patient..."}
               </>
             ) : (
               <>
                 <Save className="w-5 h-5 mr-2" />
-                Save Patient
+                {isEditing ? "Update Patient" : "Save Patient"}
               </>
             )}
           </button>
         </div>
+
+        {errors.submit && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-red-600 text-sm">{errors.submit}</p>
+          </div>
+        )}
       </form>
     </div>
   );
 };
 
-export default AddPatient;
+export default AddOrEditPatient;
