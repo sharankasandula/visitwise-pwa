@@ -3,10 +3,11 @@
 - [x] Edit Patient
 - [x] Delete Patient
 - [x] Visits CRUD
-- [X] Integrate Auth
-- [X] Earnings this month card
+- [x] Integrate Auth
+- [x] Earnings this month card
 - [ ] Record Payments
   - [ ] Add Payments to Patients
+- [ ] [Bug] Archive and Delete Patient not working as expected.
 - [ ] Reminders
 - [ ] Modal to write notes for the visit
 - [ ] Integrate Calendar View to view visits in Patient Profile - react day picker (https://react-day-picker.js.org/)

@@ -37,7 +37,16 @@ const EarningsCard: React.FC = () => {
       });
       const numVisits = visitsThisMonth.length;
       visitsCount += numVisits;
-      earningsSum += numVisits * (patient.chargePerVisit || 0);
+
+      // Use actual visit charges if available, otherwise fall back to patient's default charge
+      visitsThisMonth.forEach((visit) => {
+        const visitCharge = Number(visit.charge) || 0;
+        if (visitCharge > 0) {
+          earningsSum += visitCharge;
+        } else {
+          earningsSum += patient.chargePerVisit || 0;
+        }
+      });
     });
 
     return { totalEarnings: earningsSum, totalVisits: visitsCount };

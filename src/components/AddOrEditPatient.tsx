@@ -32,7 +32,7 @@ const AddOrEditPatient: React.FC = () => {
     phone: "",
     addressCoordinates: "",
     googleMapsLink: "",
-    chargePerVisit: "",
+    chargePerVisit: 0,
     condition: "",
     protocol: "",
     notes: "",
@@ -56,7 +56,7 @@ const AddOrEditPatient: React.FC = () => {
         phone: existingPatient.phone || "",
         addressCoordinates: existingPatient.addressCoordinates || "",
         googleMapsLink: existingPatient.googleMapsLink || "",
-        chargePerVisit: existingPatient.chargePerVisit?.toString() || "",
+        chargePerVisit: existingPatient.chargePerVisit || 0,
         condition: existingPatient.condition || "",
         protocol: existingPatient.protocol || "",
         notes: existingPatient.notes || "",
@@ -118,11 +118,10 @@ const AddOrEditPatient: React.FC = () => {
       newErrors.name = "Patient name is required";
     }
 
-    if (!formData.chargePerVisit || parseFloat(formData.chargePerVisit) <= 0) {
-      newErrors.chargePerVisit = "Valid charge per visit is required";
+    if (!(formData.chargePerVisit > 0)) {
+      newErrors.chargePerVisit = "Charge per visit cannot be negative";
     }
 
-    // Optional field validations
     if (
       formData.age &&
       (parseInt(formData.age) < 1 || parseInt(formData.age) > 150)
@@ -132,10 +131,6 @@ const AddOrEditPatient: React.FC = () => {
 
     if (formData.phone && !/^[\+]?[0-9\s\-\(\)]{10,}$/.test(formData.phone)) {
       newErrors.phone = "Please enter a valid phone number";
-    }
-
-    if (formData.chargePerVisit && parseFloat(formData.chargePerVisit) < 0) {
-      newErrors.chargePerVisit = "Charge per visit cannot be negative";
     }
 
     setErrors(newErrors);
@@ -162,7 +157,7 @@ const AddOrEditPatient: React.FC = () => {
           phone: formData.phone.trim() || null,
           addressCoordinates: formData.addressCoordinates.trim() || "",
           googleMapsLink: formData.googleMapsLink.trim() || "",
-          chargePerVisit: parseFloat(formData.chargePerVisit),
+          chargePerVisit: formData.chargePerVisit,
           condition: formData.condition.trim() || "",
           protocol: formData.protocol.trim() || "",
           notes: formData.notes.trim() || "",
@@ -183,16 +178,16 @@ const AddOrEditPatient: React.FC = () => {
           phone: formData.phone.trim() || null,
           addressCoordinates: formData.addressCoordinates.trim() || "",
           googleMapsLink: formData.googleMapsLink.trim() || "",
-          chargePerVisit: parseFloat(formData.chargePerVisit),
+          chargePerVisit: formData.chargePerVisit,
           condition: formData.condition.trim() || "",
           protocol: formData.protocol.trim() || "",
           notes: formData.notes.trim() || "",
           isActive: true,
           dailyVisitReminderEnabled: formData.dailyVisitReminderEnabled,
-          paymentCollectionReminderEnabled:
-            formData.paymentCollectionReminderEnabled,
+          paymentCollectionReminderEnabled: formData.paymentCollectionReminderEnabled,
           followUpReminderEnabled: formData.followUpReminderEnabled,
           followUpReminderDays: formData.followUpReminderDays,
+          userId: ""
         };
 
         await dispatch(addPatientAsync(newPatient) as any);
@@ -382,7 +377,7 @@ const AddOrEditPatient: React.FC = () => {
               value={formData.chargePerVisit}
               onChange={handleInputChange}
               required
-              min="300"
+              min="0"
               max="10000"
               step="1"
               className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${

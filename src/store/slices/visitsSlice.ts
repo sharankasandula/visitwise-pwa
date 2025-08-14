@@ -18,8 +18,8 @@ export interface Visit {
   patientId: string;
   date: string;
   completed: boolean;
+  charge: number;
   notes?: string;
-  paymentReceived?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -49,8 +49,8 @@ const convertFirestoreVisit = (doc: any): Visit => {
         ? data.date
         : data.date?.toDate?.()?.toISOString?.() || new Date().toISOString(),
     completed: data.completed || false,
+    charge: Number(data.charge) || 0,
     notes: data.notes || "",
-    paymentReceived: data.paymentReceived || 0,
     createdAt:
       data.createdAt instanceof Timestamp
         ? data.createdAt.toDate().toISOString()
@@ -72,7 +72,13 @@ export const createVisitAsync = createAsyncThunk(
   async (data: NewVisit, { rejectWithValue }) => {
     try {
       const now = new Date().toISOString();
-      const visitData = { ...data, createdAt: now, updatedAt: now };
+      // Ensure charge is a number
+      const visitData = {
+        ...data,
+        charge: Number(data.charge) || 0,
+        createdAt: now,
+        updatedAt: now,
+      };
       const docRef = await addDoc(
         collection(db, `patients/${data.patientId}/visits`),
         visitData
@@ -107,10 +113,15 @@ export const updateVisitAsync = createAsyncThunk(
   async (data: Visit, { rejectWithValue }) => {
     try {
       const { id, patientId, ...updateData } = data;
-      const visitRef = doc(db, `patients/${patientId}/visits`, id);
+      const visitRef = doc(db, `patients/${data.patientId}/visits`, id);
       const now = new Date().toISOString();
-      await updateDoc(visitRef, { ...updateData, updatedAt: now });
-      return { ...data, updatedAt: now };
+      const updatePayload = {
+        ...updateData,
+        charge: Number(updateData.charge) || 0,
+        updatedAt: now,
+      };
+      await updateDoc(visitRef, updatePayload);
+      return { ...data, ...updatePayload };
     } catch (err: any) {
       return rejectWithValue(err?.message ?? "Failed to update visit");
     }
@@ -140,6 +151,11 @@ const visitsSlice = createSlice({
   reducers: {
     clearVisits: (state, action: PayloadAction<string>) => {
       delete state.visits[action.payload];
+    },
+    clearAllVisits: (state) => {
+      state.visits = {};
+      state.loading = false;
+      state.error = null;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -249,5 +265,6 @@ const visitsSlice = createSlice({
   },
 });
 
-export const { clearVisits, setLoading, setError } = visitsSlice.actions;
+export const { clearVisits, clearAllVisits, setLoading, setError } =
+  visitsSlice.actions;
 export default visitsSlice.reducer;

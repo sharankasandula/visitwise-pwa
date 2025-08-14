@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { AuthService, AuthUser } from "../../services/authService";
+import { clearPatients } from "./patientsSlice";
+import { clearAllVisits } from "./visitsSlice";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -40,9 +42,12 @@ export const signInAnonymously = createAsyncThunk(
 
 export const signOut = createAsyncThunk(
   "auth/signOut",
-  async (_, { rejectWithValue }) => {
+  async (_, { dispatch, rejectWithValue }) => {
     try {
       await AuthService.signOut();
+      // Clear all user data
+      dispatch(clearPatients());
+      dispatch(clearAllVisits());
       return null;
     } catch (error: any) {
       return rejectWithValue(error.message);

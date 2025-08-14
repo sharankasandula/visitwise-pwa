@@ -46,6 +46,32 @@ const getCurrentUserId = (state: RootState) => {
   return state.auth.user?.id;
 };
 
+// Helper function to convert Firestore data to serializable format
+const convertFirestorePatient = (doc: any): Patient => {
+  const data = doc.data();
+  return {
+    id: doc.id,
+    userId: data.userId,
+    name: data.name || "",
+    age: data.age || null,
+    gender: data.gender || "",
+    phone: data.phone || null,
+    addressCoordinates: data.addressCoordinates || "",
+    googleMapsLink: data.googleMapsLink || "",
+    chargePerVisit: Number(data.chargePerVisit) || 0,
+    condition: data.condition || "",
+    protocol: data.protocol || "",
+    notes: data.notes || "",
+    isActive: data.isActive || false,
+    createdAt: data.createdAt || new Date().toISOString(),
+    dailyVisitReminderEnabled: data.dailyVisitReminderEnabled || false,
+    paymentCollectionReminderEnabled:
+      data.paymentCollectionReminderEnabled || false,
+    followUpReminderEnabled: data.followUpReminderEnabled || false,
+    followUpReminderDays: Number(data.followUpReminderDays) || 0,
+  };
+};
+
 export const addPatientAsync = createAsyncThunk(
   "patients/addPatientAsync",
   async (data: Omit<NewPatient, "userId">, { getState, rejectWithValue }) => {
@@ -58,7 +84,13 @@ export const addPatientAsync = createAsyncThunk(
       }
 
       const createdAt = new Date().toISOString();
-      const payload = { ...data, userId, createdAt };
+      const payload = {
+        ...data,
+        chargePerVisit: Number(data.chargePerVisit) || 0,
+        followUpReminderDays: Number(data.followUpReminderDays) || 0,
+        userId,
+        createdAt,
+      };
       const docRef = await addDoc(collection(db, "patients"), payload);
       return { id: docRef.id, ...payload } as Patient;
     } catch (err: any) {
@@ -85,8 +117,16 @@ export const updatePatientAsync = createAsyncThunk(
 
       const { id, ...updateData } = data;
       const patientRef = doc(db, "patients", id);
-      await updateDoc(patientRef, updateData);
-      return data;
+
+      // Ensure numeric fields are properly converted
+      const updatePayload = {
+        ...updateData,
+        chargePerVisit: Number(updateData.chargePerVisit) || 0,
+        followUpReminderDays: Number(updateData.followUpReminderDays) || 0,
+      };
+
+      await updateDoc(patientRef, updatePayload);
+      return { ...data, ...updatePayload };
     } catch (err: any) {
       return rejectWithValue(err?.message ?? "Failed to update patient");
     }
@@ -141,9 +181,7 @@ export const fetchPatients = createAsyncThunk(
       const q = query(patientsRef, where("userId", "==", userId));
       const snapshot = await getDocs(q);
 
-      return snapshot.docs.map(
-        (doc) => ({ id: doc.id, ...doc.data() } as Patient)
-      );
+      return snapshot.docs.map(convertFirestorePatient);
     } catch (err: any) {
       return rejectWithValue(err?.message ?? "Failed to fetch patients");
     }
@@ -165,9 +203,7 @@ export const searchPatients = createAsyncThunk(
       const q = query(patientsRef, where("userId", "==", userId));
       const snapshot = await getDocs(q);
 
-      const patients = snapshot.docs.map(
-        (doc) => ({ id: doc.id, ...doc.data() } as Patient)
-      );
+      const patients = snapshot.docs.map(convertFirestorePatient);
 
       return patients.filter((p) =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase())
