@@ -6,6 +6,7 @@ import PatientCard from "./PatientCard";
 import EarningsCard from "./EarningsCard";
 import { useNavigate } from "react-router-dom";
 import { fetchPatients, searchPatients } from "../store/slices/patientsSlice";
+import UserProfile from "./UserProfile";
 
 const Home: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"active" | "archived">("active");
@@ -53,8 +54,13 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-primary-600 text-white bg-blue-400   p-2 sticky top-0 z-10">
-        <h1 className="text-2xl font-extrabold  text-white">Visitwise</h1>
+      <div className="bg-primary-600 text-white bg-blue-400   px-2 sticky top-0 z-10">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center">
+            <h1 className="text-2xl font-extrabold  text-white">Visitwise</h1>
+          </div>
+          <UserProfile />
+        </div>
       </div>
 
       <div className="sticky    p-4 space-y-3">

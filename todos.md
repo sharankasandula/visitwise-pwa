@@ -3,15 +3,20 @@
 - [x] Edit Patient
 - [x] Delete Patient
 - [x] Visits CRUD
+- [X] Integrate Auth
+- [ ] Earnings this month card
 - [ ] Record Payments
   - [ ] Add Payments to Patients
 - [ ] Reminders
 - [ ] Modal to write notes for the visit
 - [ ] Integrate Calendar View to view visits in Patient Profile - react day picker (https://react-day-picker.js.org/)
-- [ ] Clean up visits ui in Home page
+- [ ] Integrate App settings
+- [ ] Upgrade with new styles - Different Themes and Dark Theme
 - [ ] Media uploads
 - [ ] Refactor Patient details
 - [ ] Integrate auth
 - [ ] deploy for testing - Netlify
 - [ ] testing
 - [ ] import patients from contacts
+
+Lets integrate auth into this app. I would like to use firebase's auth for authetication, specifically Google OAuth and Anonymous type authetication methods. Setup such that user needs Auth to access the application and auth credentials are stored appropriately so that when user visits the app after some days they should still have access to the application.

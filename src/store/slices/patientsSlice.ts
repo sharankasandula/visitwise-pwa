@@ -6,11 +6,15 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  query,
+  where,
 } from "firebase/firestore";
 import { db } from "../../config/firebase";
+import { RootState } from "../index";
 
 export interface Patient {
   id: string;
+  userId: string;
   name: string;
   age: number | null;
   gender: string;
@@ -37,12 +41,24 @@ interface PatientsState {
 
 export type NewPatient = Omit<Patient, "id" | "createdAt">;
 
+// Helper function to get current user ID from state
+const getCurrentUserId = (state: RootState) => {
+  return state.auth.user?.id;
+};
+
 export const addPatientAsync = createAsyncThunk(
   "patients/addPatientAsync",
-  async (data: NewPatient, { rejectWithValue }) => {
+  async (data: Omit<NewPatient, "userId">, { getState, rejectWithValue }) => {
     try {
+      const state = getState() as RootState;
+      const userId = getCurrentUserId(state);
+
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
+
       const createdAt = new Date().toISOString();
-      const payload = { ...data, createdAt };
+      const payload = { ...data, userId, createdAt };
       const docRef = await addDoc(collection(db, "patients"), payload);
       return { id: docRef.id, ...payload } as Patient;
     } catch (err: any) {
@@ -53,8 +69,20 @@ export const addPatientAsync = createAsyncThunk(
 
 export const updatePatientAsync = createAsyncThunk(
   "patients/updatePatientAsync",
-  async (data: Patient, { rejectWithValue }) => {
+  async (data: Patient, { getState, rejectWithValue }) => {
     try {
+      const state = getState() as RootState;
+      const userId = getCurrentUserId(state);
+
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
+
+      // Verify the patient belongs to the current user
+      if (data.userId !== userId) {
+        throw new Error("Unauthorized access to patient");
+      }
+
       const { id, ...updateData } = data;
       const patientRef = doc(db, "patients", id);
       await updateDoc(patientRef, updateData);
@@ -67,8 +95,28 @@ export const updatePatientAsync = createAsyncThunk(
 
 export const deletePatientAsync = createAsyncThunk(
   "patients/deletePatientAsync",
-  async (patientId: string, { rejectWithValue }) => {
+  async (patientId: string, { getState, rejectWithValue }) => {
     try {
+      const state = getState() as RootState;
+      const userId = getCurrentUserId(state);
+
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
+
+      // Get the patient first to verify ownership
+      const patientsRef = collection(db, "patients");
+      const q = query(
+        patientsRef,
+        where("userId", "==", userId),
+        where("id", "==", patientId)
+      );
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        throw new Error("Patient not found or unauthorized access");
+      }
+
       const patientRef = doc(db, "patients", patientId);
       await deleteDoc(patientRef);
       return patientId;
@@ -80,33 +128,89 @@ export const deletePatientAsync = createAsyncThunk(
 
 export const fetchPatients = createAsyncThunk(
   "patients/fetchPatients",
-  async () => {
-    const snapshot = await getDocs(collection(db, "patients"));
-    return snapshot.docs.map(
-      (doc) => ({ id: doc.id, ...doc.data() } as Patient)
-    );
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const state = getState() as RootState;
+      const userId = getCurrentUserId(state);
+
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
+
+      const patientsRef = collection(db, "patients");
+      const q = query(patientsRef, where("userId", "==", userId));
+      const snapshot = await getDocs(q);
+
+      return snapshot.docs.map(
+        (doc) => ({ id: doc.id, ...doc.data() } as Patient)
+      );
+    } catch (err: any) {
+      return rejectWithValue(err?.message ?? "Failed to fetch patients");
+    }
   }
 );
 
 export const searchPatients = createAsyncThunk(
   "patients/searchPatients",
-  async (searchTerm: string) => {
-    const snapshot = await getDocs(collection(db, "patients"));
-    const patients = snapshot.docs.map(
-      (doc) => ({ id: doc.id, ...doc.data() } as Patient)
-    );
-    return patients.filter((p) =>
-      p.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  async (searchTerm: string, { getState, rejectWithValue }) => {
+    try {
+      const state = getState() as RootState;
+      const userId = getCurrentUserId(state);
+
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
+
+      const patientsRef = collection(db, "patients");
+      const q = query(patientsRef, where("userId", "==", userId));
+      const snapshot = await getDocs(q);
+
+      const patients = snapshot.docs.map(
+        (doc) => ({ id: doc.id, ...doc.data() } as Patient)
+      );
+
+      return patients.filter((p) =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    } catch (err: any) {
+      return rejectWithValue(err?.message ?? "Failed to search patients");
+    }
   }
 );
 
 export const setPatientActiveStatus = createAsyncThunk(
   "patients/setPatientActiveStatus",
-  async ({ patientId, isActive }: { patientId: string; isActive: boolean }) => {
-    const patientRef = doc(db, "patients", patientId);
-    await updateDoc(patientRef, { isActive });
-    return { patientId, isActive };
+  async (
+    { patientId, isActive }: { patientId: string; isActive: boolean },
+    { getState, rejectWithValue }
+  ) => {
+    try {
+      const state = getState() as RootState;
+      const userId = getCurrentUserId(state);
+
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
+
+      // Verify the patient belongs to the current user
+      const patientsRef = collection(db, "patients");
+      const q = query(
+        patientsRef,
+        where("userId", "==", userId),
+        where("id", "==", patientId)
+      );
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        throw new Error("Patient not found or unauthorized access");
+      }
+
+      const patientRef = doc(db, "patients", patientId);
+      await updateDoc(patientRef, { isActive });
+      return { patientId, isActive };
+    } catch (err: any) {
+      return rejectWithValue(err?.message ?? "Failed to update patient status");
+    }
   }
 );
 
@@ -132,6 +236,12 @@ const patientsSlice = createSlice({
     },
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
+    },
+    // Clear patients when user logs out
+    clearPatients: (state) => {
+      state.patients = [];
+      state.loading = false;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -233,7 +343,6 @@ const patientsSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || "Failed to fetch patients";
       })
-
       .addCase(deletePatientAsync.rejected, (state, action) => {
         state.loading = false;
         state.error =
@@ -243,11 +352,16 @@ const patientsSlice = createSlice({
       })
       .addCase(searchPatients.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to fetch patients";
+        state.error = action.error.message || "Failed to search patients";
       });
   },
 });
 
-export const { updatePatient, deletePatient, setLoading, setError } =
-  patientsSlice.actions;
+export const {
+  updatePatient,
+  deletePatient,
+  setLoading,
+  setError,
+  clearPatients,
+} = patientsSlice.actions;
 export default patientsSlice.reducer;
