@@ -93,7 +93,7 @@ const Home: React.FC = () => {
         </div>
       </div>
       {/* Sticky Search Bar */}
-      <div className="sticky top-12 z-10 bg-white px-4 py-2 ">
+      <div className="sticky bg-gray-50 top-12 z-10  px-4 py-2 ">
         <input
           type="text"
           value={searchTerm}
@@ -104,7 +104,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* Patient List */}
-      <div className="px-4 mt-4 space-y-3">
+      <div className="px-4 space-y-3">
         {currentPatients.map((patient, index) => (
           <div
             key={patient.id}

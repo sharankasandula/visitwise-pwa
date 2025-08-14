@@ -4,7 +4,7 @@
 - [x] Delete Patient
 - [x] Visits CRUD
 - [X] Integrate Auth
-- [ ] Earnings this month card
+- [X] Earnings this month card
 - [ ] Record Payments
   - [ ] Add Payments to Patients
 - [ ] Reminders
