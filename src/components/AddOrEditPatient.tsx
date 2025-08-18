@@ -184,10 +184,11 @@ const AddOrEditPatient: React.FC = () => {
           notes: formData.notes.trim() || "",
           isActive: true,
           dailyVisitReminderEnabled: formData.dailyVisitReminderEnabled,
-          paymentCollectionReminderEnabled: formData.paymentCollectionReminderEnabled,
+          paymentCollectionReminderEnabled:
+            formData.paymentCollectionReminderEnabled,
           followUpReminderEnabled: formData.followUpReminderEnabled,
           followUpReminderDays: formData.followUpReminderDays,
-          userId: ""
+          userId: "",
         };
 
         await dispatch(addPatientAsync(newPatient) as any);
@@ -332,19 +333,7 @@ const AddOrEditPatient: React.FC = () => {
                 placeholder="+91 9876543210"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Address Coordinates
-              </label>
-              <textarea
-                name="addressCoordinates"
-                value={formData.addressCoordinates}
-                onChange={handleInputChange}
-                rows={3}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="Enter address coordinates (e.g., 12.9715987,77.594566)"
-              />
-            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Google Maps Link

@@ -109,9 +109,6 @@ const EarningsCard: React.FC = () => {
       <div className="grid grid-cols-3 gap-3 mb-4">
         {/* Total Earnings */}
         <div className="text-center">
-          <div className="bg-blue-50 rounded-lg p-2 mb-1">
-            <CalendarCheck2 className="w-4 h-4 text-blue-600 mx-auto" />
-          </div>
           <p className="text-xs text-blue-600 font-medium mb-1">Total</p>
           <p className="text-sm font-bold text-blue-700">
             ₹{totalEarnings.toLocaleString()}
@@ -120,9 +117,6 @@ const EarningsCard: React.FC = () => {
 
         {/* Collected */}
         <div className="text-center">
-          <div className="bg-green-50 rounded-lg p-2 mb-1">
-            <TrendingUp className="w-4 h-4 text-green-600 mx-auto" />
-          </div>
           <p className="text-xs text-green-600 font-medium mb-1">Collected</p>
           <p className="text-sm font-bold text-green-700">
             ₹{totalCollected.toLocaleString()}
@@ -131,9 +125,6 @@ const EarningsCard: React.FC = () => {
 
         {/* Outstanding */}
         <div className="text-center">
-          <div className="bg-orange-50 rounded-lg p-2 mb-1">
-            <AlertCircle className="w-4 h-4 text-orange-600 mx-auto" />
-          </div>
           <p className="text-xs text-orange-600 font-medium mb-1">
             Outstanding
           </p>

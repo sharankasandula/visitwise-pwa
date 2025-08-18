@@ -5,18 +5,16 @@
 - [x] Visits CRUD
 - [x] Integrate Auth
 - [x] Earnings this month card
-- [X] Record Payments
-  - [X] Add Payments to Patients
+- [x] Record Payments
 - [ ] [Bug] Archive and Delete Patient not working as expected.
-- [ ] Reminders
-- [ ] Analytics on Earnings and visits.
-- [ ] Modal to write notes for the visit
+- [x] Reminders
+- [x] Modal to write notes for the visit
+- [X] Revamp Patient profile
 - [ ] Integrate Calendar View to view visits in Patient Profile - react day picker (https://react-day-picker.js.org/)
-- [ ] Integrate App settings
+- [ ] Analytics on Earnings and visits.
+- [ ] App settings
 - [ ] Upgrade with new styles - Different Themes and Dark Theme
 - [ ] Media uploads
-- [ ] Refactor Patient details
-- [ ] Integrate auth
 - [ ] deploy for testing - Netlify
 - [ ] testing
 - [ ] import patients from contacts
