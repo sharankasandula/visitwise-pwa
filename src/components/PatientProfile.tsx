@@ -21,6 +21,8 @@ import {
   deletePatientAsync,
 } from "../store/slices/patientsSlice";
 import { fetchVisitsAsync } from "../store/slices/visitsSlice";
+import { fetchPaymentsAsync } from "../store/slices/paymentsSlice";
+import PaymentModal from "./PaymentModal";
 
 import { format } from "date-fns";
 import { getDocs, collection } from "firebase/firestore";
@@ -34,13 +36,17 @@ const PatientProfile: React.FC = () => {
     (state: RootState) => state.patients
   );
   const { visits } = useSelector((state: RootState) => state.visits);
+  const { payments } = useSelector((state: RootState) => state.payments);
   const [patient, setPatient] = useState<any>(null);
 
   const patientVisits = visits[id || ""] || [];
+  const patientPayments = payments[id || ""] || [];
 
   const [activeTab, setActiveTab] = useState<
     "details" | "history" | "payments" | "reminders" | "media"
   >("details");
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
   useEffect(() => {
     // Try to get patient from state
     const foundPatient = patients.find((p) => p.id === id);
@@ -60,6 +66,12 @@ const PatientProfile: React.FC = () => {
       dispatch(fetchVisitsAsync(patient.id) as any);
     }
   }, [patient?.id, visits, dispatch]);
+
+  useEffect(() => {
+    if (patient?.id) {
+      dispatch(fetchPaymentsAsync(patient.id) as any);
+    }
+  }, [patient?.id, dispatch]);
 
   if (loading) {
     return (
@@ -86,7 +98,12 @@ const PatientProfile: React.FC = () => {
 
   const handleArchive = () => {
     console.log("Archiving patient:", patient.id);
-    dispatch(setPatientActiveStatus(patient.id, !patient.isActive) as any);
+    dispatch(
+      setPatientActiveStatus({
+        patientId: patient.id,
+        isActive: !patient.isActive,
+      }) as any
+    );
     navigate("/");
   };
 
@@ -130,7 +147,11 @@ const PatientProfile: React.FC = () => {
   const completedVisits = patientVisits.filter((v) => v.completed);
   const pendingVisits = patientVisits.length - completedVisits.length;
   const totalEarned = completedVisits.length * (patient?.chargePerVisit ?? 0);
-  const totalDue = 0; // TODO: Calculate total due based on visits and payments
+  const totalCollected = patientPayments.reduce(
+    (sum, payment) => sum + payment.amount,
+    0
+  );
+  const totalDue = totalEarned - totalCollected;
 
   return (
     <div className="min-h-screen bg-zinc-200">
@@ -347,10 +368,16 @@ const PatientProfile: React.FC = () => {
           <div className="space-y-4">
             <div className="bg-white rounded-lg p-4 shadow-sm">
               <h3 className="font-semibold mb-3">Payment Summary</h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-blue-600">
+                    ₹{totalEarned}
+                  </p>
+                  <p className="text-sm text-gray-600">Total Earned</p>
+                </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-green-600">
-                    ₹{totalEarned}
+                    ₹{totalCollected}
                   </p>
                   <p className="text-sm text-gray-600">Total Collected</p>
                 </div>
@@ -368,7 +395,10 @@ const PatientProfile: React.FC = () => {
                 <h3 className="font-semibold">Payment Actions</h3>
               </div>
               <div className="space-y-3">
-                <button className="w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                <button
+                  onClick={() => setIsPaymentModalOpen(true)}
+                  className="w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                >
                   Record Payment
                 </button>
                 <button className="w-full py-3 px-4 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
@@ -378,6 +408,42 @@ const PatientProfile: React.FC = () => {
                   <button className="w-full py-3 px-4 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
                     Clear Dues & Mark Inactive
                   </button>
+                )}
+              </div>
+            </div>
+
+            {/* Payment History */}
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="p-4 border-b">
+                <h3 className="font-semibold">
+                  Payment History ({patientPayments.length})
+                </h3>
+              </div>
+              <div className="divide-y">
+                {patientPayments.map((payment) => (
+                  <div
+                    key={payment.id}
+                    className="p-4 flex items-center justify-between"
+                  >
+                    <div>
+                      <p className="font-medium">
+                        {format(new Date(payment.date), "EEEE, dd MMM yyyy")}
+                      </p>
+                      <p className="text-sm text-gray-500 capitalize">
+                        {payment.method} • {payment.notes || "No notes"}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-green-600">
+                        ₹{payment.amount}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+                {patientPayments.length === 0 && (
+                  <div className="p-8 text-center text-gray-500">
+                    No payments recorded yet
+                  </div>
                 )}
               </div>
             </div>
@@ -397,14 +463,14 @@ const PatientProfile: React.FC = () => {
                 </div>
                 <div
                   className={`w-12 h-6 rounded-full ${
-                    patient.reminders.dailyVisit
+                    patient.dailyVisitReminderEnabled
                       ? "bg-primary-600"
                       : "bg-gray-300"
                   }`}
                 >
                   <div
                     className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform ${
-                      patient.reminders.dailyVisit
+                      patient.dailyVisitReminderEnabled
                         ? "translate-x-6"
                         : "translate-x-0.5"
                     } mt-0.5`}
@@ -421,14 +487,14 @@ const PatientProfile: React.FC = () => {
                 </div>
                 <div
                   className={`w-12 h-6 rounded-full ${
-                    patient.reminders.paymentCollection
+                    patient.paymentCollectionReminderEnabled
                       ? "bg-primary-600"
                       : "bg-gray-300"
                   }`}
                 >
                   <div
                     className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform ${
-                      patient.reminders.paymentCollection
+                      patient.paymentCollectionReminderEnabled
                         ? "translate-x-6"
                         : "translate-x-0.5"
                     } mt-0.5`}
@@ -440,19 +506,19 @@ const PatientProfile: React.FC = () => {
                 <div>
                   <p className="font-medium">Follow-up Reminder</p>
                   <p className="text-sm text-gray-600">
-                    Follow up after {patient.reminders.followUp.days} days
+                    Follow up after {patient.followUpReminderDays} days
                   </p>
                 </div>
                 <div
                   className={`w-12 h-6 rounded-full ${
-                    patient.reminders.followUp.enabled
+                    patient.followUpReminderEnabled
                       ? "bg-primary-600"
                       : "bg-gray-300"
                   }`}
                 >
                   <div
                     className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform ${
-                      patient.reminders.followUp.enabled
+                      patient.followUpReminderEnabled
                         ? "translate-x-6"
                         : "translate-x-0.5"
                     } mt-0.5`}
@@ -484,6 +550,14 @@ const PatientProfile: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Payment Modal */}
+      <PaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        patientId={patient?.id || ""}
+        patientName={patient?.name || ""}
+      />
     </div>
   );
 };

@@ -1,8 +1,9 @@
-import { configureStore } from '@reduxjs/toolkit';
-import patientsSlice from './slices/patientsSlice';
-import visitsSlice from './slices/visitsSlice';
-import earningsSlice from './slices/earningsSlice';
-import authSlice from './slices/authSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import patientsSlice from "./slices/patientsSlice";
+import visitsSlice from "./slices/visitsSlice";
+import earningsSlice from "./slices/earningsSlice";
+import authSlice from "./slices/authSlice";
+import paymentsSlice from "./slices/paymentsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     visits: visitsSlice,
     earnings: earningsSlice,
     auth: authSlice,
+    payments: paymentsSlice,
   },
 });
 

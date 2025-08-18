@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { RootState } from "../index";
+import { Payment, NewPayment } from "./paymentsSlice";
 
 export interface Patient {
   id: string;
@@ -210,6 +211,56 @@ export const searchPatients = createAsyncThunk(
       );
     } catch (err: any) {
       return rejectWithValue(err?.message ?? "Failed to search patients");
+    }
+  }
+);
+
+// List payments for a patient
+export const listPayments = createAsyncThunk(
+  "patients/listPayments",
+  async (patientId: string, { rejectWithValue }) => {
+    try {
+      const paymentsRef = collection(db, `patients/${patientId}/payments`);
+      const q = query(paymentsRef);
+      const snapshot = await getDocs(q);
+      const payments = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Payment[];
+
+      return { patientId, payments };
+    } catch (err: any) {
+      return rejectWithValue(err?.message ?? "Failed to fetch payments");
+    }
+  }
+);
+
+// Create a payment for a patient
+export const createPayment = createAsyncThunk(
+  "patients/createPayment",
+  async (
+    {
+      patientId,
+      payload,
+    }: { patientId: string; payload: Omit<NewPayment, "patientId"> },
+    { rejectWithValue }
+  ) => {
+    try {
+      const now = new Date().toISOString();
+      const paymentData = {
+        ...payload,
+        patientId,
+        amount: Number(payload.amount) || 0,
+        createdAt: now,
+        updatedAt: now,
+      };
+      const docRef = await addDoc(
+        collection(db, `patients/${patientId}/payments`),
+        paymentData
+      );
+      return { id: docRef.id, ...paymentData } as Payment;
+    } catch (err: any) {
+      return rejectWithValue(err?.message ?? "Failed to create payment");
     }
   }
 );

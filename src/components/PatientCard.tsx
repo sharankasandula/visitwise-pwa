@@ -1,11 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Archive, Navigation, Phone } from "lucide-react";
+import { Archive, Navigation, Phone, DollarSign } from "lucide-react";
 import { Patient, setPatientActiveStatus } from "../store/slices/patientsSlice";
 import { fetchVisitsAsync } from "../store/slices/visitsSlice";
 import { RootState } from "../store";
 import CalendarStrip from "./CalendarStrip";
+import PaymentModal from "./PaymentModal";
 
 interface PatientCardProps {
   patient: Patient;
@@ -15,6 +16,7 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { visits } = useSelector((state: RootState) => state.visits);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   // Fetch visits when component mounts
   useEffect(() => {
@@ -55,6 +57,13 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
           </div>
           <div className="flex space-x-2">
             <button
+              onClick={() => setIsPaymentModalOpen(true)}
+              className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors"
+              title="Record Payment"
+            >
+              <DollarSign className="w-4 h-4" />
+            </button>
+            <button
               onClick={handleCall}
               className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
               title="Call Patient"
@@ -73,6 +82,14 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
 
         <CalendarStrip patientId={patient.id} />
       </div>
+
+      {/* Payment Modal */}
+      <PaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        patientId={patient.id}
+        patientName={patient.name}
+      />
     </div>
   );
 };
