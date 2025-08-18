@@ -10,7 +10,13 @@
 - [x] Reminders
 - [x] Modal to write notes for the visit
 - [X] Revamp Patient profile
-- [ ] Integrate Calendar View to view visits in Patient Profile - react day picker (https://react-day-picker.js.org/)
+- [X] Integrate Calendarx View to view visits in Patient Profile - react day picker (https://react-day-picker.js.org/)
+- [ ] Send Payment Reminder on Whatsapp
+- [ ] Make M/F in Profile.
+- [ ] Make hostory collapsible.
+- [ ] Editable payment/visit history. 
+- [ ] Mark Paid Visits 
+- [ ] Rminders Editable from profile
 - [ ] Analytics on Earnings and visits.
 - [ ] App settings
 - [ ] Upgrade with new styles - Different Themes and Dark Theme

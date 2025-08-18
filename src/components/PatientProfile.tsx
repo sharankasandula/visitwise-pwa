@@ -27,6 +27,8 @@ import {
 import { fetchVisitsAsync } from "../store/slices/visitsSlice";
 import { fetchPaymentsAsync } from "../store/slices/paymentsSlice";
 import PaymentModal from "./PaymentModal";
+import PatientCalendar from "./PatientCalendar";
+import VisitModal from "./VisitModal";
 
 import { format } from "date-fns";
 
@@ -41,6 +43,8 @@ const PatientProfile: React.FC = () => {
   const { payments } = useSelector((state: RootState) => state.payments);
   const [patient, setPatient] = useState<any>(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isVisitModalOpen, setIsVisitModalOpen] = useState(false);
+  const [selectedVisitDate, setSelectedVisitDate] = useState<Date | null>(null);
 
   const patientVisits = visits[id || ""] || [];
   const patientPayments = payments[id || ""] || [];
@@ -131,6 +135,11 @@ const PatientProfile: React.FC = () => {
   const handleNavigate = () => {
     const encodedAddress = encodeURIComponent(patient.address);
     window.open(`https://maps.google.com/?q=${encodedAddress}`, "_blank");
+  };
+
+  const handleAddVisit = (date: Date) => {
+    setSelectedVisitDate(date);
+    setIsVisitModalOpen(true);
   };
 
   const completedVisits = patientVisits.filter((v) => v.completed);
@@ -325,8 +334,19 @@ const PatientProfile: React.FC = () => {
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
             <Calendar className="w-5 h-5 text-blue-600" />
-            Visit History
+            Visits
           </h3>
+
+          {/* Calendar View */}
+          <PatientCalendar
+            visits={patientVisits}
+            patientId={patient.id}
+            patientName={patient.name}
+            defaultCharge={patient.chargePerVisit}
+            onAddVisit={handleAddVisit}
+          />
+
+          {/* Visits List */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200">
             <div className="p-4 border-b border-gray-200">
               <h4 className="font-semibold text-gray-900">
@@ -496,6 +516,19 @@ const PatientProfile: React.FC = () => {
         onClose={() => setIsPaymentModalOpen(false)}
         patientId={patient?.id || ""}
         patientName={patient?.name || ""}
+      />
+
+      {/* Visit Modal */}
+      <VisitModal
+        isOpen={isVisitModalOpen}
+        onClose={() => {
+          setIsVisitModalOpen(false);
+          setSelectedVisitDate(null);
+        }}
+        selectedDate={selectedVisitDate}
+        patientId={patient?.id || ""}
+        patientName={patient?.name || ""}
+        defaultCharge={patient?.chargePerVisit || 0}
       />
     </div>
   );
