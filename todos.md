@@ -5,10 +5,11 @@
 - [x] Visits CRUD
 - [x] Integrate Auth
 - [x] Earnings this month card
-- [ ] Record Payments
-  - [ ] Add Payments to Patients
+- [X] Record Payments
+  - [X] Add Payments to Patients
 - [ ] [Bug] Archive and Delete Patient not working as expected.
 - [ ] Reminders
+- [ ] Analytics on Earnings and visits.
 - [ ] Modal to write notes for the visit
 - [ ] Integrate Calendar View to view visits in Patient Profile - react day picker (https://react-day-picker.js.org/)
 - [ ] Integrate App settings
@@ -20,4 +21,26 @@
 - [ ] testing
 - [ ] import patients from contacts
 
-Lets integrate auth into this app. I would like to use firebase's auth for authetication, specifically Google OAuth and Anonymous type authetication methods. Setup such that user needs Auth to access the application and auth credentials are stored appropriately so that when user visits the app after some days they should still have access to the application.
+Lets implement record payments feature. WHen the user clicks on record payment button a new modal should open up to record the payments made by the user. The modal should have the following fields in it
+Amount (₹ input)
+Date (defaults to today; editable)
+Method (cash / upi / card / other)
+Note (optional)
+CTA: Save
+
+UX details:
+
+Disable Save until amount ≥ ₹1 and method selected.
+
+Show small helper: “Tip: payments allocate to oldest visits first.”
+
+On submit: optimistic UI (disable form + spinner)
+Consistent styling with existing app.
+
+Create a new paymentsSlice to store payments related state.
+add the following in patient slice
+
+- listPayments(patientId)
+- createPayment(patientId, payload)
+
+Payments should be part of patients collection just like how visits is part of patient collection.
