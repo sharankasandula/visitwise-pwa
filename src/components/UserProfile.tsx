@@ -94,7 +94,10 @@ const UserProfile: React.FC = () => {
           <div className="py-1">
             <button
               className="w-full flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation"
-              onClick={() => setIsDropdownOpen(false)}
+              onClick={() => {
+                setIsDropdownOpen(false);
+                window.location.href = "/profile";
+              }}
             >
               <User className="mr-3 h-4 w-4 text-gray-400" />
               Profile
@@ -102,7 +105,10 @@ const UserProfile: React.FC = () => {
 
             <button
               className="w-full flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation"
-              onClick={() => setIsDropdownOpen(false)}
+              onClick={() => {
+                setIsDropdownOpen(false);
+                window.location.href = "/settings";
+              }}
             >
               <Settings className="mr-3 h-4 w-4 text-gray-400" />
               Settings

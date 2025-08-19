@@ -8,6 +8,8 @@ import AddOrEditPatient from "./components/AddOrEditPatient";
 import PatientProfile from "./components/PatientProfile";
 import EarningsSummary from "./components/EarningsSummary";
 import ArchivedPatients from "./components/ArchivedPatients";
+import ProfilePage from "./components/ProfilePage";
+import SettingsPage from "./components/SettingsPage";
 import "./App.css";
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
                     element={<ArchivedPatients />}
                   />
                   <Route path="/earnings" element={<EarningsSummary />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/settings" element={<SettingsPage />} />
                 </Routes>
               </main>
             </div>

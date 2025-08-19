@@ -6,7 +6,6 @@ import {
   signInAnonymously,
   clearError,
 } from "../store/slices/authSlice";
-import Button from "./ui/Button";
 import {
   Card,
   CardContent,
@@ -23,12 +22,12 @@ const Login: React.FC = () => {
 
   const handleGoogleSignIn = () => {
     dispatch(clearError());
-    dispatch(signInWithGoogle());
+    dispatch(signInWithGoogle() as any);
   };
 
   const handleAnonymousSignIn = () => {
     dispatch(clearError());
-    dispatch(signInAnonymously());
+    dispatch(signInAnonymously() as any);
   };
 
   return (
@@ -49,11 +48,10 @@ const Login: React.FC = () => {
             </Alert>
           )}
 
-          <Button
+          <button
             onClick={handleGoogleSignIn}
             disabled={loading}
             className="w-full bg-white text-gray-900 border border-gray-300 hover:bg-gray-50"
-            variant="outline"
           >
             {loading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -61,7 +59,7 @@ const Login: React.FC = () => {
               <Chrome className="mr-2 h-4 w-4" />
             )}
             Continue with Google
-          </Button>
+          </button>
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -74,11 +72,10 @@ const Login: React.FC = () => {
             </div>
           </div>
 
-          <Button
+          <button
             onClick={handleAnonymousSignIn}
             disabled={loading}
-            className="w-full"
-            variant="secondary"
+            className="w-full bg-white text-gray-900 border border-gray-300 hover:bg-gray-50"
           >
             {loading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -86,7 +83,7 @@ const Login: React.FC = () => {
               <User className="mr-2 h-4 w-4" />
             )}
             Continue as Guest
-          </Button>
+          </button>
 
           <p className="text-xs text-center text-gray-500 mt-4">
             By continuing, you agree to our Terms of Service and Privacy Policy.
