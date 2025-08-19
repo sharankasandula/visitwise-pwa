@@ -95,8 +95,7 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
 
           {/* Visit Status or Add Button */}
           {visit ? (
-            <div className="flex flex-col items-center gap-1">
-              <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+            <div className="flex flex-row items-center gap-1">
               {/* Payment Status Indicator */}
               {visitPaymentStatus[visit.id] && (
                 <div
@@ -107,6 +106,7 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
                   }`}
                 />
               )}
+              <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
             </div>
           ) : isPastOrToday ? (
             <div className="flex flex-col items-center gap-1">

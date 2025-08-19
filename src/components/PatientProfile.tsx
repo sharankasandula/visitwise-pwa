@@ -334,7 +334,7 @@ const PatientProfile: React.FC = () => {
                   <User className="h-12 w-12 text-primary border border-gray-200 rounded-full p-1" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900">
+                  <h2 className="text-xl font-semibold text-gray-900 capitalize">
                     {patient.name} ({patient.gender === "Male" ? "M" : "F"})
                   </h2>
                   <p className="text-muted-foreground capitalize text-gray-600">

@@ -56,7 +56,7 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      <div className="sticky    p-4 space-y-3">
+      <div className="sticky px-4 space-y-3">
         <EarningsCard />
       </div>
 
