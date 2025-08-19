@@ -50,13 +50,13 @@ const UserProfile: React.FC = () => {
       {/* Avatar Button */}
       <button
         onClick={toggleDropdown}
-        className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 hover:bg-blue-200 active:bg-blue-300 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 touch-manipulation"
+        className="flex items-center justify-center w-10 h-10 border border-gray-600 rounded-full bg-blue-100 hover:bg-blue-200 active:bg-blue-300 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 touch-manipulation"
         aria-label="User menu"
         aria-expanded={isDropdownOpen}
       >
         <Avatar className="h-8 w-8">
           <AvatarImage src={user.photoURL} alt={user.name} />
-          <AvatarFallback className="bg-blue-600 text-white text-sm font-medium">
+          <AvatarFallback className="bg-blue-600 text-gray-700 text-sm font-medium">
             {getInitials(user.name)}
           </AvatarFallback>
         </Avatar>

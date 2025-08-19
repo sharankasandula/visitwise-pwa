@@ -7,6 +7,7 @@ import Home from "./components/Home";
 import AddOrEditPatient from "./components/AddOrEditPatient";
 import PatientProfile from "./components/PatientProfile";
 import EarningsSummary from "./components/EarningsSummary";
+import ArchivedPatients from "./components/ArchivedPatients";
 import "./App.css";
 
 function App() {
@@ -25,6 +26,10 @@ function App() {
                     element={<AddOrEditPatient />}
                   />
                   <Route path="/patient/:id" element={<PatientProfile />} />
+                  <Route
+                    path="/archived-patients"
+                    element={<ArchivedPatients />}
+                  />
                   <Route path="/earnings" element={<EarningsSummary />} />
                 </Routes>
               </main>
