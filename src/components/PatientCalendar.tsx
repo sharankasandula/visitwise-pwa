@@ -9,6 +9,7 @@ interface PatientCalendarProps {
   patientName: string;
   defaultCharge: number;
   onAddVisit: (date: Date) => void;
+  visitPaymentStatus?: Record<string, "paid" | "unpaid">;
 }
 
 const PatientCalendar: React.FC<PatientCalendarProps> = ({
@@ -17,6 +18,7 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
   patientName,
   defaultCharge,
   onAddVisit,
+  visitPaymentStatus = {},
 }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
@@ -95,6 +97,16 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
           {visit ? (
             <div className="flex flex-col items-center gap-1">
               <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+              {/* Payment Status Indicator */}
+              {visitPaymentStatus[visit.id] && (
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    visitPaymentStatus[visit.id] === "paid"
+                      ? "bg-green-500"
+                      : "bg-orange-500"
+                  }`}
+                />
+              )}
             </div>
           ) : isPastOrToday ? (
             <div className="flex flex-col items-center gap-1">
@@ -166,7 +178,7 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <div>
       {/* Calendar Header */}
       <div className="flex flex-row sm:items-center justify-between gap-3 mb-4">
         <h4 className="font-semibold text-gray-900 flex items-center gap-2">
@@ -254,7 +266,7 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
 
       {/* Legend */}
       <div className="mt-4 pt-4 border-t border-gray-200">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-xs text-gray-600">
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs text-gray-600">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 sm:w-4 sm:h-4 bg-green-50 border-2 border-green-300 rounded"></div>
             <span className="text-xs sm:text-xs">Visit Completed</span>
@@ -270,6 +282,14 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 sm:w-4 sm:h-4 bg-blue-50 border-2 border-blue-400 ring-2 ring-blue-400 ring-offset-1 rounded"></div>
             <span className="text-xs sm:text-xs">Today</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full"></div>
+            <span className="text-xs sm:text-xs">Paid Visit</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-orange-500 rounded-full"></div>
+            <span className="text-xs sm:text-xs">Unpaid Visit</span>
           </div>
         </div>
       </div>

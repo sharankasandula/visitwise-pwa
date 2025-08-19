@@ -17,6 +17,8 @@ import {
   Bell,
   Clock,
   CheckCircle,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import { RootState } from "../store";
 import {
@@ -45,6 +47,9 @@ const PatientProfile: React.FC = () => {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isVisitModalOpen, setIsVisitModalOpen] = useState(false);
   const [selectedVisitDate, setSelectedVisitDate] = useState<Date | null>(null);
+  const [isPaymentHistoryCollapsed, setIsPaymentHistoryCollapsed] =
+    useState(true);
+  const [isVisitHistoryCollapsed, setIsVisitHistoryCollapsed] = useState(true);
 
   const patientVisits = visits[id || ""] || [];
   const patientPayments = payments[id || ""] || [];
@@ -149,6 +154,31 @@ const PatientProfile: React.FC = () => {
     0
   );
   const totalDue = totalEarned - totalCollected;
+
+  // Calculate which visits are paid for based on payment allocation (oldest visits first)
+  const calculateVisitPaymentStatus = () => {
+    const visitCharge = patient?.chargePerVisit ?? 0;
+    let remainingPayment = totalCollected;
+    const visitPaymentStatus: Record<string, "paid" | "unpaid"> = {};
+
+    // Sort visits by date (oldest first) to allocate payments chronologically
+    const sortedVisits = [...completedVisits].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+
+    sortedVisits.forEach((visit) => {
+      if (remainingPayment >= visitCharge) {
+        visitPaymentStatus[visit.id] = "paid";
+        remainingPayment -= visitCharge;
+      } else {
+        visitPaymentStatus[visit.id] = "unpaid";
+      }
+    });
+
+    return visitPaymentStatus;
+  };
+
+  const visitPaymentStatus = calculateVisitPaymentStatus();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -293,37 +323,52 @@ const PatientProfile: React.FC = () => {
             </div>
 
             {/* Payment History */}
-            <div className="p-4 border-b border-gray-200">
-              <h4 className="font-semibold flex items-center gap-2 text-gray-900">
-                <Calendar className="w-5 h-5 text-green-600" />
-                Payment History
-              </h4>
-            </div>
-            <div className="divide-y divide-gray-200">
-              {patientPayments.map((payment) => (
-                <div
-                  key={payment.id}
-                  className="p-4 flex items-center justify-between"
-                >
-                  <div>
-                    <p className="font-medium text-gray-900">
-                      {format(new Date(payment.date), "EEEE, dd MMM yyyy")}
-                    </p>
-                    <p className="text-sm text-gray-500 capitalize">
-                      {payment.method} • {payment.notes || "No notes"}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium text-green-600">
-                      ₹{payment.amount.toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-              ))}
-              {patientPayments.length === 0 && (
-                <div className="p-8 text-center text-gray-500">
-                  <DollarSign className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                  <p>No payments recorded yet</p>
+            <div className="border-t border-gray-200">
+              <button
+                onClick={() =>
+                  setIsPaymentHistoryCollapsed(!isPaymentHistoryCollapsed)
+                }
+                className="w-full px-4 pt-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+              >
+                <h4 className="font-semibold flex items-center gap-2 text-gray-900">
+                  <Calendar className="w-5 h-5 text-green-600" />
+                  Payment History ({patientPayments.length})
+                </h4>
+                {isPaymentHistoryCollapsed ? (
+                  <ChevronRight className="w-5 h-5 text-gray-500" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                )}
+              </button>
+
+              {!isPaymentHistoryCollapsed && (
+                <div className="divide-y divide-gray-200">
+                  {patientPayments.map((payment) => (
+                    <div
+                      key={payment.id}
+                      className="p-4 flex items-center justify-between"
+                    >
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {format(new Date(payment.date), "EEEE, dd MMM yyyy")}
+                        </p>
+                        <p className="text-sm text-gray-500 capitalize">
+                          {payment.method} • {payment.notes || "No notes"}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-medium text-green-600">
+                          ₹{payment.amount.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                  {patientPayments.length === 0 && (
+                    <div className="p-8 text-center text-gray-500">
+                      <DollarSign className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                      <p>No payments recorded yet</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -338,49 +383,77 @@ const PatientProfile: React.FC = () => {
           </h3>
 
           {/* Calendar View */}
-          <PatientCalendar
-            visits={patientVisits}
-            patientId={patient.id}
-            patientName={patient.name}
-            defaultCharge={patient.chargePerVisit}
-            onAddVisit={handleAddVisit}
-          />
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <PatientCalendar
+              visits={patientVisits}
+              patientId={patient.id}
+              patientName={patient.name}
+              defaultCharge={patient.chargePerVisit}
+              onAddVisit={handleAddVisit}
+              visitPaymentStatus={visitPaymentStatus}
+            />
 
-          {/* Visits List */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="p-4 border-b border-gray-200">
+            {/* Visits List */}
+            <button
+              onClick={() =>
+                setIsVisitHistoryCollapsed(!isVisitHistoryCollapsed)
+              }
+              className="w-full px-4 pt-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+            >
               <h4 className="font-semibold text-gray-900">
-                Visits ({patientVisits.length})
+                Visit History ({patientVisits.length})
               </h4>
-            </div>
-            <div className="divide-y divide-gray-200">
-              {patientVisits.map((visit) => (
-                <div
-                  key={visit.id}
-                  className="p-4 flex items-center justify-between"
-                >
-                  <div>
-                    <p className="font-medium text-gray-900">
-                      {format(new Date(visit.date), "EEEE, dd MMM yyyy")}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {visit.notes || "No notes"}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm text-gray-500">
-                      ₹{patient?.chargePerVisit || 0}
-                    </p>
-                  </div>
-                </div>
-              ))}
-              {patientVisits.length === 0 && (
-                <div className="p-8 text-center text-gray-500">
-                  <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                  <p>No visits recorded yet</p>
-                </div>
+              {isVisitHistoryCollapsed ? (
+                <ChevronRight className="w-5 h-5 text-gray-500" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-gray-500" />
               )}
-            </div>
+            </button>
+
+            {!isVisitHistoryCollapsed && (
+              <div className="divide-y divide-gray-200">
+                {patientVisits.map((visit) => {
+                  const isPaid = visitPaymentStatus[visit.id] === "paid";
+                  return (
+                    <div
+                      key={visit.id}
+                      className="p-4 flex items-center justify-between"
+                    >
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {format(new Date(visit.date), "EEEE, dd MMM yyyy")}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          ₹{patient?.chargePerVisit.toLocaleString() || 0}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {visit.notes || "No notes"}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {visit.completed && (
+                          <span
+                            className={`px-2 py-1 text-xs font-medium rounded-full ${
+                              isPaid
+                                ? "bg-green-100 text-green-800 border border-green-200"
+                                : "bg-orange-100 text-orange-800 border border-orange-200"
+                            }`}
+                          >
+                            {isPaid ? "Paid" : "Unpaid"}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+                {patientVisits.length === 0 && (
+                  <div className="p-8 text-center text-gray-500">
+                    <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                    <p>No visits recorded yet</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
