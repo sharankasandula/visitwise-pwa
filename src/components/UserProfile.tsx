@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { RootState, AppDispatch } from "../store";
 import { signOut } from "../store/slices/authSlice";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
@@ -7,6 +8,7 @@ import { LogOut, User, Settings } from "lucide-react";
 
 const UserProfile: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -96,7 +98,7 @@ const UserProfile: React.FC = () => {
               className="w-full flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation"
               onClick={() => {
                 setIsDropdownOpen(false);
-                window.location.href = "/profile";
+                navigate("/profile");
               }}
             >
               <User className="mr-3 h-4 w-4 text-gray-400" />
@@ -107,7 +109,7 @@ const UserProfile: React.FC = () => {
               className="w-full flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation"
               onClick={() => {
                 setIsDropdownOpen(false);
-                window.location.href = "/settings";
+                navigate("/settings");
               }}
             >
               <Settings className="mr-3 h-4 w-4 text-gray-400" />

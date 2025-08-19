@@ -1,27 +1,16 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { RootState, AppDispatch } from "../store";
-import { Card } from "./ui/Card";
 import {
   Settings,
   User,
   Bell,
-  Shield,
   Palette,
-  Globe,
-  Smartphone,
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  Save,
-  X,
-  Edit3,
+  Database,
   Trash2,
   Download,
   Upload,
-  Database,
-  Key,
   Sun,
   Moon,
   Monitor as Desktop,
@@ -29,56 +18,23 @@ import {
 
 const SettingsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
   const [activeTab, setActiveTab] = useState("account");
-  const [isEditingPassword, setIsEditingPassword] = useState(false);
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
-  const [showPassword, setShowPassword] = useState(false);
 
   if (!user) return null;
 
   const tabs = [
     { id: "account", label: "Account", icon: User },
     { id: "notifications", label: "Notifications", icon: Bell },
-    { id: "privacy", label: "Privacy & Security", icon: Shield },
     { id: "appearance", label: "Appearance", icon: Palette },
     { id: "data", label: "Data & Storage", icon: Database },
   ];
 
-  const handlePasswordChange = (field: string, value: string) => {
-    setPasswordForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handlePasswordSave = () => {
-    // TODO: Implement password change functionality
-    setIsEditingPassword(false);
-    setPasswordForm({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
-  };
-
-  const handlePasswordCancel = () => {
-    setIsEditingPassword(false);
-    setPasswordForm({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
-  };
-
   const renderAccountSettings = () => (
     <div className="space-y-6">
       {/* Basic Information */}
-      <Card className="p-6">
+      <div className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Basic Information
         </h3>
@@ -87,160 +43,38 @@ const SettingsPage: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Full Name
             </label>
-            <input
-              type="text"
-              defaultValue={user.name}
-              className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2"
-            />
+            <div className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2 text-gray-900">
+              {user.name}
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email
             </label>
-            <input
-              type="email"
-              defaultValue={user.email}
-              disabled
-              className="w-full bg-gray-200 border border-gray-300 rounded px-3 py-2 text-gray-500"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Email cannot be changed
-            </p>
+            <div className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2 text-gray-900">
+              {user.email}
+            </div>
           </div>
         </div>
+
         <div className="mt-4">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
-            <Save className="h-4 w-4" />
-            Save Changes
-          </button>
-        </div>
-      </Card>
-
-      {/* Password Change */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Password</h3>
-          {!isEditingPassword && (
-            <button
-              onClick={() => setIsEditingPassword(true)}
-              className="border border-gray-300 text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
-            >
-              <Edit3 className="h-4 w-4" />
-              Change Password
-            </button>
-          )}
-        </div>
-
-        {isEditingPassword ? (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Current Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={passwordForm.currentPassword}
-                  onChange={(e) =>
-                    handlePasswordChange("currentPassword", e.target.value)
-                  }
-                  className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2 pr-10"
-                  placeholder="Enter current password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                New Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={passwordForm.newPassword}
-                  onChange={(e) =>
-                    handlePasswordChange("newPassword", e.target.value)
-                  }
-                  className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2 pr-10"
-                  placeholder="Enter new password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Confirm New Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={passwordForm.confirmPassword}
-                  onChange={(e) =>
-                    handlePasswordChange("confirmPassword", e.target.value)
-                  }
-                  className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2 pr-10"
-                  placeholder="Confirm new password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                onClick={handlePasswordSave}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-              >
-                <Save className="h-4 w-4" />
-                Save Password
-              </button>
-              <button
-                onClick={handlePasswordCancel}
-                className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
-              >
-                <X className="h-4 w-4" />
-                Cancel
-              </button>
-            </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600">Account Type:</span>
+            {user.isAnonymous ? (
+              <span className="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
+                Guest User
+              </span>
+            ) : (
+              <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
+                Google Account
+              </span>
+            )}
           </div>
-        ) : (
-          <p className="text-gray-600">Last changed: 3 months ago</p>
-        )}
-      </Card>
+        </div>
+      </div>
 
       {/* Account Actions */}
-      <Card className="p-6">
+      <div className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Account Actions
         </h3>
@@ -254,13 +88,13 @@ const SettingsPage: React.FC = () => {
             Export Data
           </button>
         </div>
-      </Card>
+      </div>
     </div>
   );
 
   const renderNotificationSettings = () => (
     <div className="space-y-6">
-      <Card className="p-6">
+      <div className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Push Notifications
         </h3>
@@ -285,7 +119,19 @@ const SettingsPage: React.FC = () => {
 
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Mail className="h-5 w-5 mr-3 text-blue-600" />
+              <svg
+                className="h-5 w-5 mr-3 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
+              </svg>
               <div>
                 <p className="font-medium text-gray-900">Email Notifications</p>
                 <p className="text-sm text-gray-500">Receive email updates</p>
@@ -296,24 +142,10 @@ const SettingsPage: React.FC = () => {
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
             </label>
           </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Smartphone className="h-5 w-5 mr-3 text-blue-600" />
-              <div>
-                <p className="font-medium text-gray-900">SMS Notifications</p>
-                <p className="text-sm text-gray-500">Receive text messages</p>
-              </div>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-            </label>
-          </div>
         </div>
-      </Card>
+      </div>
 
-      <Card className="p-6">
+      <div className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Notification Schedule
         </h3>
@@ -341,92 +173,13 @@ const SettingsPage: React.FC = () => {
             </select>
           </div>
         </div>
-      </Card>
-    </div>
-  );
-
-  const renderPrivacySettings = () => (
-    <div className="space-y-6">
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Privacy Controls
-        </h3>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Eye className="h-5 w-5 mr-3 text-blue-600" />
-              <div>
-                <p className="font-medium text-gray-900">Profile Visibility</p>
-                <p className="text-sm text-gray-500">
-                  Control who can see your profile
-                </p>
-              </div>
-            </div>
-            <select className="bg-gray-100 border border-gray-300 rounded px-2 py-1 text-sm">
-              <option>Public</option>
-              <option>Patients Only</option>
-              <option>Private</option>
-            </select>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Globe className="h-5 w-5 mr-3 text-blue-600" />
-              <div>
-                <p className="font-medium text-gray-900">Data Sharing</p>
-                <p className="text-sm text-gray-500">
-                  Allow data to improve service
-                </p>
-              </div>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-            </label>
-          </div>
-        </div>
-      </Card>
-
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Security</h3>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Lock className="h-5 w-5 mr-3 text-blue-600" />
-              <div>
-                <p className="font-medium text-gray-900">
-                  Two-Factor Authentication
-                </p>
-                <p className="text-sm text-gray-500">
-                  Add an extra layer of security
-                </p>
-              </div>
-            </div>
-            <button className="border border-gray-300 text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-50 transition-colors">
-              Enable
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Key className="h-5 w-5 mr-3 text-blue-600" />
-              <div>
-                <p className="font-medium text-gray-900">Session Management</p>
-                <p className="text-sm text-gray-500">Manage active sessions</p>
-              </div>
-            </div>
-            <button className="border border-gray-300 text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-50 transition-colors">
-              View Sessions
-            </button>
-          </div>
-        </div>
-      </Card>
+      </div>
     </div>
   );
 
   const renderAppearanceSettings = () => (
     <div className="space-y-6">
-      <Card className="p-6">
+      <div className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Theme</h3>
         <div className="grid grid-cols-3 gap-4">
           <button className="flex flex-col items-center p-4 border-2 border-blue-500 rounded-lg bg-blue-50">
@@ -442,9 +195,9 @@ const SettingsPage: React.FC = () => {
             <span className="text-sm font-medium">System</span>
           </button>
         </div>
-      </Card>
+      </div>
 
-      <Card className="p-6">
+      <div className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Display</h3>
         <div className="space-y-4">
           <div>
@@ -470,13 +223,13 @@ const SettingsPage: React.FC = () => {
             </select>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 
   const renderDataSettings = () => (
     <div className="space-y-6">
-      <Card className="p-6">
+      <div className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Data Management
         </h3>
@@ -511,9 +264,9 @@ const SettingsPage: React.FC = () => {
             </button>
           </div>
         </div>
-      </Card>
+      </div>
 
-      <Card className="p-6">
+      <div className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Storage</h3>
         <div className="space-y-4">
           <div>
@@ -540,7 +293,7 @@ const SettingsPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 
@@ -550,8 +303,6 @@ const SettingsPage: React.FC = () => {
         return renderAccountSettings();
       case "notifications":
         return renderNotificationSettings();
-      case "privacy":
-        return renderPrivacySettings();
       case "appearance":
         return renderAppearanceSettings();
       case "data":
@@ -574,7 +325,7 @@ const SettingsPage: React.FC = () => {
               </p>
             </div>
             <button
-              onClick={() => (window.location.href = "/")}
+              onClick={() => navigate("/")}
               className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
             >
               <svg
@@ -598,7 +349,7 @@ const SettingsPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar Navigation */}
           <div className="lg:col-span-1">
-            <Card className="p-4">
+            <div className="p-4">
               <nav className="space-y-2">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
@@ -618,7 +369,7 @@ const SettingsPage: React.FC = () => {
                   );
                 })}
               </nav>
-            </Card>
+            </div>
           </div>
 
           {/* Main Content */}
