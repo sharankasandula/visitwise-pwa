@@ -6,17 +6,16 @@
 - [x] Integrate Auth
 - [x] Earnings this month card
 - [x] Record Payments
-- [ ] [Bug] Archive and Delete Patient not working as expected.
+- [x] [Bug] Archive and Delete Patient not working as expected.
 - [x] Reminders
 - [x] Modal to write notes for the visit
-- [X] Revamp Patient profile
-- [X] Integrate Calendarx View to view visits in Patient Profile - react day picker (https://react-day-picker.js.org/)
-- [ ] Send Payment Reminder on Whatsapp
-- [ ] Make M/F in Profile.
-- [ ] Make hostory collapsible.
-- [ ] Editable payment/visit history. 
-- [ ] Mark Paid Visits 
-- [ ] Rminders Editable from profile
+- [x] Revamp Patient profile
+- [x] Integrate Calendarx View to view visits in Patient Profile - react day picker (https://react-day-picker.js.org/)
+- [x] Send Payment Reminder on Whatsapp
+- [x] Make M/F in Profile.
+- [x] Make history collapsible.
+- [x] Mark Paid Visits
+- [ ] Editable payment/visit history.
 - [ ] Analytics on Earnings and visits.
 - [ ] App settings
 - [ ] Upgrade with new styles - Different Themes and Dark Theme
@@ -24,4 +23,3 @@
 - [ ] deploy for testing - Netlify
 - [ ] testing
 - [ ] import patients from contacts
-

@@ -279,23 +279,15 @@ export const setPatientActiveStatus = createAsyncThunk(
         throw new Error("User not authenticated");
       }
 
-      // Verify the patient belongs to the current user
-      const patientsRef = collection(db, "patients");
-      const q = query(
-        patientsRef,
-        where("userId", "==", userId),
-        where("id", "==", patientId)
-      );
-      const snapshot = await getDocs(q);
-
-      if (snapshot.empty) {
-        throw new Error("Patient not found or unauthorized access");
-      }
-
+      // Get the patient document reference directly
       const patientRef = doc(db, "patients", patientId);
+
+      // Update the document
       await updateDoc(patientRef, { isActive });
+
       return { patientId, isActive };
     } catch (err: any) {
+      console.error("Error updating patient status:", err);
       return rejectWithValue(err?.message ?? "Failed to update patient status");
     }
   }
@@ -353,6 +345,10 @@ const patientsSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
+      .addCase(setPatientActiveStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(
         addPatientAsync.fulfilled,
         (state, action: PayloadAction<Patient>) => {
@@ -389,6 +385,13 @@ const patientsSlice = createSlice({
           }
         }
       )
+      .addCase(setPatientActiveStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          (action.payload as string) ||
+          action.error.message ||
+          "Failed to update patient status";
+      })
       .addCase(
         fetchPatients.fulfilled,
         (state, action: PayloadAction<Patient[]>) => {

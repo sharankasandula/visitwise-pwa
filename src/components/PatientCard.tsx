@@ -26,7 +26,6 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
   }, [dispatch, patient.id, visits]);
 
   const handleArchive = () => {
-    console.log("artchiving");
     dispatch(
       setPatientActiveStatus({
         patientId: patient.id,
@@ -48,10 +47,10 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex-1" onClick={handlePatientClick}>
-            <h3 className="font-semibold text-gray-900 cursor-pointer hover:text-primary-600 transition-colors">
+            <h3 className="font-semibold capitalize text-gray-900 cursor-pointer hover:text-primary-600 transition-colors">
               {patient.name}
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 capitalize">
               {patient.condition} {patient.isActive}
             </p>{" "}
           </div>

@@ -14,7 +14,7 @@ import {
   Trash2,
   TrendingUp,
   AlertCircle,
-  Bell,
+  MessageCircle,
   Clock,
   CheckCircle,
   ChevronDown,
@@ -50,6 +50,7 @@ const PatientProfile: React.FC = () => {
   const [isPaymentHistoryCollapsed, setIsPaymentHistoryCollapsed] =
     useState(true);
   const [isVisitHistoryCollapsed, setIsVisitHistoryCollapsed] = useState(true);
+  const [isArchiving, setIsArchiving] = useState(false);
 
   const patientVisits = visits[id || ""] || [];
   const patientPayments = payments[id || ""] || [];
@@ -103,15 +104,43 @@ const PatientProfile: React.FC = () => {
     );
   }
 
-  const handleArchive = () => {
-    console.log("Archiving patient:", patient.id);
-    dispatch(
-      setPatientActiveStatus({
-        patientId: patient.id,
-        isActive: !patient.isActive,
-      }) as any
-    );
-    navigate("/");
+  const handleArchive = async () => {
+    if (!patient || isArchiving) return;
+
+    try {
+      setIsArchiving(true);
+      const result = await dispatch(
+        setPatientActiveStatus({
+          patientId: patient.id,
+          isActive: !patient.isActive,
+        }) as any
+      );
+
+      if (result.meta.requestStatus === "fulfilled") {
+        const status = result.payload.isActive ? "activated" : "archived";
+        alert(`Patient ${patient.name} has been ${status} successfully!`);
+        // Update local patient state before navigating
+        setPatient((prev) =>
+          prev ? { ...prev, isActive: result.payload.isActive } : null
+        );
+        navigate("/");
+      } else if (result.meta.requestStatus === "rejected") {
+        alert(
+          `Failed to ${patient.isActive ? "archive" : "activate"} patient: ${
+            result.error?.message || "Unknown error"
+          }`
+        );
+      }
+    } catch (error) {
+      console.error("Error archiving patient:", error);
+      alert(
+        `Failed to ${
+          patient.isActive ? "archive" : "activate"
+        } patient. Please try again.`
+      );
+    } finally {
+      setIsArchiving(false);
+    }
   };
 
   const handleEdit = () => {
@@ -138,13 +167,73 @@ const PatientProfile: React.FC = () => {
   };
 
   const handleNavigate = () => {
-    const encodedAddress = encodeURIComponent(patient.address);
-    window.open(`https://maps.google.com/?q=${encodedAddress}`, "_blank");
+    if (!patient.googleMapsLink) {
+      alert("Google Maps link not available");
+      return;
+    }
+    window.open(patient.googleMapsLink, "_blank");
   };
 
   const handleAddVisit = (date: Date) => {
     setSelectedVisitDate(date);
     setIsVisitModalOpen(true);
+  };
+
+  const handleWhatsAppReminder = () => {
+    if (!patient.phone) {
+      alert("Patient phone number is required to send WhatsApp reminder");
+      return;
+    }
+
+    if (totalDue <= 0) {
+      alert("No outstanding amount to send reminder for");
+      return;
+    }
+
+    // Generate payment reminder message
+    const message = generatePaymentReminderMessage();
+
+    // Format phone number for WhatsApp
+    let phoneNumber = patient.phone.replace(/\D/g, "");
+
+    // If phone number doesn't start with country code (91 for India), add it
+    if (phoneNumber.length === 10) {
+      phoneNumber = "91" + phoneNumber;
+    }
+
+    // Open WhatsApp with the message
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+    window.open(whatsappUrl, "_blank");
+
+    // Show success message
+    alert(
+      `WhatsApp reminder sent to ${
+        patient.name
+      } for ₹${totalDue.toLocaleString()} outstanding amount`
+    );
+  };
+
+  const generatePaymentReminderMessage = () => {
+    const patientName = patient.name;
+    const outstandingAmount = totalDue.toLocaleString();
+    const visitCharge = patient.chargePerVisit.toLocaleString();
+    const unpaidVisits = completedVisits.filter(
+      (visit) => visitPaymentStatus[visit.id] === "unpaid"
+    ).length;
+
+    let message = `Hi,\n\n`;
+    message += `This is a friendly reminder regarding your outstanding payment.\n\n`;
+    message += `📊 Payment Summary:\n`;
+    message += `• Outstanding Amount: ₹${outstandingAmount}\n`;
+    message += `• Charge per visit: ₹${visitCharge}\n`;
+    message += `• Unpaid visits: ${unpaidVisits}\n\n`;
+    message += `Please settle your dues at your earliest convenience.\n\n`;
+    message += `Thank you for your cooperation!\n`;
+    message += `Best regards,\nYour Healthcare Provider`;
+
+    return message;
   };
 
   const completedVisits = patientVisits.filter((v) => v.completed);
@@ -186,12 +275,14 @@ const PatientProfile: React.FC = () => {
       <div className="bg-primary-600 px-4 pt-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <button
-              onClick={() => navigate("/")}
-              className=" p-2 hover:bg-primary-700 rounded-full transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5 text-gray-700" />
-            </button>
+            {patient.googleMapsLink && (
+              <button
+                onClick={() => navigate("/")}
+                className=" p-2 hover:bg-primary-700 rounded-full transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5 text-gray-700" />
+              </button>
+            )}
             <div>
               <h1 className="text-xl font-bold text-gray-700">
                 Patient Profile
@@ -201,10 +292,19 @@ const PatientProfile: React.FC = () => {
           <div className="flex space-x-2">
             <button
               onClick={handleArchive}
-              className="p-2 hover:bg-primary-700 rounded-full transition-colors text-gray-700"
-              title="Archive Patient"
+              disabled={isArchiving}
+              className={`p-2 rounded-full transition-colors ${
+                isArchiving
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : patient.isActive
+                  ? "hover:bg-orange-100 text-orange-900"
+                  : "hover:bg-green-100 text-green-900"
+              }`}
+              title={patient.isActive ? "Archive Patient" : "Activate Patient"}
             >
-              <Archive className="w-5 h-5" />
+              <Archive
+                className={`w-5 h-5 ${isArchiving ? "text-gray-500" : ""}`}
+              />
             </button>
             <button
               onClick={handleEdit}
@@ -231,35 +331,64 @@ const PatientProfile: React.FC = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                  <User className="h-8 w-8 text-primary" />
+                  <User className="h-12 w-12 text-primary border border-gray-200 rounded-full p-1" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    {patient.name} ({patient.gender})
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    {patient.name} ({patient.gender === "Male" ? "M" : "F"})
                   </h2>
-                  <p className="text-muted-foreground text-gray-600">
-                    Age: {patient.age || "N/A"} • {patient.condition}
+                  <p className="text-muted-foreground capitalize text-gray-600">
+                    Age: {patient.age || "N/A"} • {patient.condition} •{" "}
+                    <span
+                      className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        patient.isActive
+                          ? "bg-green-100 text-green-800 border border-green-200"
+                          : "bg-orange-100 text-orange-800 border border-orange-200"
+                      }`}
+                    >
+                      {patient.isActive ? "Active" : "Archived"}
+                    </span>
                   </p>
                   <p className="text-sm text-muted-foreground text-gray-500">
-                    ₹{patient.chargePerVisit} per visit
+                    ₹ {patient.chargePerVisit.toLocaleString()} per visit
                   </p>
+                  {patient.phone && (
+                    <p className="text-sm text-muted-foreground text-gray-500 flex items-center gap-1">
+                      <Phone className="h-3 w-3" />
+                      {patient.phone}
+                    </p>
+                  )}
+                  <div className="flex items-center gap-2"></div>
                 </div>
               </div>
               <div className="flex gap-2">
-                <button
-                  onClick={handleCall}
-                  className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-gray-700"
-                >
-                  <Phone className="h-4 w-4" />
-                  Call
-                </button>
-                <button
-                  onClick={handleNavigate}
-                  className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-green-50 hover:border-green-300 transition-colors text-gray-700"
-                >
-                  <MapPin className="h-4 w-4" />
-                  Navigate
-                </button>
+                {patient.phone ? (
+                  <button
+                    onClick={handleCall}
+                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-gray-700"
+                  >
+                    <Phone className="h-4 w-4" />
+                    Call
+                  </button>
+                ) : (
+                  <button
+                    disabled
+                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-400 cursor-not-allowed"
+                    title="Phone number not available"
+                  >
+                    <Phone className="h-4 w-4" />
+                    Call
+                  </button>
+                )}
+                {patient.googleMapsLink && (
+                  <button
+                    onClick={handleNavigate}
+                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-green-50 hover:border-green-300 transition-colors text-gray-700"
+                  >
+                    <MapPin className="h-4 w-4" />
+                    Navigate
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -310,10 +439,35 @@ const PatientProfile: React.FC = () => {
                 <DollarSign className="w-4 h-4" />
                 Record Payment
               </button>
-              <button className="w-full py-2 px-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 font-medium flex items-center justify-center gap-2">
-                <Bell className="w-4 h-4" />
-                Send Reminder
-              </button>
+              {patient.phone ? (
+                totalDue > 0 ? (
+                  <button
+                    onClick={handleWhatsAppReminder}
+                    className="w-full py-2 px-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 font-medium flex items-center justify-center gap-2"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    Send WhatsApp Reminder
+                  </button>
+                ) : (
+                  <button
+                    disabled
+                    className="w-full py-2 px-4 bg-gray-400 text-white rounded-lg cursor-not-allowed font-medium flex items-center justify-center gap-2"
+                    title="No outstanding amount to send reminder for"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    No Outstanding Amount
+                  </button>
+                )
+              ) : (
+                <button
+                  disabled
+                  className="w-full py-2 px-4 bg-gray-400 text-white rounded-lg cursor-not-allowed font-medium flex items-center justify-center gap-2"
+                  title="Phone number required to send WhatsApp reminder"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Phone Number Required
+                </button>
+              )}
               {totalDue <= 0 && (
                 <button className="w-full py-2 px-4 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all duration-200 font-medium flex items-center justify-center gap-2">
                   <CheckCircle className="w-4 h-4" />
@@ -475,7 +629,7 @@ const PatientProfile: React.FC = () => {
         {/* Reminders Section */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-            <Bell className="w-5 h-5 text-yellow-600" />
+            <MessageCircle className="w-5 h-5 text-yellow-600" />
             Reminders
           </h3>
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">

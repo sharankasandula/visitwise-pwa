@@ -104,7 +104,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* Patient List */}
-      <div className="px-4 space-y-3">
+      <div className="px-4 pb-4 space-y-3">
         {currentPatients.map((patient, index) => (
           <div
             key={patient.id}
@@ -126,13 +126,18 @@ const Home: React.FC = () => {
           </div>
         )}
       </div>
+      <div className="px-4 pb-4 space-y-3">
+        <button className="bg-primary-600 text-grey-900 bg-amber-500 w-full p-2 rounded-md">
+          Import Patients from Contacts
+        </button>
+      </div>
 
       {/* Floating Action Button */}
       <button
         onClick={() => navigate("/add-patient")}
-        className="fixed bottom-6 right-6 bg-primary-600 text-white p-4 rounded-full shadow-lg hover:bg-primary-700 transition-colors animate-bounce-in"
+        className="fixed bottom-6 bg-blue-400 right-6 bg-primary-600 text-white p-4 rounded-full shadow-lg hover:bg-primary-700 transition-colors animate-bounce-in"
       >
-        <Plus className="w-6 h-6" />
+        <Plus className="w-6 h-6 " />
       </button>
     </div>
   );
