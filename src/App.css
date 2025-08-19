@@ -1,5 +1,117 @@
 .App {
   text-align: left;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive container for desktop optimization */
+.app-container {
+  width: 100%;
+  max-width: 1200px; /* Maximum width on very large screens */
+  margin: 0 auto; /* Center the container */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05); /* Subtle shadow on desktop */
+}
+
+/* Responsive breakpoints */
+@media (min-width: 640px) {
+  .app-container {
+    padding: 0 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .app-container {
+    padding: 0 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-container {
+    padding: 0 3rem;
+    border-radius: 8px; /* Rounded corners on desktop */
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .app-container {
+    padding: 0 4rem;
+    max-width: 1100px; /* Slightly smaller for better readability */
+  }
+}
+
+@media (min-width: 1536px) {
+  .app-container {
+    padding: 0 5rem;
+    max-width: 1000px; /* Optimal width for very large screens */
+  }
+}
+
+@media (min-width: 1920px) {
+  .app-container {
+    padding: 0 6rem;
+    max-width: 900px; /* Compact width for ultra-wide screens */
+  }
+}
+
+/* Background pattern for very large screens */
+@media (min-width: 1024px) {
+  body {
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  }
+}
+
+/* Utility classes for responsive design */
+.responsive-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .responsive-container {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px) {
+  .responsive-container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .responsive-container {
+    max-width: 1280px;
+  }
+}
+
+/* Card layout improvements for desktop */
+@media (min-width: 1024px) {
+  .desktop-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+}
+
+@media (min-width: 1280px) {
+  .desktop-card {
+    border-radius: 16px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
 }
 
 @media (max-width: 640px) {

@@ -15,18 +15,20 @@ function App() {
       <Router>
         <div className="App">
           <ProtectedRoute>
-            <main>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/add-patient" element={<AddOrEditPatient />} />
-                <Route
-                  path="/edit-patient/:patientId"
-                  element={<AddOrEditPatient />}
-                />
-                <Route path="/patient/:id" element={<PatientProfile />} />
-                <Route path="/earnings" element={<EarningsSummary />} />
-              </Routes>
-            </main>
+            <div className="app-container">
+              <main>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/add-patient" element={<AddOrEditPatient />} />
+                  <Route
+                    path="/edit-patient/:patientId"
+                    element={<AddOrEditPatient />}
+                  />
+                  <Route path="/patient/:id" element={<PatientProfile />} />
+                  <Route path="/earnings" element={<EarningsSummary />} />
+                </Routes>
+              </main>
+            </div>
           </ProtectedRoute>
         </div>
       </Router>

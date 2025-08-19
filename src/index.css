@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
 
 @import "tailwindcss";
 * {
@@ -13,10 +14,66 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f9fafb;
+  overflow-x: hidden; /* Prevent horizontal scroll on mobile */
+  min-height: 100vh;
 }
 
 #root {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive typography */
+@media (min-width: 1024px) {
+  html {
+    font-size: 16px; /* Slightly larger base font on desktop */
+  }
+}
+
+@media (min-width: 1280px) {
+  html {
+    font-size: 18px; /* Even larger on very large screens */
+  }
+}
+
+/* Responsive spacing utilities */
+@media (min-width: 1024px) {
+  .container-padding {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-padding {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+/* Better background for desktop */
+@media (min-width: 1024px) {
+  body {
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 50%, #e5e7eb 100%);
+    background-attachment: fixed;
+  }
+}
+
+/* Responsive grid improvements */
+@media (min-width: 1024px) {
+  .desktop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .desktop-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2.5rem;
+  }
 }
 
 ::-webkit-scrollbar {
@@ -108,6 +165,25 @@ select:focus {
     transform: scale(1);
     opacity: 1;
   }
+}
+
+/* Custom font classes for Visitwise heading */
+.font-pacifico {
+  font-family: "Pacifico", cursive;
+}
+
+/* Enhanced styling for the main heading */
+.brand-heading {
+  background: linear-gradient(135deg, #375452 0%, #dd912a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.brand-heading:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
 }
 
 .animate-fade-in {

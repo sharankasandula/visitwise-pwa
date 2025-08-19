@@ -39,25 +39,18 @@ const Home: React.FC = () => {
   const currentPatients =
     activeTab === "active" ? activePatients : archivedPatients;
 
-  // Calculate visits this month
-  // const currentMonth = new Date().getMonth();
-  // const currentYear = new Date().getFullYear();
-  // const visitsThisMonth = visits.filter((visit) => {
-  //   const visitDate = new Date(visit.date);
-  //   return (
-  //     visitDate.getMonth() === currentMonth &&
-  //     visitDate.getFullYear() === currentYear &&
-  //     visit.completed
-  //   );
-  // }).length;
-
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-primary-600 text-white bg-blue-400   px-2 sticky top-0 z-10">
+      <div className="bg-primary-600 text-gray-700  px-2 sticky top-0 z-10">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <h1 className="text-2xl font-extrabold  text-white">Visitwise</h1>
+            <img
+              src="./visitwise-logo.png"
+              alt="Visitwise"
+              className="w-8 h-8"
+            />
+            <h1 className="text-3xl font-pacifico brand-heading">Visitwise</h1>
           </div>
           <UserProfile />
         </div>
@@ -93,7 +86,7 @@ const Home: React.FC = () => {
         </div>
       </div>
       {/* Sticky Search Bar */}
-      <div className="sticky bg-gray-50 top-12 z-10  px-4 py-2 ">
+      <div className="sticky top-12 z-10  px-4 py-2 ">
         <input
           type="text"
           value={searchTerm}
@@ -126,11 +119,11 @@ const Home: React.FC = () => {
           </div>
         )}
       </div>
-      <div className="px-4 pb-4 space-y-3">
+      {/* <div className="px-4 pb-4 space-y-3">
         <button className="bg-primary-600 text-grey-900 bg-amber-500 w-full p-2 rounded-md">
           Import Patients from Contacts
         </button>
-      </div>
+      </div> */}
 
       {/* Floating Action Button */}
       <button
