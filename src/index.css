@@ -2,6 +2,30 @@
 @import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
 
 @import "tailwindcss";
+
+/* Default CSS variables - fallback before themes are loaded */
+:root {
+  --background: 210 40% 98%;
+  --foreground: 222 84% 5%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 84% 5%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 84% 5%;
+  --primary: 262 83% 58%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 239 84% 67%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222 84% 5%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 262 83% 58%;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -13,9 +37,11 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f9fafb;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
   overflow-x: hidden; /* Prevent horizontal scroll on mobile */
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #root {
@@ -55,7 +81,12 @@ body {
 /* Better background for desktop */
 @media (min-width: 1024px) {
   body {
-    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 50%, #e5e7eb 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--background)) 0%,
+      hsl(var(--muted)) 50%,
+      hsl(var(--border)) 100%
+    );
     background-attachment: fixed;
   }
 }
@@ -82,17 +113,17 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: hsl(var(--muted));
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: hsl(var(--muted-foreground));
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: hsl(var(--foreground));
 }
 
 /* Smooth transitions for all interactive elements */
@@ -110,7 +141,7 @@ textarea:focus,
 select:focus {
   outline: none;
   ring: 2px;
-  ring-color: #3b82f6;
+  ring-color: hsl(var(--ring));
   ring-opacity: 0.5;
 }
 
@@ -174,7 +205,11 @@ select:focus {
 
 /* Enhanced styling for the main heading */
 .brand-heading {
-  background: linear-gradient(135deg, #3c69e4 0%, #7e13ef 100%);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary)) 0%,
+    hsl(var(--secondary)) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -196,4 +231,15 @@ select:focus {
 
 .animate-bounce-in {
   animation: bounceIn 0.5s ease-out;
+}
+
+/* Theme transition utilities */
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Dark mode specific adjustments */
+.dark .brand-heading {
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
 }

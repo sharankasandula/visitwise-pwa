@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from "../store";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 import { Card } from "./ui/Card";
-import { User } from "lucide-react";
+import { ArrowLeft, User } from "lucide-react";
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
@@ -22,34 +22,20 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-6">
+    <div className="min-h-screen  py-6">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Profile</h1>
-              <p className="text-gray-600 mt-2">Your account information</p>
-            </div>
+          <div className="flex items-center">
             <button
               onClick={() => navigate("/")}
-              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg  hover:bg-gray-50 transition-colors"
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                />
-              </svg>
-              Back to Home
+              <ArrowLeft className="w-8 h-4" />
             </button>
+            <div>
+              <h1 className="text-2xl font-semibold pl-4">Profile</h1>
+            </div>
           </div>
         </div>
 

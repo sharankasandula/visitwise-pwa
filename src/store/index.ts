@@ -4,6 +4,7 @@ import visitsSlice from "./slices/visitsSlice";
 import earningsSlice from "./slices/earningsSlice";
 import authSlice from "./slices/authSlice";
 import paymentsSlice from "./slices/paymentsSlice";
+import themeSlice from "./slices/themeSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     earnings: earningsSlice,
     auth: authSlice,
     payments: paymentsSlice,
+    theme: themeSlice,
   },
 });
 

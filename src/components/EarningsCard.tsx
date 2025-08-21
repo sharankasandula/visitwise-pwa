@@ -94,7 +94,7 @@ const EarningsCard: React.FC = () => {
 
   return (
     <div
-      className="bg-white rounded-xl p-4 shadow-md border border-gray-100 cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+      className="rounded-xl p-4 border  cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
       onClick={handleCardClick}
     >
       {/* Header with title and chevron */}

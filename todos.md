@@ -17,7 +17,7 @@
 - [x] Mark Paid Visits
 - [ ] Editable payment/visit history.
 - [ ] Analytics on Earnings and visits.
-- [ ] App settings
+- [x] Fix bug in App settings
 - [ ] Upgrade with new styles - Different Themes and Dark Theme
 - [ ] Media uploads
 - [ ] deploy for testing - Netlify

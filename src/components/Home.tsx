@@ -38,7 +38,7 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-primary-600 text-gray-700  px-2 sticky top-0 z-10">
+      <div className="px-2 ">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <h1 className="text-3xl font-pacifico brand-heading">Visitwise</h1>
@@ -47,7 +47,7 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      <div className="sticky px-4 space-y-3">
+      <div className="sticky  px-4 space-y-3">
         <EarningsCard />
       </div>
 
@@ -58,7 +58,7 @@ const Home: React.FC = () => {
           value={searchTerm}
           onChange={handleSearch}
           placeholder="Search patients by name..."
-          className="w-full p-2 rounded-lg shadow-md mb-2"
+          className="w-full p-2 rounded-full border mb-2"
         />
       </div>
 
@@ -72,20 +72,18 @@ const Home: React.FC = () => {
           >
             <div
               onClick={() => navigate("/archived-patients")}
-              className="bg-white rounded-lg  shadow-sm border border-gray-200 p-2 cursor-pointer hover:shadow-md transition-shadow"
+              className="rounded-lg  border   p-2 cursor-pointer hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
-                    <Archive className="w-6 h-6 text-gray-600" />
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center">
+                    <Archive className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-600">
-                      Archived Patients ({archivedPatients.length})
-                    </h3>
+                    <h3>Archived Patients ({archivedPatients.length})</h3>
                   </div>
                 </div>
-                <div className="text-gray-400">
+                <div className="">
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -116,19 +114,19 @@ const Home: React.FC = () => {
 
         {activePatients.length === 0 && (
           <div className="text-center py-12">
-            <Archive className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500 mb-6">No active patients</p>
+            <Archive className="w-12 text-gray-400 h-12 mx-auto mb-4" />
+            <p className="mb-6 text-gray-400">No active patients</p>
 
             <div className="space-y-3">
               <button
                 onClick={() => navigate("/add-patient")}
-                className="w-full max-w-xs bg-blue-400 text-white py-3 px-6 rounded-lg hover:bg-primary-700 transition-colors font-medium flex items-center justify-center gap-2 mx-auto"
+                className="w-full max-w-xs  py-3 px-6 rounded-lg hover:bg-primary-700 transition-colors font-medium flex items-center justify-center gap-2 mx-auto"
               >
                 <Plus className="w-5 h-5" />
                 Add Your First Patient
               </button>
 
-              <p className="text-gray-500"> or </p>
+              <p className="text-muted"> or </p>
 
               <button
                 onClick={() => {

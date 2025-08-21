@@ -3,6 +3,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState, AppDispatch } from "../store";
 import {
+  setThemeMode,
+  setColorScheme,
+  ColorScheme,
+  ThemeMode,
+} from "../store/slices/themeSlice";
+import ThemePreview from "./ThemePreview";
+import {
   Settings,
   User,
   Bell,
@@ -14,12 +21,17 @@ import {
   Sun,
   Moon,
   Monitor as Desktop,
+  ArrowLeft,
+  Check,
 } from "lucide-react";
 
 const SettingsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
+  const { mode, colorScheme, isDark } = useSelector(
+    (state: RootState) => state.theme
+  );
   const [activeTab, setActiveTab] = useState("account");
 
   if (!user) return null;
@@ -34,24 +46,24 @@ const SettingsPage: React.FC = () => {
   const renderAccountSettings = () => (
     <div className="space-y-6">
       {/* Basic Information */}
-      <div className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="p-6 bg-card border border-border rounded-lg">
+        <h3 className="text-lg font-semibold text-card-foreground mb-4">
           Basic Information
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               Full Name
             </label>
-            <div className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2 text-gray-900">
+            <div className="w-full bg-muted border border-border rounded px-3 py-2 text-card-foreground">
               {user.name}
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               Email
             </label>
-            <div className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2 text-gray-900">
+            <div className="w-full bg-muted border border-border rounded px-3 py-2 text-card-foreground">
               {user.email}
             </div>
           </div>
@@ -59,13 +71,13 @@ const SettingsPage: React.FC = () => {
 
         <div className="mt-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Account Type:</span>
+            <span className="text-sm text-muted-foreground">Account Type:</span>
             {user.isAnonymous ? (
-              <span className="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
+              <span className="inline-flex items-center rounded-full bg-yellow-100 dark:bg-yellow-900/20 px-2 py-1 text-xs font-medium text-yellow-800 dark:text-yellow-200">
                 Guest User
               </span>
             ) : (
-              <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
+              <span className="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900/20 px-2 py-1 text-xs font-medium text-green-800 dark:text-green-200">
                 Google Account
               </span>
             )}
@@ -74,16 +86,16 @@ const SettingsPage: React.FC = () => {
       </div>
 
       {/* Account Actions */}
-      <div className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="p-6 bg-card border border-border rounded-lg">
+        <h3 className="text-lg font-semibold text-card-foreground mb-4">
           Account Actions
         </h3>
         <div className="space-y-3">
-          <button className="w-full text-left border border-gray-300 text-red-600 hover:text-red-700 hover:bg-red-50 px-4 py-3 rounded-lg transition-colors flex items-center gap-2">
+          <button className="w-full text-left border border-border text-destructive hover:text-destructive hover:bg-destructive/10 px-4 py-3 rounded-lg transition-colors flex items-center gap-2">
             <Trash2 className="h-4 w-4" />
             Delete Account
           </button>
-          <button className="w-full text-left border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-3 rounded-lg transition-colors flex items-center gap-2">
+          <button className="w-full text-left border border-border text-muted-foreground hover:bg-muted px-4 py-3 rounded-lg transition-colors flex items-center gap-2">
             <Download className="h-4 w-4" />
             Export Data
           </button>
@@ -94,33 +106,33 @@ const SettingsPage: React.FC = () => {
 
   const renderNotificationSettings = () => (
     <div className="space-y-6">
-      <div className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="p-6 bg-card border border-border rounded-lg">
+        <h3 className="text-lg font-semibold text-card-foreground mb-4">
           Push Notifications
         </h3>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Bell className="h-5 w-5 mr-3 text-blue-600" />
+              <Bell className="h-5 w-5 mr-3 text-primary" />
               <div>
-                <p className="font-medium text-gray-900">
+                <p className="font-medium text-card-foreground">
                   Appointment Reminders
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Get notified before appointments
                 </p>
               </div>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" defaultChecked className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-ring rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
             </label>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <svg
-                className="h-5 w-5 mr-3 text-blue-600"
+                className="h-5 w-5 mr-3 text-primary"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -133,28 +145,32 @@ const SettingsPage: React.FC = () => {
                 />
               </svg>
               <div>
-                <p className="font-medium text-gray-900">Email Notifications</p>
-                <p className="text-sm text-gray-500">Receive email updates</p>
+                <p className="font-medium text-card-foreground">
+                  Email Notifications
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Receive email updates
+                </p>
               </div>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" defaultChecked className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-ring rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
             </label>
           </div>
         </div>
       </div>
 
-      <div className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="p-6 bg-card border border-border rounded-lg">
+        <h3 className="text-lg font-semibold text-card-foreground mb-4">
           Notification Schedule
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               Reminder Time
             </label>
-            <select className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2">
+            <select className="w-full bg-muted border border-border rounded px-3 py-2 text-card-foreground">
               <option>15 minutes before</option>
               <option>30 minutes before</option>
               <option>1 hour before</option>
@@ -162,10 +178,10 @@ const SettingsPage: React.FC = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               Quiet Hours
             </label>
-            <select className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2">
+            <select className="w-full bg-muted border border-border rounded px-3 py-2 text-card-foreground">
               <option>9 PM - 8 AM</option>
               <option>10 PM - 7 AM</option>
               <option>11 PM - 6 AM</option>
@@ -179,32 +195,115 @@ const SettingsPage: React.FC = () => {
 
   const renderAppearanceSettings = () => (
     <div className="space-y-6">
-      <div className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Theme</h3>
+      {/* Theme Mode Selection */}
+      <div className="p-6 bg-card border border-border rounded-lg">
+        <h3 className="text-lg font-semibold text-card-foreground mb-4">
+          Theme Mode
+        </h3>
         <div className="grid grid-cols-3 gap-4">
-          <button className="flex flex-col items-center p-4 border-2 border-blue-500 rounded-lg bg-blue-50">
-            <Sun className="h-8 w-8 text-yellow-600 mb-2" />
+          <button
+            onClick={() => dispatch(setThemeMode("light"))}
+            className={`flex flex-col items-center p-4 border-2 rounded-lg transition-all ${
+              mode === "light"
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border hover:border-muted-foreground hover:bg-muted"
+            }`}
+          >
+            <Sun
+              className={`h-8 w-8 mb-2 ${
+                mode === "light" ? "text-primary" : "text-muted-foreground"
+              }`}
+            />
             <span className="text-sm font-medium">Light</span>
+            {mode === "light" && (
+              <Check className="h-4 w-4 mt-1 text-primary" />
+            )}
           </button>
-          <button className="flex flex-col items-center p-4 border-2 border-gray-200 rounded-lg hover:border-gray-300">
-            <Moon className="h-8 w-8 text-gray-600 mb-2" />
+
+          <button
+            onClick={() => dispatch(setThemeMode("dark"))}
+            className={`flex flex-col items-center p-4 border-2 rounded-lg transition-all ${
+              mode === "dark"
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border hover:border-muted-foreground hover:bg-muted"
+            }`}
+          >
+            <Moon
+              className={`h-8 w-8 mb-2 ${
+                mode === "dark" ? "text-primary" : "text-muted-foreground"
+              }`}
+            />
             <span className="text-sm font-medium">Dark</span>
+            {mode === "dark" && <Check className="h-4 w-4 mt-1 text-primary" />}
           </button>
-          <button className="flex flex-col items-center p-4 border-2 border-gray-200 rounded-lg hover:border-gray-300">
-            <Desktop className="h-8 w-8 text-gray-600 mb-2" />
+
+          <button
+            onClick={() => dispatch(setThemeMode("system"))}
+            className={`flex flex-col items-center p-4 border-2 rounded-lg transition-all ${
+              mode === "system"
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border hover:border-muted-foreground hover:bg-muted"
+            }`}
+          >
+            <Desktop
+              className={`h-8 w-8 mb-2 ${
+                mode === "system" ? "text-primary" : "text-muted-foreground"
+              }`}
+            />
             <span className="text-sm font-medium">System</span>
+            {mode === "system" && (
+              <Check className="h-4 w-4 mt-1 text-primary" />
+            )}
           </button>
+        </div>
+
+        {mode === "system" && (
+          <p className="text-sm text-muted-foreground mt-3 text-center">
+            Currently using {isDark ? "dark" : "light"} mode based on system
+            preference
+          </p>
+        )}
+      </div>
+
+      {/* Color Scheme Selection */}
+      <div className="p-6 bg-card border border-border rounded-lg">
+        <h3 className="text-lg font-semibold text-card-foreground mb-4">
+          Color Scheme
+        </h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {(
+            [
+              "royal-plum",
+              "ocean-blue",
+              "emerald-green",
+              "sunset-orange",
+              "midnight-purple",
+              "rose-gold",
+              "forest-green",
+              "coral-red",
+            ] as ColorScheme[]
+          ).map((scheme) => (
+            <ThemePreview
+              key={scheme}
+              scheme={scheme}
+              isSelected={colorScheme === scheme}
+              onClick={() => dispatch(setColorScheme(scheme))}
+            />
+          ))}
         </div>
       </div>
 
-      <div className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Display</h3>
+      {/* Display Settings */}
+      <div className="p-6 bg-card border border-border rounded-lg">
+        <h3 className="text-lg font-semibold text-card-foreground mb-4">
+          Display
+        </h3>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               Font Size
             </label>
-            <select className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2">
+            <select className="w-full bg-muted border border-border rounded px-3 py-2 text-card-foreground">
               <option>Small</option>
               <option>Medium</option>
               <option>Large</option>
@@ -213,10 +312,10 @@ const SettingsPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               Color Scheme
             </label>
-            <select className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2">
+            <select className="w-full bg-muted border border-border rounded px-3 py-2 text-card-foreground">
               <option>Default</option>
               <option>High Contrast</option>
               <option>Color Blind Friendly</option>
@@ -229,54 +328,56 @@ const SettingsPage: React.FC = () => {
 
   const renderDataSettings = () => (
     <div className="space-y-6">
-      <div className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="p-6 bg-card border border-border rounded-lg">
+        <h3 className="text-lg font-semibold text-card-foreground mb-4">
           Data Management
         </h3>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Download className="h-5 w-5 mr-3 text-blue-600" />
+              <Download className="h-5 w-5 mr-3 text-primary" />
               <div>
-                <p className="font-medium text-gray-900">Export Data</p>
-                <p className="text-sm text-gray-500">
+                <p className="font-medium text-card-foreground">Export Data</p>
+                <p className="text-sm text-muted-foreground">
                   Download your data in various formats
                 </p>
               </div>
             </div>
-            <button className="border border-gray-300 text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-50 transition-colors">
+            <button className="border border-border text-muted-foreground px-3 py-1 rounded-lg hover:bg-muted transition-colors">
               Export
             </button>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Upload className="h-5 w-5 mr-3 text-blue-600" />
+              <Upload className="h-5 w-5 mr-3 text-primary" />
               <div>
-                <p className="font-medium text-gray-900">Import Data</p>
-                <p className="text-sm text-gray-500">
+                <p className="font-medium text-card-foreground">Import Data</p>
+                <p className="text-sm text-muted-foreground">
                   Import data from other sources
                 </p>
               </div>
             </div>
-            <button className="border border-gray-300 text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-50 transition-colors">
+            <button className="border border-border text-muted-foreground px-3 py-1 rounded-lg hover:bg-muted transition-colors">
               Import
             </button>
           </div>
         </div>
       </div>
 
-      <div className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Storage</h3>
+      <div className="p-6 bg-card border border-border rounded-lg">
+        <h3 className="text-lg font-semibold text-card-foreground mb-4">
+          Storage
+        </h3>
         <div className="space-y-4">
           <div>
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
+            <div className="flex justify-between text-sm text-muted-foreground mb-2">
               <span>Storage Used</span>
               <span>2.4 GB / 10 GB</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-muted rounded-full h-2">
               <div
-                className="bg-blue-600 h-2 rounded-full"
+                className="bg-primary h-2 rounded-full transition-all duration-300"
                 style={{ width: "24%" }}
               ></div>
             </div>
@@ -284,12 +385,12 @@ const SettingsPage: React.FC = () => {
 
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-gray-600">Patients</p>
-              <p className="font-medium">127 files</p>
+              <p className="text-muted-foreground">Patients</p>
+              <p className="font-medium text-card-foreground">127 files</p>
             </div>
             <div>
-              <p className="text-gray-600">Documents</p>
-              <p className="font-medium">45 files</p>
+              <p className="text-muted-foreground">Documents</p>
+              <p className="font-medium text-card-foreground">45 files</p>
             </div>
           </div>
         </div>
@@ -313,36 +414,20 @@ const SettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-6">
+    <div className="min-h-screen bg-background py-6">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-              <p className="text-gray-600 mt-2">
-                Manage your account preferences and settings
-              </p>
-            </div>
             <button
               onClick={() => navigate("/")}
-              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 border border-grey-200 rounded-lg text-muted-foreground hover:bg-muted transition-colors"
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                />
-              </svg>
-              Back to Home
+              <ArrowLeft className="w-8 h-4" />
             </button>
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">Settings</h1>
+            </div>
           </div>
         </div>
 
@@ -359,8 +444,8 @@ const SettingsPage: React.FC = () => {
                       onClick={() => setActiveTab(tab.id)}
                       className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                         activeTab === tab.id
-                          ? "bg-blue-100 text-blue-700"
-                          : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                          ? "bg-primary/10 text-primary border border-primary/20"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                     >
                       <Icon className="h-5 w-5 mr-3" />
