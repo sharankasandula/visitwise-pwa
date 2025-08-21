@@ -52,13 +52,13 @@ const UserProfile: React.FC = () => {
       {/* Avatar Button */}
       <button
         onClick={toggleDropdown}
-        className="flex items-center justify-center w-10 h-10 border border-gray-600 rounded-full bg-blue-100 hover:bg-blue-200 active:bg-blue-300 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 touch-manipulation"
+        className="flex items-center justify-center w-10 h-10 border border-border rounded-full bg-primary/20 hover:bg-primary/30 active:bg-primary/40 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 touch-manipulation"
         aria-label="User menu"
         aria-expanded={isDropdownOpen}
       >
         <Avatar className="h-8 w-8">
           <AvatarImage src={user.photoURL} alt={user.name} />
-          <AvatarFallback className="bg-blue-600 text-gray-700 text-sm font-medium">
+          <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
             {getInitials(user.name)}
           </AvatarFallback>
         </Avatar>
@@ -66,9 +66,9 @@ const UserProfile: React.FC = () => {
 
       {/* Dropdown Menu */}
       {isDropdownOpen && (
-        <div className="absolute right-0 sm:right-0 mt-2 w-64 sm:w-72 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 max-h-[80vh] overflow-y-auto">
+        <div className="absolute right-0 sm:right-0 mt-2 w-64 sm:w-72 bg-card rounded-lg shadow-lg border border-border py-2 z-50 max-h-[80vh] overflow-y-auto">
           {/* User Info Header */}
-          <div className="px-4 py-3 border-b border-gray-100">
+          <div className="px-4 py-3 border-b border-border">
             <div className="flex items-center space-x-3">
               <Avatar className="h-10 w-10">
                 <AvatarImage src={user.photoURL} alt={user.name} />
@@ -77,10 +77,10 @@ const UserProfile: React.FC = () => {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
+                <p className="text-sm font-medium text-card-foreground truncate">
                   {user.name}
                 </p>
-                <p className="text-xs text-gray-500 truncate">
+                <p className="text-xs text-muted-foreground truncate">
                   {user.email || "No email"}
                 </p>
                 {user.isAnonymous && (
@@ -95,30 +95,30 @@ const UserProfile: React.FC = () => {
           {/* Menu Items */}
           <div className="py-1">
             <button
-              className="w-full flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation"
+              className="w-full flex items-center px-4 py-3 text-sm text-muted-foreground hover:bg-muted active:bg-muted/80 transition-colors touch-manipulation"
               onClick={() => {
                 setIsDropdownOpen(false);
                 navigate("/profile");
               }}
             >
-              <User className="mr-3 h-4 w-4 text-gray-400" />
+              <User className="mr-3 h-4 w-4 text-muted-foreground" />
               Profile
             </button>
 
             <button
-              className="w-full flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation"
+              className="w-full flex items-center px-4 py-3 text-sm text-muted-foreground hover:bg-muted active:bg-muted/80 transition-colors touch-manipulation"
               onClick={() => {
                 setIsDropdownOpen(false);
                 navigate("/settings");
               }}
             >
-              <Settings className="mr-3 h-4 w-4 text-gray-400" />
+              <Settings className="mr-3 h-4 w-4 text-muted-foreground" />
               Settings
             </button>
           </div>
 
           {/* Sign Out */}
-          <div className="border-t border-gray-100 pt-1">
+          <div className="border-t border-border pt-1">
             <button
               className="w-full flex items-center px-4 py-3 text-sm text-red-600 hover:bg-red-50 active:bg-red-100 transition-colors touch-manipulation"
               onClick={handleSignOut}

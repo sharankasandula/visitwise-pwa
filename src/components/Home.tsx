@@ -52,7 +52,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* Sticky Search Bar */}
-      <div className="sticky top-12 z-10  px-4 py-2 ">
+      <div className="sticky top-12 z-10  px-4 pb-2 pt-4 ">
         <input
           type="text"
           value={searchTerm}
@@ -114,26 +114,28 @@ const Home: React.FC = () => {
 
         {activePatients.length === 0 && (
           <div className="text-center py-12">
-            <Archive className="w-12 text-gray-400 h-12 mx-auto mb-4" />
-            <p className="mb-6 text-gray-400">No active patients</p>
+            <Archive className="w-12 text-muted-foreground text-gray-400 h-12 mx-auto mb-4" />
+            <p className="mb-6 text-muted-foreground text-gray-400 ">
+              No active patients
+            </p>
 
             <div className="space-y-3">
               <button
                 onClick={() => navigate("/add-patient")}
-                className="w-full max-w-xs  py-3 px-6 rounded-lg hover:bg-primary-700 transition-colors font-medium flex items-center justify-center gap-2 mx-auto"
+                className="w-full max-w-xs border py-3  px-6 rounded-lg hover:bg-primary-700 transition-colors font-medium flex items-center justify-center gap-2 mx-auto"
               >
                 <Plus className="w-5 h-5" />
                 Add Your First Patient
               </button>
 
-              <p className="text-muted"> or </p>
+              <p className="text-muted text-gray-400 "> or </p>
 
               <button
                 onClick={() => {
                   // TODO: Implement contact import functionality
                   alert("Contact import feature coming soon!");
                 }}
-                className="w-full max-w-xs bg-gray-100 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors font-medium flex items-center justify-center gap-2 mx-auto border border-gray-300"
+                className="w-full max-w-xs bg-muted text-muted-foreground py-3 px-6 rounded-lg hover:bg-muted/80 transition-colors font-medium flex items-center justify-center gap-2 mx-auto border border-border"
               >
                 <User className="w-5 h-5" />
                 Import from Contacts
@@ -146,7 +148,7 @@ const Home: React.FC = () => {
       {/* Floating Action Button */}
       <button
         onClick={() => navigate("/add-patient")}
-        className="fixed bottom-6 bg-blue-400 right-6 bg-primary-600 text-white p-4 rounded-full shadow-lg hover:bg-primary-700 transition-colors animate-bounce-in"
+        className="fixed bottom-6 bg-primary right-6 bg-primary-600 text-white p-4 rounded-full shadow-lg hover:bg-primary-700 transition-colors animate-bounce-in"
       >
         <Plus className="w-6 h-6 " />
       </button>

@@ -66,7 +66,7 @@ const CalendarStrip: React.FC<CalendarStripProps> = ({ patientId }) => {
   };
 
   if (!patient) {
-    return <div className="text-gray-500">Patient not found</div>;
+    return <div className="text-muted-foreground">Patient not found</div>;
   }
 
   return (
@@ -88,7 +88,7 @@ const CalendarStrip: React.FC<CalendarStripProps> = ({ patientId }) => {
                   ? "bg-blue-500 text-white"
                   : isToday
                   ? "bg-primary-100 text-primary-700 border-2 border-primary-300"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
               }`}
               title={`${format(date, "EEEE, MMMM d")} - ${
                 isCompleted

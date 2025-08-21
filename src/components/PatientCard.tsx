@@ -43,35 +43,35 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-card rounded-lg shadow-md overflow-hidden">
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex-1" onClick={handlePatientClick}>
-            <h3 className="font-semibold capitalize text-gray-900 cursor-pointer hover:text-primary-600 transition-colors">
+            <h3 className="font-semibold capitalize text-card-foreground cursor-pointer hover:text-primary transition-colors">
               {patient.name}
             </h3>
-            <p className="text-sm text-gray-600 capitalize">
+            <p className="text-sm text-muted-foreground capitalize">
               {patient.condition} {patient.isActive}
             </p>{" "}
           </div>
           <div className="flex space-x-2">
             <button
               onClick={() => setIsPaymentModalOpen(true)}
-              className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors"
+              className="p-2 text-muted-foreground hover:text-green-600 hover:bg-green-50 rounded-full transition-colors"
               title="Record Payment"
             >
               <DollarSign className="w-4 h-4" />
             </button>
             <button
               onClick={handleCall}
-              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+              className="p-2 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
               title="Call Patient"
             >
               <Phone className="w-4 h-4" />
             </button>
             <button
               onClick={handleArchive}
-              className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-full transition-colors"
+              className="p-2 text-muted-foreground hover:text-orange-600 hover:bg-orange-50 rounded-full transition-colors"
               title="Archive Patient"
             >
               <Archive className="w-4 h-4" />

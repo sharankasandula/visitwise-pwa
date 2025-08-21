@@ -209,7 +209,7 @@ const AddOrEditPatient: React.FC = () => {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-primary-600 bg-gray-700 text-white p-4 flex items-center">
+      <div className="bg-primary text-primary-foreground p-4 flex items-center">
         <button
           onClick={() => navigate("/")}
           className="mr-3 p-1 hover:bg-primary-700 rounded-full transition-colors"
@@ -223,14 +223,14 @@ const AddOrEditPatient: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="p-4 space-y-6">
         {/* Basic Information */}
-        <div className="bg-white rounded-lg p-4 shadow-sm">
-          <h2 className="text-lg font-semibold mb-4 text-gray-900">
+        <div className="bg-card rounded-lg p-4 shadow-sm">
+          <h2 className="text-lg font-semibold mb-4 text-card-foreground">
             Basic Information
           </h2>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Patient Name *
               </label>
               <input
@@ -238,8 +238,8 @@ const AddOrEditPatient: React.FC = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.name ? "border-red-500" : "border-gray-300"
+                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
+                  errors.name ? "border-destructive" : "border-border"
                 }`}
                 placeholder="Enter patient name"
               />
@@ -248,7 +248,7 @@ const AddOrEditPatient: React.FC = () => {
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Age
               </label>
               <input
@@ -258,8 +258,8 @@ const AddOrEditPatient: React.FC = () => {
                 onChange={handleInputChange}
                 min="1"
                 max="150"
-                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.age ? "border-red-500" : "border-gray-300"
+                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
+                  errors.age ? "border-destructive" : "border-border"
                 }`}
                 placeholder="Enter patient age"
               />
@@ -268,16 +268,18 @@ const AddOrEditPatient: React.FC = () => {
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Gender *
               </label>
               <div className="relative">
                 <button
                   type="button"
                   onClick={() => setIsGenderDropdownOpen(!isGenderDropdownOpen)}
-                  className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-left flex items-center justify-between ${
-                    formData.gender ? "text-gray-900" : "text-gray-500"
-                  } ${errors.gender ? "border-red-500" : "border-gray-300"}`}
+                  className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-left flex items-center justify-between ${
+                    formData.gender
+                      ? "text-card-foreground"
+                      : "text-muted-foreground"
+                  } ${errors.gender ? "border-destructive" : "border-border"}`}
                 >
                   {formData.gender || "Select gender"}
                   <ChevronDown
@@ -288,26 +290,26 @@ const AddOrEditPatient: React.FC = () => {
                 </button>
 
                 {isGenderDropdownOpen && (
-                  <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+                  <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-lg shadow-lg">
                     <div className="py-1">
                       <button
                         type="button"
                         onClick={() => handleGenderSelect("Male")}
-                        className="w-full px-3 py-2 text-left hover:bg-gray-100 text-gray-900"
+                        className="w-full px-3 py-2 text-left hover:bg-muted text-card-foreground"
                       >
                         Male
                       </button>
                       <button
                         type="button"
                         onClick={() => handleGenderSelect("Female")}
-                        className="w-full px-3 py-2 text-left hover:bg-gray-100 text-gray-900"
+                        className="w-full px-3 py-2 text-left hover:bg-muted text-card-foreground"
                       >
                         Female
                       </button>
                       <button
                         type="button"
                         onClick={() => handleGenderSelect("Other")}
-                        className="w-full px-3 py-2 text-left hover:bg-gray-100 text-gray-900"
+                        className="w-full px-3 py-2 text-left hover:bg-muted text-card-foreground"
                       >
                         Other
                       </button>

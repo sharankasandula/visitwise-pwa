@@ -99,10 +99,10 @@ const EarningsCard: React.FC = () => {
     >
       {/* Header with title and chevron */}
       <div className="flex items-center justify-between mb-4">
-        <p className="text-sm uppercase tracking-wide text-gray-500 font-medium">
+        <p className="text-sm uppercase tracking-wide text-muted-foreground font-medium">
           Earnings this month
         </p>
-        <ChevronRight className="w-4 h-4 text-gray-400" />
+        <ChevronRight className="w-4 h-4 text-muted-foreground" />
       </div>
 
       {/* Compact three-column layout */}
@@ -135,9 +135,9 @@ const EarningsCard: React.FC = () => {
       </div>
 
       {/* Visits Summary - Compact */}
-      <div className="flex items-center justify-center text-xs text-gray-600 bg-gray-50 rounded-lg py-2">
+      <div className="flex items-center justify-center text-xs  bg-primary text-primary-foreground rounded-lg py-2">
         <CalendarCheck2 className="w-3 h-3 text-blue-600 mr-1" />
-        <span className="font-medium text-gray-800">{totalVisits}</span>
+        <span className="font-medium text-primary">{totalVisits}</span>
         <span className="ml-1">visits this month</span>
       </div>
     </div>
