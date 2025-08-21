@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
-import { format, isSameDay, parseISO } from "date-fns";
-import { Calendar, Plus, CheckCircle, Lock } from "lucide-react";
+import { format, isSameDay } from "date-fns";
+import { Calendar, Lock, PlusCircle } from "lucide-react";
 import { Visit } from "../store/slices/visitsSlice";
 
 interface PatientCalendarProps {
@@ -14,9 +14,6 @@ interface PatientCalendarProps {
 
 const PatientCalendar: React.FC<PatientCalendarProps> = ({
   visits,
-  patientId,
-  patientName,
-  defaultCharge,
   onAddVisit,
   visitPaymentStatus = {},
 }) => {
@@ -62,26 +59,26 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
     let textStyles = "";
 
     if (visit) {
-      // Visit completed - green theme
-      dayStyles = "bg-green-50 border-green-50 hover:bg-green-100";
-      borderStyles = "border-green-50";
-      textStyles = "text-green-800";
+      // Visit completed
+      dayStyles = "bg-secondary";
+      borderStyles = "";
+      textStyles = "text-secondary-foreground";
     } else if (isPastOrToday) {
-      // Can add visit - blue theme
-      dayStyles = "bg-blue-50 border-blue-50 hover:bg-blue-100";
-      borderStyles = "border-blue-50";
-      textStyles = "text-blue-800";
+      // Can add visit
+      dayStyles = "";
+      borderStyles = "";
+      textStyles = "text-foreground";
     } else if (isFuture) {
-      // Future date - disabled gray theme
-      dayStyles = "bg-gray-100 border-gray-50 cursor-not-allowed opacity-60";
-      borderStyles = "border-gray-50";
-      textStyles = "text-gray-500";
+      // Future date
+      dayStyles = " cursor-not-allowed opacity-60";
+      borderStyles = "";
+      textStyles = "";
     }
 
     return (
       <div
         className={`relative aspect-square w-full cursor-pointer transition-all duration-200 ${
-          isToday ? "ring-2 ring-blue-400 rounded-lg ring-offset-0" : ""
+          isToday ? "ring-2  rounded-lg ring-offset-0" : ""
         }`}
         onClick={() => !isFuture && handleDateClick(date)}
       >
@@ -89,34 +86,35 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
           className={`h-full w-full rounded-lg border-2 p-1 sm:p-2 flex flex-col items-center justify-center ${dayStyles} ${borderStyles}`}
         >
           {/* Date Number */}
-          <div className={`text-xs sm:text-sm font-medium mb-1 ${textStyles}`}>
+          <div className={`text-xs sm:text-sm font-medium ${textStyles}`}>
             {date.getDate()}
           </div>
 
           {/* Visit Status or Add Button */}
           {visit ? (
-            <div className="flex flex-row items-center gap-1">
+            <div className="flex flex-row  my-1 items-center gap-1">
               {/* Payment Status Indicator */}
               {visitPaymentStatus[visit.id] && (
                 <div
-                  className={`w-2 h-2 rounded-full ${
+                  className={`w-3 h-3 rounded-full ${
                     visitPaymentStatus[visit.id] === "paid"
-                      ? "bg-green-500"
-                      : "bg-orange-500"
+                      ? "bg-destructive"
+                      : "bg-destructive-foreground"
                   }`}
                 />
               )}
-              <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+              {/* <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" /> */}
             </div>
           ) : isPastOrToday ? (
             <div className="flex flex-col items-center gap-1">
-              <div className="w-3 h-3 sm:w-4 sm:h-4 bg-blue-200 rounded-full flex items-center justify-center hover:bg-blue-300 transition-colors">
-                <Plus className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-blue-700" />
+              <div className="w-5 h-5 sm:w-4 sm:h-4 flex items-center justify-center transition-colors">
+                <PlusCircle className="w-5 h-5 sm:w-3 sm:h-3" />
+                {/* <PlusSquare></PlusSquare> */}
               </div>
             </div>
           ) : isFuture ? (
             <div className="flex flex-col items-center gap-1">
-              <Lock className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+              <Lock className="w-5 h-5 sm:w-4 sm:h-4 " />
             </div>
           ) : null}
         </div>
@@ -181,14 +179,14 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
     <div>
       {/* Calendar Header */}
       <div className="flex flex-row sm:items-center justify-between gap-3 mb-4">
-        <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-blue-600" />
+        <h4 className="font-semibold flex items-center gap-2">
+          <Calendar className="w-5 h-5" />
           Calendar
         </h4>
         <div className="flex items-center gap-2">
           <button
             onClick={goToPreviousMonth}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 rounded-lg transition-colors"
           >
             <svg
               className="w-4 h-4"
@@ -206,13 +204,13 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
           </button>
           <button
             onClick={goToToday}
-            className="px-3 py-1 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-3 py-1 text-sm rounded-lg transition-colors"
           >
             Today
           </button>
           <button
             onClick={goToNextMonth}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 rounded-lg transition-colors"
           >
             <svg
               className="w-4 h-4"
@@ -233,7 +231,7 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
 
       {/* Month/Year Display */}
       <div className="text-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold">
           {format(currentMonth, "MMMM yyyy")}
         </h3>
       </div>
@@ -244,7 +242,7 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
         {weekDays.map((day) => (
           <div
             key={day}
-            className="text-center text-xs sm:text-sm font-medium text-gray-500 py-2"
+            className="text-center text-xs sm:text-sm font-medium py-2"
           >
             {day}
           </div>
@@ -254,10 +252,7 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
         {calendarDays.map((date, index) => {
           const isCurrentMonth = date.getMonth() === currentMonth.getMonth();
           return (
-            <div
-              key={index}
-              className={`${isCurrentMonth ? "bg-white" : "bg-gray-50"}`}
-            >
+            <div key={index} className="">
               {renderDay(date)}
             </div>
           );
@@ -265,30 +260,26 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
       </div>
 
       {/* Legend */}
-      <div className="mt-4 pt-4 border-t border-gray-200">
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs text-gray-600">
+      <div className="mt-4 pt-4 border-t">
+        <div className="flex flex-wrap items-center font-extralight justify-center gap-3 sm:gap-6 text-xs">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-green-50 border-2 border-green-300 rounded"></div>
+            <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 bg-secondary rounded"></div>
             <span className="text-xs sm:text-xs">Visit Completed</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-blue-50 border-2 border-blue-300 rounded"></div>
+            <PlusCircle className="w-3 h-3 sm:w-4 sm:h-4" />
             <span className="text-xs sm:text-xs">Click to Add Visit</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gray-100 border-2 border-gray-300 rounded"></div>
+            <Lock className="w-3 h-3 sm:w-4 sm:h-4" />
             <span className="text-xs sm:text-xs">Future Date (Locked)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-blue-50 border-2 border-blue-400 ring-2 ring-blue-400 ring-offset-1 rounded"></div>
-            <span className="text-xs sm:text-xs">Today</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full"></div>
+            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-destructive rounded-full"></div>
             <span className="text-xs sm:text-xs">Paid Visit</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-orange-500 rounded-full"></div>
+            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-destructive-foreground rounded-full"></div>
             <span className="text-xs sm:text-xs">Unpaid Visit</span>
           </div>
         </div>

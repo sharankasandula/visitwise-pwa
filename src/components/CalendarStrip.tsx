@@ -71,7 +71,7 @@ const CalendarStrip: React.FC<CalendarStripProps> = ({ patientId }) => {
 
   return (
     <>
-      <div className="flex space-x-2 overflow-x-auto pb-2">
+      <div className="flex justify-between overflow-x-auto pb-2">
         {days.map((date, index) => {
           const isToday = isSameDay(date, today);
           const isCompleted = isVisitCompleted(date);
@@ -83,11 +83,11 @@ const CalendarStrip: React.FC<CalendarStripProps> = ({ patientId }) => {
               onClick={() => handleDateClick(date)}
               className={`flex-shrink-0 flex flex-col items-center p-2 rounded-lg min-w-[50px] transition-all duration-300 ${
                 isCompleted
-                  ? "bg-green-500 text-white animate-fade-in"
+                  ? "bg-green-500 animate-fade-in"
                   : isScheduled
-                  ? "bg-blue-500 text-white"
+                  ? "bg-blue-500 animate-fade-in"
                   : isToday
-                  ? "bg-primary-100 text-primary-700 border-2 border-primary-300"
+                  ? "bg-primary/10 text-primary border-2 border-primary/30"
                   : "bg-muted text-muted-foreground hover:bg-muted/80"
               }`}
               title={`${format(date, "EEEE, MMMM d")} - ${

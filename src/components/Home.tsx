@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
-import { Plus, Archive, Navigation, Phone, User } from "lucide-react";
+import { Plus, Archive, User, Moon, Sun, Search } from "lucide-react";
 import PatientCard from "./PatientCard";
 import EarningsCard from "./EarningsCard";
 import { useNavigate } from "react-router-dom";
 import { fetchPatients, searchPatients } from "../store/slices/patientsSlice";
 import UserProfile from "./UserProfile";
+import { setThemeMode } from "../store/slices/themeSlice";
 
 const Home: React.FC = () => {
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
+  const { mode } = useSelector((state: RootState) => state.theme);
 
   const { patients, loading, error } = useSelector(
     (state: RootState) => state.patients
   );
-  const { visits } = useSelector((state: RootState) => state.visits);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,27 +44,37 @@ const Home: React.FC = () => {
           <div className="flex items-center">
             <h1 className="text-3xl font-pacifico brand-heading">Visitwise</h1>
           </div>
+          <div className="flex items-center gap-2"></div>
           <UserProfile />
         </div>
       </div>
 
-      <div className="sticky  px-4 space-y-3">
+      {/* <div className="sticky  px-4 space-y-3">
         <EarningsCard />
-      </div>
+      </div> */}
 
       {/* Sticky Search Bar */}
-      <div className="sticky top-12 z-10  px-4 pb-2 pt-4 ">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleSearch}
-          placeholder="Search patients by name..."
-          className="w-full p-2 rounded-full border mb-2"
-        />
+      <div className="sticky top-12 z-10 px-4 pb-2 pt-4">
+        <div className="relative">
+          <Search
+            className="absolute left-3 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground pointer-events-none"
+            aria-hidden="true"
+          />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearch}
+            placeholder="Search patients by name..."
+            className="w-full rounded-full bg-muted pl-9 pr-3 py-2 mb-2
+                 text-foreground placeholder:text-muted-foreground
+                 focus:outline-none focus:ring-2 focus:ring-primary"
+            aria-label="Search patients"
+          />
+        </div>
       </div>
 
       {/* Patient List */}
-      <div className="px-4 pb-4 space-y-3">
+      <div className="px-4 pb-4 text-muted space-y-3">
         {/* Archived Patients Card */}
         {archivedPatients.length > 0 && (
           <div
@@ -72,7 +83,7 @@ const Home: React.FC = () => {
           >
             <div
               onClick={() => navigate("/archived-patients")}
-              className="rounded-lg  border   p-2 cursor-pointer hover:shadow-md transition-shadow"
+              className="rounded-lg p-2 cursor-pointer hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -122,13 +133,13 @@ const Home: React.FC = () => {
             <div className="space-y-3">
               <button
                 onClick={() => navigate("/add-patient")}
-                className="w-full max-w-xs border py-3  px-6 rounded-lg hover:bg-primary-700 transition-colors font-medium flex items-center justify-center gap-2 mx-auto"
+                className="w-full max-w-xs border  py-3  px-6 rounded-lg bg-primary hover:bg-primary/90 transition-colors font-medium flex items-center justify-center gap-2 mx-auto"
               >
                 <Plus className="w-5 h-5" />
                 Add Your First Patient
               </button>
 
-              <p className="text-muted text-gray-400 "> or </p>
+              <p className="text-muted "> or </p>
 
               <button
                 onClick={() => {
@@ -148,7 +159,7 @@ const Home: React.FC = () => {
       {/* Floating Action Button */}
       <button
         onClick={() => navigate("/add-patient")}
-        className="fixed bottom-6 bg-primary right-6 bg-primary-600 text-white p-4 rounded-full shadow-lg hover:bg-primary-700 transition-colors animate-bounce-in"
+        className="fixed bottom-6 bg-primary right-6 bg-primary-600  p-4 rounded-full shadow-lg hover:bg-primary-700 transition-colors animate-bounce-in"
       >
         <Plus className="w-6 h-6 " />
       </button>

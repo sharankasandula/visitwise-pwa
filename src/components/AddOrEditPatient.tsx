@@ -212,7 +212,7 @@ const AddOrEditPatient: React.FC = () => {
       <div className="bg-primary text-primary-foreground p-4 flex items-center">
         <button
           onClick={() => navigate("/")}
-          className="mr-3 p-1 hover:bg-primary-700 rounded-full transition-colors"
+          className="mr-3 p-1 hover:bg-primary/90 rounded-full transition-colors"
         >
           <ArrowLeft className="w-6 h-6" />
         </button>
@@ -331,7 +331,7 @@ const AddOrEditPatient: React.FC = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 placeholder="+91 9876543210"
               />
             </div>
@@ -345,7 +345,7 @@ const AddOrEditPatient: React.FC = () => {
                 name="googleMapsLink"
                 value={formData.googleMapsLink}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 placeholder="https://maps.google.com/?q=coordinates"
               />
             </div>
@@ -353,13 +353,13 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Financial Information */}
-        <div className="bg-white rounded-lg p-4 shadow-sm">
-          <h2 className="text-lg font-semibold mb-4 text-gray-900">
+        <div className="bg-card rounded-lg p-4 shadow-sm">
+          <h2 className="text-lg font-semibold mb-4 text-card-foreground">
             Financial Details
           </h2>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               Charge per Visit *
             </label>
             <input
@@ -371,8 +371,8 @@ const AddOrEditPatient: React.FC = () => {
               min="0"
               max="10000"
               step="1"
-              className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                errors.chargePerVisit ? "border-red-500" : "border-gray-300"
+              className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
+                errors.chargePerVisit ? "border-destructive" : "border-border"
               }`}
               placeholder="500"
             />
@@ -385,14 +385,14 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Medical Information */}
-        <div className="bg-white rounded-lg p-4 shadow-sm">
-          <h2 className="text-lg font-semibold mb-4 text-gray-900">
+        <div className="bg-card rounded-lg p-4 shadow-sm">
+          <h2 className="text-lg font-semibold mb-4 text-card-foreground">
             Medical Details
           </h2>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Condition *
               </label>
               <input
@@ -401,13 +401,13 @@ const AddOrEditPatient: React.FC = () => {
                 value={formData.condition}
                 onChange={handleInputChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 placeholder="e.g., Lower back pain"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Protocol
               </label>
               <input
@@ -415,13 +415,13 @@ const AddOrEditPatient: React.FC = () => {
                 name="protocol"
                 value={formData.protocol}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 placeholder="e.g., Strengthening exercises"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Notes
               </label>
               <textarea
@@ -429,7 +429,7 @@ const AddOrEditPatient: React.FC = () => {
                 value={formData.notes}
                 onChange={handleInputChange}
                 rows={3}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 placeholder="Additional notes about the patient"
               />
             </div>
@@ -437,14 +437,14 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Reminders */}
-        <div className="bg-white rounded-lg p-4 shadow-sm">
-          <h2 className="text-lg font-semibold mb-4 text-gray-900">
+        <div className="bg-card rounded-lg p-4 shadow-sm">
+          <h2 className="text-lg font-semibold mb-4 text-card-foreground">
             Reminder Settings
           </h2>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-muted-foreground">
                 Daily Visit Reminder
               </span>
               <button
@@ -456,9 +456,7 @@ const AddOrEditPatient: React.FC = () => {
                   )
                 }
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  formData.dailyVisitReminderEnabled
-                    ? "bg-primary-600"
-                    : "bg-gray-200"
+                  formData.dailyVisitReminderEnabled ? "bg-primary" : "bg-muted"
                 }`}
               >
                 <span
@@ -472,7 +470,7 @@ const AddOrEditPatient: React.FC = () => {
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-muted-foreground">
                 Payment Collection Reminder
               </span>
               <button
@@ -485,8 +483,8 @@ const AddOrEditPatient: React.FC = () => {
                 }
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                   formData.paymentCollectionReminderEnabled
-                    ? "bg-primary-600"
-                    : "bg-gray-200"
+                    ? "bg-primary"
+                    : "bg-muted"
                 }`}
               >
                 <span
@@ -500,7 +498,7 @@ const AddOrEditPatient: React.FC = () => {
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-muted-foreground">
                 Follow-up Reminder
               </span>
               <button
@@ -512,9 +510,7 @@ const AddOrEditPatient: React.FC = () => {
                   )
                 }
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  formData.followUpReminderEnabled
-                    ? "bg-primary-600"
-                    : "bg-gray-200"
+                  formData.followUpReminderEnabled ? "bg-primary" : "bg-muted"
                 }`}
               >
                 <span
@@ -529,7 +525,7 @@ const AddOrEditPatient: React.FC = () => {
 
             {formData.followUpReminderEnabled && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Follow-up after (days)
                 </label>
                 <input
@@ -541,7 +537,7 @@ const AddOrEditPatient: React.FC = () => {
                       parseInt(e.target.value)
                     )
                   }
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                   min="1"
                   max="30"
                 />
@@ -555,7 +551,7 @@ const AddOrEditPatient: React.FC = () => {
           <button
             type="button"
             onClick={() => navigate("/")}
-            className="flex-1 flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+            className="flex-1 flex items-center justify-center py-3 px-4 border border-border rounded-lg text-muted-foreground hover:bg-muted transition-colors"
           >
             <X className="w-5 h-5 mr-2" />
             Cancel
@@ -563,11 +559,11 @@ const AddOrEditPatient: React.FC = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`flex-1 flex items-center justify-center py-3 px-4 bg-amber-700 rounded-lg transition-colors ${
+            className={`flex-1 flex items-center justify-center py-3 px-4 rounded-lg transition-colors text-primary-foreground ${
               isSubmitting
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-primary-600 hover:bg-primary-700"
-            } text-white`}
+                ? "bg-muted cursor-not-allowed"
+                : "bg-primary hover:bg-primary/90"
+            }`}
           >
             {isSubmitting ? (
               <>

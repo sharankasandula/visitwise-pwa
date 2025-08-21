@@ -76,9 +76,9 @@ const EarningsSummary: React.FC = () => {
   }, [earningsByPatient]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       {/* Header */}
-      <div className="bg-primary-600 text-white p-4">
+      <div className="bg-primary-600 p-4">
         <div className="flex items-center">
           <button
             onClick={() => navigate("/")}

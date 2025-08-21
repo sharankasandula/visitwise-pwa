@@ -52,13 +52,13 @@ const UserProfile: React.FC = () => {
       {/* Avatar Button */}
       <button
         onClick={toggleDropdown}
-        className="flex items-center justify-center w-10 h-10 border border-border rounded-full bg-primary/20 hover:bg-primary/30 active:bg-primary/40 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 touch-manipulation"
+        className="flex items-center justify-center w-10 h-10 border border-border rounded-full  transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 touch-manipulation"
         aria-label="User menu"
         aria-expanded={isDropdownOpen}
       >
         <Avatar className="h-8 w-8">
           <AvatarImage src={user.photoURL} alt={user.name} />
-          <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
+          <AvatarFallback className=" text-card-foreground  text-sm font-medium">
             {getInitials(user.name)}
           </AvatarFallback>
         </Avatar>
@@ -72,7 +72,7 @@ const UserProfile: React.FC = () => {
             <div className="flex items-center space-x-3">
               <Avatar className="h-10 w-10">
                 <AvatarImage src={user.photoURL} alt={user.name} />
-                <AvatarFallback className="bg-blue-600 text-white text-sm font-medium">
+                <AvatarFallback className="bg-blue-600  text-sm font-medium">
                   {getInitials(user.name)}
                 </AvatarFallback>
               </Avatar>

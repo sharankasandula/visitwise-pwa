@@ -48,7 +48,7 @@ const AvatarFallback: React.FC<AvatarFallbackProps> = ({
 }) => {
   return (
     <div
-      className={`flex h-full w-full items-center justify-center rounded-full bg-gray-100 ${className}`}
+      className={`flex h-full w-full items-center justify-center rounded-full bg-blue-600 ${className}`}
     >
       {children}
     </div>

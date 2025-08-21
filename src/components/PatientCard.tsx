@@ -43,7 +43,7 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
   };
 
   return (
-    <div className="bg-card rounded-lg shadow-md overflow-hidden">
+    <div className="bg-card rounded-lg  overflow-hidden">
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex-1" onClick={handlePatientClick}>

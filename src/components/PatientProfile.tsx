@@ -270,52 +270,41 @@ const PatientProfile: React.FC = () => {
   const visitPaymentStatus = calculateVisitPaymentStatus();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       {/* Header */}
-      <div className="bg-primary-600 px-4 pt-4">
+      <div className="px-4 pt-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            {patient.googleMapsLink && (
-              <button
-                onClick={() => navigate("/")}
-                className=" p-2 hover:bg-primary-700 rounded-full transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5 text-gray-700" />
-              </button>
-            )}
+            <button
+              onClick={() => navigate("/")}
+              className=" p-2 hover:bg-primary-700 rounded-full transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+
             <div>
-              <h1 className="text-xl font-bold text-gray-700">
-                Patient Profile
-              </h1>
+              <h1 className="text-xl font-bold">Patient Profile</h1>
             </div>
           </div>
           <div className="flex space-x-2">
             <button
               onClick={handleArchive}
               disabled={isArchiving}
-              className={`p-2 rounded-full transition-colors ${
-                isArchiving
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : patient.isActive
-                  ? "hover:bg-orange-100 text-orange-900"
-                  : "hover:bg-green-100 text-green-900"
-              }`}
+              className={"p-2 rounded-full transition-colors"}
               title={patient.isActive ? "Archive Patient" : "Activate Patient"}
             >
-              <Archive
-                className={`w-5 h-5 ${isArchiving ? "text-gray-500" : ""}`}
-              />
+              <Archive className={`w-5 h-5`} />
             </button>
             <button
               onClick={handleEdit}
-              className="p-2 hover:bg-primary-700 rounded-full transition-colors text-gray-700"
+              className="p-2 rounded-full transition-colors"
               title="Edit Patient"
             >
               <Edit className="w-5 h-5" />
             </button>
             <button
               onClick={handleDelete}
-              className="p-2 hover:bg-red-600 rounded-full transition-colors text-gray-700"
+              className="p-2 rounded-full transition-colors"
               title="Delete Patient"
             >
               <Trash2 className="w-5 h-5" />
@@ -326,18 +315,18 @@ const PatientProfile: React.FC = () => {
 
       <div className="p-4 space-y-6">
         {/* Patient Info Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="rounded-lg shadow-sm border ">
           <div className="p-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                  <User className="h-12 w-12 text-primary border border-gray-200 rounded-full p-1" />
+                  <User className="h-12 w-12 text-primary border rounded-full p-1" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900 capitalize">
+                  <h2 className="text-xl font-semibold capitalize">
                     {patient.name} ({patient.gender === "Male" ? "M" : "F"})
                   </h2>
-                  <p className="text-muted-foreground capitalize text-gray-600">
+                  <p className="text-muted capitalize">
                     Age: {patient.age || "N/A"} • {patient.condition} •{" "}
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded-full ${
@@ -349,11 +338,11 @@ const PatientProfile: React.FC = () => {
                       {patient.isActive ? "Active" : "Archived"}
                     </span>
                   </p>
-                  <p className="text-sm text-muted-foreground text-gray-500">
+                  <p className="text-sm text-muted">
                     ₹ {patient.chargePerVisit.toLocaleString()} per visit
                   </p>
                   {patient.phone && (
-                    <p className="text-sm text-muted-foreground text-gray-500 flex items-center gap-1">
+                    <p className="text-sm text-muted flex items-center gap-1">
                       <Phone className="h-3 w-3" />
                       {patient.phone}
                     </p>
@@ -365,7 +354,7 @@ const PatientProfile: React.FC = () => {
                 {patient.phone ? (
                   <button
                     onClick={handleCall}
-                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-gray-700"
+                    className="flex items-center gap-2 px-4 py-2 border rounded-lg transition-colors "
                   >
                     <Phone className="h-4 w-4" />
                     Call
@@ -373,17 +362,26 @@ const PatientProfile: React.FC = () => {
                 ) : (
                   <button
                     disabled
-                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-400 cursor-not-allowed"
+                    className="flex items-center gap-2 px-4 py-2 border rounded-lg text-muted cursor-not-allowed"
                     title="Phone number not available"
                   >
                     <Phone className="h-4 w-4" />
                     Call
                   </button>
                 )}
-                {patient.googleMapsLink && (
+                {patient.googleMapsLink ? (
                   <button
                     onClick={handleNavigate}
-                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-green-50 hover:border-green-300 transition-colors text-gray-700"
+                    className="flex items-center gap-2 px-4 py-2 border  rounded-lg  transition-colors "
+                  >
+                    <MapPin className="h-4 w-4" />
+                    Navigate
+                  </button>
+                ) : (
+                  <button
+                    disabled
+                    title="Location unavailable"
+                    className="flex items-center gap-2 px-4 py-2 border text-muted rounded-lg  transition-colors "
                   >
                     <MapPin className="h-4 w-4" />
                     Navigate
@@ -396,35 +394,29 @@ const PatientProfile: React.FC = () => {
 
         {/* Payments Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-green-600" />
+          <h3 className="text-lg font-semibold flex items-center gap-2">
+            <DollarSign className="w-5 h-5 text-amber-500" />
             Payments
           </h3>
 
           {/* Payment Summary */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="rounded-lg shadow-sm border  p-4">
             <div className="grid grid-cols-3 gap-4 mb-4">
               <div className="text-center">
-                <p className="text-xs text-blue-600 font-medium mb-1">
-                  Total Earned
-                </p>
-                <p className="text-lg font-bold text-blue-700">
+                <p className="text-xs font-medium mb-1">Total Earned</p>
+                <p className="text-lg font-bold ">
                   ₹{totalEarned.toLocaleString()}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs text-green-600 font-medium mb-1">
-                  Collected
-                </p>
-                <p className="text-lg font-bold text-green-700">
+                <p className="text-xs font-medium mb-1">Collected</p>
+                <p className="text-lg font-bold ">
                   ₹{totalCollected.toLocaleString()}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs text-orange-600 font-medium mb-1">
-                  Outstanding
-                </p>
-                <p className="text-lg font-bold text-orange-700">
+                <p className="text-xs  font-medium mb-1">Outstanding</p>
+                <p className="text-lg font-bold">
                   ₹{totalDue.toLocaleString()}
                 </p>
               </div>
@@ -434,16 +426,16 @@ const PatientProfile: React.FC = () => {
             <div className="space-y-3">
               <button
                 onClick={() => setIsPaymentModalOpen(true)}
-                className="w-full py-3 px-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 font-medium flex items-center justify-center gap-2"
+                className="w-full py-3 px-4 bg-primary rounded-lg transition-all duration-200 font-medium flex items-center justify-center gap-2"
               >
-                <DollarSign className="w-4 h-4" />
+                <DollarSign className="w-4 h-4 " />
                 Record Payment
               </button>
               {patient.phone ? (
                 totalDue > 0 ? (
                   <button
                     onClick={handleWhatsAppReminder}
-                    className="w-full py-2 px-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 font-medium flex items-center justify-center gap-2"
+                    className="w-full py-2 px-4 rounded-lg bg-secondary transition-all duration-200 font-medium flex items-center justify-center gap-2"
                   >
                     <MessageCircle className="w-4 h-4" />
                     Send WhatsApp Reminder
@@ -451,7 +443,7 @@ const PatientProfile: React.FC = () => {
                 ) : (
                   <button
                     disabled
-                    className="w-full py-2 px-4 bg-gray-400 text-white rounded-lg cursor-not-allowed font-medium flex items-center justify-center gap-2"
+                    className="w-full py-2 px-4 rounded-lg cursor-not-allowed font-medium flex items-center justify-center gap-2"
                     title="No outstanding amount to send reminder for"
                   >
                     <MessageCircle className="w-4 h-4" />
@@ -461,7 +453,7 @@ const PatientProfile: React.FC = () => {
               ) : (
                 <button
                   disabled
-                  className="w-full py-2 px-4 bg-gray-400 text-white rounded-lg cursor-not-allowed font-medium flex items-center justify-center gap-2"
+                  className="w-full py-2 px-4 text-muted-foreground bg-muted rounded-lg cursor-not-allowed font-medium flex items-center justify-center gap-2"
                   title="Phone number required to send WhatsApp reminder"
                 >
                   <MessageCircle className="w-4 h-4" />
@@ -469,7 +461,7 @@ const PatientProfile: React.FC = () => {
                 </button>
               )}
               {totalDue <= 0 && (
-                <button className="w-full py-2 px-4 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all duration-200 font-medium flex items-center justify-center gap-2">
+                <button className="w-full py-2 px-4 rounded-lg transition-all duration-200 font-medium flex items-center justify-center gap-2">
                   <CheckCircle className="w-4 h-4" />
                   Clear Dues
                 </button>
@@ -477,49 +469,51 @@ const PatientProfile: React.FC = () => {
             </div>
 
             {/* Payment History */}
-            <div className="border-t border-gray-200">
-              <button
-                onClick={() =>
-                  setIsPaymentHistoryCollapsed(!isPaymentHistoryCollapsed)
-                }
-                className="w-full px-4 pt-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
-              >
-                <h4 className="font-semibold flex items-center gap-2 text-gray-900">
-                  <Calendar className="w-5 h-5 text-green-600" />
-                  Payment History ({patientPayments.length})
-                </h4>
-                {isPaymentHistoryCollapsed ? (
-                  <ChevronRight className="w-5 h-5 text-gray-500" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-500" />
-                )}
-              </button>
+            <div className="">
+              {patientPayments.length > 0 && (
+                <button
+                  onClick={() =>
+                    setIsPaymentHistoryCollapsed(!isPaymentHistoryCollapsed)
+                  }
+                  className="w-full px-4 pt-4 flex items-center justify-between transition-colors"
+                >
+                  <h4 className="font-semibold flex items-center gap-2">
+                    <Calendar className="w-5 h-5" />
+                    Payment History ({patientPayments.length})
+                  </h4>
+                  {isPaymentHistoryCollapsed ? (
+                    <ChevronRight className="w-5 h-5" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5" />
+                  )}
+                </button>
+              )}
 
               {!isPaymentHistoryCollapsed && (
-                <div className="divide-y divide-gray-200">
+                <div className="divide-y">
                   {patientPayments.map((payment) => (
                     <div
                       key={payment.id}
                       className="p-4 flex items-center justify-between"
                     >
                       <div>
-                        <p className="font-medium text-gray-900">
+                        <p className="font-medium">
                           {format(new Date(payment.date), "EEEE, dd MMM yyyy")}
                         </p>
-                        <p className="text-sm text-gray-500 capitalize">
+                        <p className="text-sm capitalize">
                           {payment.method} • {payment.notes || "No notes"}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium text-green-600">
+                        <p className="font-medium">
                           ₹{payment.amount.toLocaleString()}
                         </p>
                       </div>
                     </div>
                   ))}
                   {patientPayments.length === 0 && (
-                    <div className="p-8 text-center text-gray-500">
-                      <DollarSign className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                    <div className="p-8 text-center">
+                      <DollarSign className="w-12 h-12 mx-auto mb-4 text-amber-500" />
                       <p>No payments recorded yet</p>
                     </div>
                   )}
@@ -531,13 +525,13 @@ const PatientProfile: React.FC = () => {
 
         {/* Visit History Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-blue-600" />
+          <h3 className="text-lg font-semibold flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-blue-400" />
             Visits
           </h3>
 
           {/* Calendar View */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="rounded-lg shadow-sm border p-4">
             <PatientCalendar
               visits={patientVisits}
               patientId={patient.id}
@@ -552,20 +546,20 @@ const PatientProfile: React.FC = () => {
               onClick={() =>
                 setIsVisitHistoryCollapsed(!isVisitHistoryCollapsed)
               }
-              className="w-full px-4 pt-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+              className="w-full px-4 pt-4  flex items-center justify-between transition-colors"
             >
-              <h4 className="font-semibold text-gray-900">
+              <h4 className="font-semibold">
                 Visit History ({patientVisits.length})
               </h4>
               {isVisitHistoryCollapsed ? (
-                <ChevronRight className="w-5 h-5 text-gray-500" />
+                <ChevronRight className="w-5 h-5" />
               ) : (
-                <ChevronDown className="w-5 h-5 text-gray-500" />
+                <ChevronDown className="w-5 h-5" />
               )}
             </button>
 
             {!isVisitHistoryCollapsed && (
-              <div className="divide-y divide-gray-200">
+              <div className="divide-y">
                 {patientVisits.map((visit) => {
                   const isPaid = visitPaymentStatus[visit.id] === "paid";
                   return (
@@ -574,15 +568,13 @@ const PatientProfile: React.FC = () => {
                       className="p-4 flex items-center justify-between"
                     >
                       <div>
-                        <p className="font-medium text-gray-900">
+                        <p className="font-medium ">
                           {format(new Date(visit.date), "EEEE, dd MMM yyyy")}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs">
                           ₹{patient?.chargePerVisit.toLocaleString() || 0}
                         </p>
-                        <p className="text-xs text-gray-500">
-                          {visit.notes || "No notes"}
-                        </p>
+                        <p className="text-xs">{visit.notes || "No notes"}</p>
                       </div>
                       <div className="flex items-center gap-3">
                         {visit.completed && (
@@ -601,8 +593,8 @@ const PatientProfile: React.FC = () => {
                   );
                 })}
                 {patientVisits.length === 0 && (
-                  <div className="p-8 text-center text-gray-500">
-                    <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                  <div className="p-8 text-center ">
+                    <Calendar className="w-12 h-12 mx-auto mb-4 text-blue-400" />
                     <p>No visits recorded yet</p>
                   </div>
                 )}
@@ -613,14 +605,14 @@ const PatientProfile: React.FC = () => {
 
         {/* Media Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-            <Camera className="w-5 h-5 text-purple-600" />
+          <h3 className="text-lg font-semibold  flex items-center gap-2">
+            <Camera className="w-5 h-5 text-pink-400" />
             Media
           </h3>
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
-            <Camera className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-            <p className="text-gray-500 mb-2">No media uploaded yet</p>
-            <p className="text-sm text-gray-400">
+          <div className="rounded-lg shadow-sm border  p-8 text-center">
+            <Camera className="w-16 h-16 mx-auto mb-4 " />
+            <p className="text-muted-foreground mb-2">No media uploaded yet</p>
+            <p className="text-sm text-muted">
               Upload images or videos to track progress
             </p>
           </div>
@@ -628,24 +620,20 @@ const PatientProfile: React.FC = () => {
 
         {/* Reminders Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+          <h3 className="text-lg font-semibold  flex items-center gap-2">
             <MessageCircle className="w-5 h-5 text-yellow-600" />
             Reminders
           </h3>
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="rounded-lg shadow-sm border  p-4">
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+              <div className="flex items-center justify-between p-3  rounded-lg">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Calendar className="w-5 h-5 text-blue-600" />
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center">
+                    <Calendar className="w-5 h-5 text-blue-400" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">
-                      Daily Visit Reminder
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Get notified about daily visits
-                    </p>
+                    <p className="font-medium">Daily Visit Reminder</p>
+                    <p className="text-sm">Get notified about daily visits</p>
                   </div>
                 </div>
                 <div className="flex items-center">
@@ -657,7 +645,7 @@ const PatientProfile: React.FC = () => {
                     }`}
                   >
                     <div
-                      className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform ${
+                      className={`bg-white w-5 h-5 rounded-full shadow transform transition-transform ${
                         patient.dailyVisitReminderEnabled
                           ? "translate-x-6"
                           : "translate-x-0.5"
@@ -667,18 +655,14 @@ const PatientProfile: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 rounded-lg">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                    <DollarSign className="w-5 h-5 text-green-600" />
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center">
+                    <DollarSign className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">
-                      Payment Collection
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Remind to collect payments
-                    </p>
+                    <p className="font-medium">Payment Collection</p>
+                    <p className="text-sm">Remind to collect payments</p>
                   </div>
                 </div>
                 <div className="flex items-center">
@@ -690,7 +674,7 @@ const PatientProfile: React.FC = () => {
                     }`}
                   >
                     <div
-                      className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform ${
+                      className={`bg-white w-5 h-5 rounded-full shadow transform transition-transform ${
                         patient.paymentCollectionReminderEnabled
                           ? "translate-x-6"
                           : "translate-x-0.5"
@@ -700,16 +684,14 @@ const PatientProfile: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 rounded-lg">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center">
                     <Clock className="w-5 h-5 text-orange-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">
-                      Follow-up Reminder
-                    </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="font-medium">Follow-up Reminder</p>
+                    <p className="text-sm">
                       Follow up after {patient.followUpReminderDays} days
                     </p>
                   </div>
