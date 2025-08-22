@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
-import { Archive, ArrowLeft, User } from "lucide-react";
+import { Archive, ArrowLeft, Search, User } from "lucide-react";
 import PatientCard from "./PatientCard";
 import { useNavigate } from "react-router-dom";
 import { fetchPatients, searchPatients } from "../store/slices/patientsSlice";
@@ -65,15 +65,30 @@ const ArchivedPatients: React.FC = () => {
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="px-4 py-4">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleSearch}
-          placeholder="Search archived patients by name..."
-          className="w-full p-3 rounded-lg shadow-md border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-        />
+      {/* Sticky Search (Archived) */}
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75 px-4 py-4">
+        <label htmlFor="archived-search" className="sr-only">
+          Search archived patients
+        </label>
+        <div className="relative">
+          <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+            <Search
+              className="h-5 w-5 text-muted-foreground"
+              aria-hidden="true"
+            />
+          </span>
+          <input
+            id="archived-search"
+            type="text"
+            value={searchTerm}
+            onChange={handleSearch}
+            placeholder="Search archived patients by name..."
+            className="h-11 w-full rounded-lg shadow-md border border-border
+                 bg-background pl-11 pr-3
+                 text-foreground placeholder:text-muted-foreground
+                 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
       </div>
 
       {/* Archived Patients List */}

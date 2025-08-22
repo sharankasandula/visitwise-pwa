@@ -162,7 +162,7 @@ const EarningsSummary: React.FC = () => {
               %
             </span>
           </div>
-          <div className="w-full bg-accent-foreground rounded-full h-3">
+          <div className="w-full bg-white border border-border rounded-full h-3">
             <div
               className="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full transition-all duration-500"
               style={{

@@ -25,7 +25,7 @@ const CalendarStrip: React.FC<CalendarStripProps> = ({ patientId }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const today = startOfDay(new Date());
-  const days = Array.from({ length: 6 }, (_, i) => addDays(today, i - 6));
+  const days = Array.from({ length: 7 }, (_, i) => addDays(today, i - 6));
 
   const isVisitCompleted = (date: Date) => {
     const dateStr = format(date, "yyyy-MM-dd");

@@ -18,9 +18,17 @@
 - [x] Fix bug in App settings
 - [x] Upgrade with new styles - Different Themes and Dark Theme
 - [x] deploy for testing - Netlify
+- [ ] [Bug] Sometimes patient keeps loading
+- [ ] [Bug] On archiving patients patients keep loading
+- [ ] Show notes, protocol for patient in patient profile
+- [ ] Toast notifications
 - [ ] Delete visit from patient calendar
+- [ ] Store users preferences
+- [ ] Bring themes in Home page
+- [ ] Swipe down for refresh
 - [ ] Editable payment/visit history.
-- [ ] Analytics on Earnings and visits.
 - [ ] Media uploads
-- [ ] testing
-- [ ] import patients from contacts
+- [ ] Import patients from contacts
+- [ ] Convert to android app
+- [ ] Analytics on Earnings and visits.
+- [ ] Testing

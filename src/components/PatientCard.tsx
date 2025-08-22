@@ -54,27 +54,50 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
               {patient.condition} {patient.isActive}
             </p>{" "}
           </div>
-          <div className="flex space-x-2">
+          <div className="flex items-center text-card-foreground rounded-lg gap-2">
             <button
+              type="button"
               onClick={() => setIsPaymentModalOpen(true)}
-              className="p-2 text-muted-foreground rounded-full transition-colors"
               title="Record Payment"
+              aria-label="Record Payment"
+              className="inline-flex h-10 w-10 items-center  justify-center rounded-full leading-none
+               hover:bg-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+               active:scale-95 motion-reduce:active:scale-100"
             >
-              <DollarSign className="w-4 h-4" />
+              <DollarSign
+                className="size-5 block shrink-0 pointer-events-none"
+                aria-hidden="true"
+              />
             </button>
+
             <button
+              type="button"
               onClick={handleCall}
-              className="p-2 text-muted-foreground rounded-full transition-colors"
               title="Call Patient"
+              aria-label="Call Patient"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full leading-none
+               hover:bg-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+               active:scale-95 motion-reduce:active:scale-100"
             >
-              <Phone className="w-4 h-4" />
+              <Phone
+                className="size-5 block shrink-0 pointer-events-none"
+                aria-hidden="true"
+              />
             </button>
+
             <button
+              type="button"
               onClick={handleArchive}
-              className="p-2 text-muted-foreground  rounded-full transition-colors"
               title="Archive Patient"
+              aria-label="Archive Patient"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full leading-none
+               hover:bg-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+               active:scale-95 motion-reduce:active:scale-100"
             >
-              <Archive className="w-4 h-4" />
+              <Archive
+                className="size-5 block shrink-0 pointer-events-none"
+                aria-hidden="true"
+              />
             </button>
           </div>
         </div>

@@ -62,18 +62,24 @@ const Home: React.FC = () => {
       </div>
 
       {/* Sticky Search Bar */}
-      <div className="sticky top-12 z-10 px-4 pb-2 pt-4">
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75 px-4 pb-2 pt-4">
+        <label htmlFor="active-search" className="sr-only">
+          Search patients
+        </label>
         <div className="relative">
-          <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground pointer-events-none"
-            aria-hidden="true"
-          />
+          <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+            <Search
+              className="h-6 w-6 text-muted-foreground"
+              aria-hidden="true"
+            />
+          </span>
           <input
+            id="active-search"
             type="text"
             value={searchTerm}
             onChange={handleSearch}
             placeholder="Search patients by name..."
-            className="w-full rounded-full bg-muted pl-9 pr-3 py-2 mb-2
+            className="h-11 w-full rounded-full bg-muted pl-11 pr-3
                  text-foreground placeholder:text-muted-foreground
                  focus:outline-none focus:ring-2 focus:ring-primary"
             aria-label="Search patients"
@@ -120,7 +126,7 @@ const Home: React.FC = () => {
           {/* Archived Patients Card */}
           {archivedPatients.length > 0 && (
             <div
-              className="animate-slide-up"
+              className="animate-slide-up pl-1"
               style={{ animationDelay: `${activePatients.length * 0.1}s` }}
             >
               <div
