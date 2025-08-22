@@ -11,6 +11,7 @@ import EarningsSummary from "./components/EarningsSummary";
 import ArchivedPatients from "./components/ArchivedPatients";
 import ProfilePage from "./components/ProfilePage";
 import SettingsPage from "./components/SettingsPage";
+import Toast from "./components/ui/Toast";
 import "./App.css";
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
                 </main>
               </div>
             </ProtectedRoute>
+            <Toast />
           </div>
         </Router>
       </ThemeProvider>

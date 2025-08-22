@@ -23,6 +23,7 @@ import {
   Calendar,
   Users,
 } from "lucide-react";
+import { showSuccess, showError } from "../utils/toast";
 
 const Login: React.FC = () => {
   const dispatch = useDispatch();
@@ -30,11 +31,16 @@ const Login: React.FC = () => {
 
   const handleGoogleSignIn = () => {
     dispatch(clearError());
+    showSuccess(
+      "Signing in...",
+      "Please wait while we authenticate you with Google."
+    );
     dispatch(signInWithGoogle() as any);
   };
 
   const handleAnonymousSignIn = () => {
     dispatch(clearError());
+    showSuccess("Signing in...", "Welcome! You're signing in as a guest user.");
     dispatch(signInAnonymously() as any);
   };
 

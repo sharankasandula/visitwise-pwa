@@ -7,6 +7,7 @@ import { fetchVisitsAsync } from "../store/slices/visitsSlice";
 import { RootState } from "../store";
 import CalendarStrip from "./CalendarStrip";
 import PaymentModal from "./PaymentModal";
+import { showSuccess, showInfo } from "../utils/toast";
 
 interface PatientCardProps {
   patient: Patient;
@@ -32,6 +33,18 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
         isActive: !patient.isActive,
       }) as any
     );
+
+    if (patient.isActive) {
+      showInfo(
+        "Patient Archived",
+        `${patient.name} has been moved to archived patients.`
+      );
+    } else {
+      showSuccess(
+        "Patient Restored",
+        `${patient.name} has been restored to active patients.`
+      );
+    }
   };
 
   const handleCall = () => {

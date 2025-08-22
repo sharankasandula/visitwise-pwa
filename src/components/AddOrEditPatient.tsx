@@ -18,6 +18,7 @@ import {
   NewPatient,
 } from "../store/slices/patientsSlice";
 import { RootState } from "../store";
+import { showSuccess, showError, showLoading } from "../utils/toast";
 
 const AddOrEditPatient: React.FC = () => {
   const dispatch = useDispatch();
@@ -178,6 +179,10 @@ const AddOrEditPatient: React.FC = () => {
         };
 
         await dispatch(updatePatientAsync(updatedPatient) as any);
+        showSuccess(
+          "Patient Updated Successfully!",
+          `${formData.name}'s information has been updated.`
+        );
       } else {
         // Add new patient
         const newPatient: NewPatient = {
@@ -201,11 +206,19 @@ const AddOrEditPatient: React.FC = () => {
         };
 
         await dispatch(addPatientAsync(newPatient) as any);
+        showSuccess(
+          "Patient Added Successfully!",
+          `${formData.name} has been added to your patient list.`
+        );
       }
 
       navigate("/");
     } catch (error) {
       console.error("Error saving patient:", error);
+      showError(
+        `Failed to ${isEditing ? "update" : "add"} patient`,
+        "Please try again. If the problem persists, contact support."
+      );
       setErrors({
         submit: `Failed to ${
           isEditing ? "update" : "add"

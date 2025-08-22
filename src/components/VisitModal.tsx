@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { X, Calendar, DollarSign, FileText } from "lucide-react";
 import { createVisitAsync } from "../store/slices/visitsSlice";
 import { AppDispatch } from "../store";
+import { showSuccess, showError, showLoading } from "../utils/toast";
 
 interface VisitModalProps {
   isOpen: boolean;
@@ -38,6 +39,7 @@ const VisitModal: React.FC<VisitModalProps> = ({
     if (!selectedDate) return;
 
     setIsSubmitting(true);
+
     try {
       const dateStr = format(selectedDate, "yyyy-MM-dd");
       await dispatch(
@@ -49,12 +51,23 @@ const VisitModal: React.FC<VisitModalProps> = ({
           notes: notes.trim(),
         }) as any
       );
+      showSuccess(
+        "Visit Recorded Successfully!",
+        `Visit has been recorded for ${patientName} on ${format(
+          selectedDate,
+          "MMM d, yyyy"
+        )}.`
+      );
       onClose();
       // Reset form
       setCharge(defaultCharge);
       setNotes("");
     } catch (error) {
       console.error("Failed to create visit:", error);
+      showError(
+        "Failed to Record Visit",
+        "Please try again. If the problem persists, contact support."
+      );
     } finally {
       setIsSubmitting(false);
     }

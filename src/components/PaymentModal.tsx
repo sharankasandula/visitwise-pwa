@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { X, DollarSign, Calendar, CreditCard, FileText } from "lucide-react";
 import { createPaymentAsync } from "../store/slices/paymentsSlice";
 import { AppDispatch } from "../store";
+import { showSuccess, showError, showLoading } from "../utils/toast";
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -42,6 +43,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     if (!amount || Number(amount) < 1 || !method) return;
 
     setIsSubmitting(true);
+
     try {
       await dispatch(
         createPaymentAsync({
@@ -52,9 +54,17 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           notes: notes.trim(),
         }) as any
       );
+      showSuccess(
+        "Payment Recorded Successfully!",
+        `₹${amount} payment has been recorded for ${patientName}.`
+      );
       onClose();
     } catch (error) {
       console.error("Failed to create payment:", error);
+      showError(
+        "Failed to Record Payment",
+        "Please try again. If the problem persists, contact support."
+      );
     } finally {
       setIsSubmitting(false);
     }

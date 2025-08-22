@@ -6,7 +6,6 @@ import {
   setThemeMode,
   setColorScheme,
   ColorScheme,
-  ThemeMode,
 } from "../store/slices/themeSlice";
 import ThemePreview from "./ThemePreview";
 import {
@@ -23,6 +22,7 @@ import {
   ArrowLeft,
   Check,
 } from "lucide-react";
+import { showSuccess } from "../utils/toast";
 
 const SettingsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -241,7 +241,13 @@ const SettingsPage: React.FC = () => {
               </h3>
               <div className="grid grid-cols-3 gap-4">
                 <button
-                  onClick={() => dispatch(setThemeMode("light"))}
+                  onClick={() => {
+                    dispatch(setThemeMode("light"));
+                    showSuccess(
+                      "Theme Updated",
+                      "Light mode has been applied successfully!"
+                    );
+                  }}
                   className={`flex flex-col items-center p-4 border-2 rounded-lg transition-all ${
                     mode === "light"
                       ? "border-primary bg-primary/10 text-primary"
@@ -262,7 +268,13 @@ const SettingsPage: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => dispatch(setThemeMode("dark"))}
+                  onClick={() => {
+                    dispatch(setThemeMode("dark"));
+                    showSuccess(
+                      "Theme Updated",
+                      "Dark mode has been applied successfully!"
+                    );
+                  }}
                   className={`flex flex-col items-center p-4 border-2 rounded-lg transition-all ${
                     mode === "dark"
                       ? "border-primary bg-primary/10 text-primary"
@@ -281,7 +293,13 @@ const SettingsPage: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => dispatch(setThemeMode("system"))}
+                  onClick={() => {
+                    dispatch(setThemeMode("system"));
+                    showSuccess(
+                      "Theme Updated",
+                      "System theme mode has been applied successfully!"
+                    );
+                  }}
                   className={`flex flex-col items-center p-4 border-2 rounded-lg transition-all ${
                     mode === "system"
                       ? "border-primary bg-primary/10 text-primary"
@@ -328,7 +346,16 @@ const SettingsPage: React.FC = () => {
                     key={scheme}
                     scheme={scheme}
                     isSelected={colorScheme === scheme}
-                    onClick={() => dispatch(setColorScheme(scheme))}
+                    onClick={() => {
+                      dispatch(setColorScheme(scheme));
+                      showSuccess(
+                        "Color Scheme Updated",
+                        `${scheme.replace(
+                          "-",
+                          " "
+                        )} color scheme has been applied successfully!`
+                      );
+                    }}
                   />
                 ))}
               </div>
@@ -418,6 +445,19 @@ const SettingsPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Toast Demo Section */}
+          {/* <div>
+            <div className="flex items-center gap-2 mb-6">
+              <Bell className="h-6 w-6 text-primary" />
+              <h2 className="text-xl font-semibold text-foreground">
+                Toast Notifications Demo
+              </h2>
+            </div>
+            <div className="p-6 bg-card border border-border rounded-lg">
+              <ToastDemo />
+            </div>
+          </div> */}
         </div>
       </div>
     </div>
