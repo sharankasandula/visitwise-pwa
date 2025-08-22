@@ -40,7 +40,7 @@ const ArchivedPatients: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center text-gray-500">
+        <div className="text-center text-muted-foreground">
           Loading archived patients...
         </div>
       </div>
@@ -50,17 +50,16 @@ const ArchivedPatients: React.FC = () => {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-primary text-primary-foreground px-4 pt-4">
+      <div className="px-4 pt-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <button
-              onClick={() => navigate("/")}
-              className="p-2 hover:bg-primary/90 rounded-full transition-colors"
-            >
+            <button onClick={() => navigate("/")} className="p-2 rounded-full">
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="text-xl font-bold">Archived Patients</h1>
+              <h1 className="text-xl font-bold">
+                Archived Patients ({archivedPatients.length})
+              </h1>
             </div>
           </div>
         </div>
@@ -105,18 +104,6 @@ const ArchivedPatients: React.FC = () => {
           </div>
         )}
       </div>
-
-      {/* Summary */}
-      {archivedPatients.length > 0 && (
-        <div className="px-4 pb-4">
-          <div className="bg-muted rounded-lg p-4 text-center">
-            <p className="text-sm text-muted-foreground">
-              Total archived patients:{" "}
-              <span className="font-semibold">{archivedPatients.length}</span>
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

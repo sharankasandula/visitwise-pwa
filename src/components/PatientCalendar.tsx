@@ -66,12 +66,12 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
     } else if (isPastOrToday) {
       // Can add visit
       dayStyles = "";
-      borderStyles = "";
+      borderStyles = "border-muted-foreground";
       textStyles = "text-foreground";
     } else if (isFuture) {
       // Future date
       dayStyles = " cursor-not-allowed opacity-60";
-      borderStyles = "";
+      borderStyles = "border-accent";
       textStyles = "";
     }
 
@@ -83,7 +83,7 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
         onClick={() => !isFuture && handleDateClick(date)}
       >
         <div
-          className={`h-full w-full rounded-lg border-2 p-1 sm:p-2 flex flex-col items-center justify-center ${dayStyles} ${borderStyles}`}
+          className={`h-full w-full rounded-lg border p-1 sm:p-2 flex flex-col items-center justify-center ${dayStyles} ${borderStyles}`}
         >
           {/* Date Number */}
           <div className={`text-xs sm:text-sm font-medium ${textStyles}`}>
@@ -103,7 +103,6 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
                   }`}
                 />
               )}
-              {/* <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" /> */}
             </div>
           ) : isPastOrToday ? (
             <div className="flex flex-col items-center gap-1">
@@ -260,10 +259,10 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
       </div>
 
       {/* Legend */}
-      <div className="mt-4 pt-4 border-t">
+      <div className="mt-4 pt-4  border-t border-border">
         <div className="flex flex-wrap items-center font-extralight justify-center gap-3 sm:gap-6 text-xs">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 bg-secondary rounded"></div>
+            <div className="w-3 h-3 sm:w-4 sm:h-4 border bg-secondary rounded"></div>
             <span className="text-xs sm:text-xs">Visit Completed</span>
           </div>
           <div className="flex items-center gap-2">
@@ -279,8 +278,8 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
             <span className="text-xs sm:text-xs">Paid Visit</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-destructive-foreground rounded-full"></div>
-            <span className="text-xs sm:text-xs">Unpaid Visit</span>
+            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-destructive-foreground border rounded-full"></div>
+            <span className="text-xs sm:text-xs ">Unpaid Visit</span>
           </div>
         </div>
       </div>

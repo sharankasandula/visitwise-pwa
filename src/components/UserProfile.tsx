@@ -72,7 +72,7 @@ const UserProfile: React.FC = () => {
             <div className="flex items-center space-x-3">
               <Avatar className="h-10 w-10">
                 <AvatarImage src={user.photoURL} alt={user.name} />
-                <AvatarFallback className="bg-blue-600  text-sm font-medium">
+                <AvatarFallback className="text-sm font-medium">
                   {getInitials(user.name)}
                 </AvatarFallback>
               </Avatar>
@@ -84,7 +84,7 @@ const UserProfile: React.FC = () => {
                   {user.email || "No email"}
                 </p>
                 {user.isAnonymous && (
-                  <span className="inline-flex items-center rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800 mt-1">
+                  <span className="inline-flex items-center rounded-full bg-accent text-accent-foreground px-2 py-0.5 text-xs font-medium mt-1">
                     Guest User
                   </span>
                 )}
@@ -120,7 +120,7 @@ const UserProfile: React.FC = () => {
           {/* Sign Out */}
           <div className="border-t border-border pt-1">
             <button
-              className="w-full flex items-center px-4 py-3 text-sm text-red-600 hover:bg-red-50 active:bg-red-100 transition-colors touch-manipulation"
+              className="w-full flex items-center px-4 py-3 text-sm text-destructive transition-colors touch-manipulation"
               onClick={handleSignOut}
             >
               <LogOut className="mr-3 h-4 w-4" />

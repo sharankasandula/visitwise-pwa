@@ -10,7 +10,6 @@ import {
 } from "../store/slices/themeSlice";
 import ThemePreview from "./ThemePreview";
 import {
-  Settings,
   User,
   Bell,
   Palette,
@@ -73,11 +72,11 @@ const SettingsPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Account Type:</span>
             {user.isAnonymous ? (
-              <span className="inline-flex items-center rounded-full bg-yellow-100 dark:bg-yellow-900/20 px-2 py-1 text-xs font-medium text-yellow-800 dark:text-yellow-200">
+              <span className="inline-flex items-center rounded-full  px-2 py-1 text-xs font-medium bg-accent text-accent-foreground">
                 Guest User
               </span>
             ) : (
-              <span className="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900/20 px-2 py-1 text-xs font-medium text-green-800 dark:text-green-200">
+              <span className="inline-flex items-center rounded-full  px-2 py-1 text-xs font-medium bg-accent text-accent-foreground">
                 Google Account
               </span>
             )}
@@ -277,10 +276,6 @@ const SettingsPage: React.FC = () => {
               "ocean-blue",
               "emerald-green",
               "sunset-orange",
-              "midnight-purple",
-              "rose-gold",
-              "forest-green",
-              "coral-red",
             ] as ColorScheme[]
           ).map((scheme) => (
             <ThemePreview
@@ -290,37 +285,6 @@ const SettingsPage: React.FC = () => {
               onClick={() => dispatch(setColorScheme(scheme))}
             />
           ))}
-        </div>
-      </div>
-
-      {/* Display Settings */}
-      <div className="p-6 bg-card border border-border rounded-lg">
-        <h3 className="text-lg font-semibold text-card-foreground mb-4">
-          Display
-        </h3>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-1">
-              Font Size
-            </label>
-            <select className="w-full bg-muted border border-border rounded px-3 py-2 text-card-foreground">
-              <option>Small</option>
-              <option>Medium</option>
-              <option>Large</option>
-              <option>Extra Large</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-1">
-              Color Scheme
-            </label>
-            <select className="w-full bg-muted border border-border rounded px-3 py-2 text-card-foreground">
-              <option>Default</option>
-              <option>High Contrast</option>
-              <option>Color Blind Friendly</option>
-            </select>
-          </div>
         </div>
       </div>
     </div>
@@ -418,15 +382,15 @@ const SettingsPage: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center">
             <button
               onClick={() => navigate("/")}
-              className="flex items-center gap-2 px-4 py-2 border border-grey-200 rounded-lg text-muted-foreground hover:bg-muted transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors"
             >
               <ArrowLeft className="w-8 h-4" />
             </button>
             <div>
-              <h1 className="text-3xl font-bold text-foreground">Settings</h1>
+              <h1 className="text-2xl font-bold text-foreground">Settings</h1>
             </div>
           </div>
         </div>

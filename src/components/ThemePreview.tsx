@@ -18,10 +18,6 @@ const ThemePreview: React.FC<ThemePreviewProps> = ({
       "ocean-blue": "from-blue-500 to-sky-600",
       "emerald-green": "from-emerald-500 to-green-600",
       "sunset-orange": "from-orange-500 to-red-600",
-      "midnight-purple": "from-violet-600 to-purple-700",
-      "rose-gold": "from-rose-500 to-amber-600",
-      "forest-green": "from-emerald-600 to-green-700",
-      "coral-red": "from-red-500 to-pink-600",
     };
     return colors[scheme] || colors["royal-plum"];
   };
@@ -32,32 +28,14 @@ const ThemePreview: React.FC<ThemePreviewProps> = ({
       "ocean-blue": "Ocean Blue",
       "emerald-green": "Emerald Green",
       "sunset-orange": "Sunset Orange",
-      "midnight-purple": "Midnight Purple",
-      "rose-gold": "Rose Gold",
-      "forest-green": "Forest Green",
-      "coral-red": "Coral Red",
     };
     return names[scheme] || "Unknown";
-  };
-
-  const getSchemeDescription = (scheme: ColorScheme) => {
-    const descriptions = {
-      "royal-plum": "Elegant purple and violet tones",
-      "ocean-blue": "Calming blue and sky colors",
-      "emerald-green": "Fresh and natural greens",
-      "sunset-orange": "Warm orange and red hues",
-      "midnight-purple": "Deep purple and violet",
-      "rose-gold": "Soft rose and amber tones",
-      "forest-green": "Rich and deep greens",
-      "coral-red": "Vibrant red and coral",
-    };
-    return descriptions[scheme] || "A beautiful color scheme";
   };
 
   return (
     <button
       onClick={onClick}
-      className={`relative p-4 border-2 rounded-lg transition-all text-left group ${
+      className={`relative p-4 border-2 text-center rounded-lg transition-all group ${
         isSelected
           ? "border-primary bg-primary/10 shadow-lg"
           : "border-border hover:border-muted-foreground hover:bg-muted hover:shadow-md"
@@ -65,7 +43,7 @@ const ThemePreview: React.FC<ThemePreviewProps> = ({
     >
       {/* Color preview bar */}
       <div
-        className={`w-full h-3 rounded-full bg-gradient-to-r ${getPreviewColors(
+        className={`w-full h-12 rounded-lg bg-gradient-to-r ${getPreviewColors(
           scheme
         )} mb-3 shadow-sm`}
       />
@@ -74,11 +52,6 @@ const ThemePreview: React.FC<ThemePreviewProps> = ({
       <h4 className="font-medium text-card-foreground text-sm mb-1">
         {getSchemeName(scheme)}
       </h4>
-
-      {/* Scheme description */}
-      <p className="text-xs text-muted-foreground leading-relaxed">
-        {getSchemeDescription(scheme)}
-      </p>
 
       {/* Selection indicator */}
       {isSelected && (

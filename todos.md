@@ -10,16 +10,17 @@
 - [x] Reminders
 - [x] Modal to write notes for the visit
 - [x] Revamp Patient profile
-- [x] Integrate Calendarx View to view visits in Patient Profile - react day picker (https://react-day-picker.js.org/)
+- [x] Integrate Calendarx View to view visits in Patient Profile - react day picker
 - [x] Send Payment Reminder on Whatsapp
 - [x] Make M/F in Profile.
 - [x] Make history collapsible.
 - [x] Mark Paid Visits
+- [x] Fix bug in App settings
+- [x] Upgrade with new styles - Different Themes and Dark Theme
+- [x] deploy for testing - Netlify
+- [ ] Delete visit from patient calendar
 - [ ] Editable payment/visit history.
 - [ ] Analytics on Earnings and visits.
-- [x] Fix bug in App settings
-- [ ] Upgrade with new styles - Different Themes and Dark Theme
 - [ ] Media uploads
-- [ ] deploy for testing - Netlify
 - [ ] testing
 - [ ] import patients from contacts

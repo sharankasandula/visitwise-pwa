@@ -1,11 +1,16 @@
 import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { CalendarCheck2, ChevronRight } from "lucide-react";
+import {
+  CalendarCheck2,
+  TrendingUp,
+  AlertCircle,
+  ChevronRight,
+} from "lucide-react";
 import { fetchVisitsAsync } from "../store/slices/visitsSlice";
 import { fetchPaymentsAsync } from "../store/slices/paymentsSlice";
 
-const EarningsCard: React.FC = () => {
+const EarningsCardExtended: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { patients } = useSelector((state: any) => state.patients);
@@ -89,59 +94,54 @@ const EarningsCard: React.FC = () => {
 
   return (
     <div
-      className="rounded-xl w-full max-w-sm mx-auto shadow-sm border border-border p-4 cursor-pointer hover:shadow-lg transition-all duration-200"
+      className="rounded-xl p-4 border  cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
       onClick={handleCardClick}
     >
       {/* Header with title and chevron */}
       <div className="flex items-center justify-between mb-4">
-        <p className="text-sm capitalize tracking-wide text-muted-foreground font-medium">
+        <p className="text-sm uppercase tracking-wide text-muted-foreground font-medium">
           Earnings this month
         </p>
         <ChevronRight className="w-4 h-4 text-muted-foreground" />
       </div>
 
       {/* Compact three-column layout */}
-      <div className="flex items-center justify-around text-center">
+      <div className="grid grid-cols-3 gap-3 mb-4">
         {/* Total Earnings */}
         <div className="text-center">
-          <p className="text-base font-bold text-secondary">
+          <p className="text-xs text-blue-600 font-medium mb-1">Total</p>
+          <p className="text-sm font-bold text-blue-700">
             ₹{totalEarnings.toLocaleString()}
           </p>
-          <p className="text-xs font-medium text-muted-foreground mb-1">
-            Earnings
-          </p>
         </div>
-        <div className="w-px h-8 bg-border mx-1"></div>
+
         {/* Collected */}
         <div className="text-center">
-          <p className="text-base font-bold text-secondary">
+          <p className="text-xs text-green-600 font-medium mb-1">Collected</p>
+          <p className="text-sm font-bold text-green-700">
             ₹{totalCollected.toLocaleString()}
           </p>
-          <p className="text-xs  font-medium text-muted-foreground b-1">
-            Collected
-          </p>
         </div>
-        <div className="w-px h-8 bg-border mx-1"></div>
 
         {/* Outstanding */}
         <div className="text-center">
-          <p className="text-base font-bold text-secondary">
-            ₹{totalOutstanding.toLocaleString()}
-          </p>
-          <p className="text-xs font-medium text-muted-foreground mb-1">
+          <p className="text-xs text-orange-600 font-medium mb-1">
             Outstanding
+          </p>
+          <p className="text-sm font-bold text-orange-700">
+            ₹{totalOutstanding.toLocaleString()}
           </p>
         </div>
       </div>
 
       {/* Visits Summary - Compact */}
-      {/* <div className="flex items-center justify-center text-xs  bg-primary text-primary-foreground rounded-lg py-2">
+      <div className="flex items-center justify-center text-xs  bg-primary text-primary-foreground rounded-lg py-2">
         <CalendarCheck2 className="w-3 h-3 text-blue-600 mr-1" />
         <span className="font-medium text-primary">{totalVisits}</span>
         <span className="ml-1">visits this month</span>
-      </div> */}
+      </div>
     </div>
   );
 };
 
-export default EarningsCard;
+export default EarningsCardExtended;

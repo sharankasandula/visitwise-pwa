@@ -115,9 +115,7 @@ const DropdownMenuItem: React.FC<DropdownMenuItemProps> = ({
   return (
     <div
       className={`relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors ${
-        disabled
-          ? "pointer-events-none opacity-50"
-          : "hover:bg-gray-100 focus:bg-gray-100"
+        disabled ? "pointer-events-none opacity-50" : "hover:bg-muted"
       } ${className}`}
       onClick={handleClick}
     >

@@ -44,7 +44,7 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
 
   return (
     <div className="bg-card rounded-lg  overflow-hidden">
-      <div className="p-4">
+      <div className="py-4 px-2">
         <div className="flex items-center justify-between mb-3">
           <div className="flex-1" onClick={handlePatientClick}>
             <h3 className="font-semibold capitalize text-card-foreground cursor-pointer hover:text-primary transition-colors">
@@ -57,21 +57,21 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
           <div className="flex space-x-2">
             <button
               onClick={() => setIsPaymentModalOpen(true)}
-              className="p-2 text-muted-foreground hover:text-green-600 hover:bg-green-50 rounded-full transition-colors"
+              className="p-2 text-muted-foreground rounded-full transition-colors"
               title="Record Payment"
             >
               <DollarSign className="w-4 h-4" />
             </button>
             <button
               onClick={handleCall}
-              className="p-2 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+              className="p-2 text-muted-foreground rounded-full transition-colors"
               title="Call Patient"
             >
               <Phone className="w-4 h-4" />
             </button>
             <button
               onClick={handleArchive}
-              className="p-2 text-muted-foreground hover:text-orange-600 hover:bg-orange-50 rounded-full transition-colors"
+              className="p-2 text-muted-foreground  rounded-full transition-colors"
               title="Archive Patient"
             >
               <Archive className="w-4 h-4" />

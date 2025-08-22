@@ -33,6 +33,7 @@ import PatientCalendar from "./PatientCalendar";
 import VisitModal from "./VisitModal";
 
 import { format } from "date-fns";
+import WhatsAppIcon from "./ui/icons/WhatsAppIcon";
 
 const PatientProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -84,18 +85,20 @@ const PatientProfile: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center text-gray-500">Loading patient...</div>
+        <div className="text-center text-muted-foreground">
+          Loading patient...
+        </div>
       </div>
     );
   }
   if (!patient) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-card flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-500">Patient not found</p>
+          <p className="text-muted-foreground">Patient not found</p>
           <button
             onClick={() => navigate("/")}
-            className="mt-4 text-primary-600 hover:text-primary-700"
+            className="mt-4 bg-primary text-primary-foreground"
           >
             Go back to home
           </button>
@@ -208,11 +211,11 @@ const PatientProfile: React.FC = () => {
     window.open(whatsappUrl, "_blank");
 
     // Show success message
-    alert(
-      `WhatsApp reminder sent to ${
-        patient.name
-      } for ₹${totalDue.toLocaleString()} outstanding amount`
-    );
+    // alert(
+    //   `WhatsApp reminder sent to ${
+    //     patient.name
+    //   } for ₹${totalDue.toLocaleString()} outstanding amount`
+    // );
   };
 
   const generatePaymentReminderMessage = () => {
@@ -277,7 +280,7 @@ const PatientProfile: React.FC = () => {
           <div className="flex items-center">
             <button
               onClick={() => navigate("/")}
-              className=" p-2 hover:bg-primary-700 rounded-full transition-colors"
+              className=" p-2 rounded-full transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
@@ -315,18 +318,18 @@ const PatientProfile: React.FC = () => {
 
       <div className="p-4 space-y-6">
         {/* Patient Info Card */}
-        <div className="rounded-lg shadow-sm border ">
+        <div className="rounded-lg bg-card border border-border text-card-foreground">
           <div className="p-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                  <User className="h-12 w-12 text-primary border rounded-full p-1" />
+                <div className="w-16 h-16 bg-secondary-foreground text-secondary rounded-full flex items-center justify-center">
+                  <User className="h-12 w-12 border rounded-full p-1" />
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold capitalize">
                     {patient.name} ({patient.gender === "Male" ? "M" : "F"})
                   </h2>
-                  <p className="text-muted capitalize">
+                  <p className="capitalize">
                     Age: {patient.age || "N/A"} • {patient.condition} •{" "}
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded-full ${
@@ -338,15 +341,9 @@ const PatientProfile: React.FC = () => {
                       {patient.isActive ? "Active" : "Archived"}
                     </span>
                   </p>
-                  <p className="text-sm text-muted">
+                  <p className="text-sm ">
                     ₹ {patient.chargePerVisit.toLocaleString()} per visit
                   </p>
-                  {patient.phone && (
-                    <p className="text-sm text-muted flex items-center gap-1">
-                      <Phone className="h-3 w-3" />
-                      {patient.phone}
-                    </p>
-                  )}
                   <div className="flex items-center gap-2"></div>
                 </div>
               </div>
@@ -362,7 +359,7 @@ const PatientProfile: React.FC = () => {
                 ) : (
                   <button
                     disabled
-                    className="flex items-center gap-2 px-4 py-2 border rounded-lg text-muted cursor-not-allowed"
+                    className="flex items-center gap-2 px-4 py-2 border rounded-lg text-muted-foreground cursor-not-allowed"
                     title="Phone number not available"
                   >
                     <Phone className="h-4 w-4" />
@@ -381,7 +378,7 @@ const PatientProfile: React.FC = () => {
                   <button
                     disabled
                     title="Location unavailable"
-                    className="flex items-center gap-2 px-4 py-2 border text-muted rounded-lg  transition-colors "
+                    className="flex items-center gap-2 px-4 py-2 border text-muted-foreground rounded-lg  transition-colors "
                   >
                     <MapPin className="h-4 w-4" />
                     Navigate
@@ -400,7 +397,7 @@ const PatientProfile: React.FC = () => {
           </h3>
 
           {/* Payment Summary */}
-          <div className="rounded-lg shadow-sm border  p-4">
+          <div className="rounded-lg bg-card border border-border text-card-foreground  p-4">
             <div className="grid grid-cols-3 gap-4 mb-4">
               <div className="text-center">
                 <p className="text-xs font-medium mb-1">Total Earned</p>
@@ -426,7 +423,7 @@ const PatientProfile: React.FC = () => {
             <div className="space-y-3">
               <button
                 onClick={() => setIsPaymentModalOpen(true)}
-                className="w-full py-3 px-4 bg-primary rounded-lg transition-all duration-200 font-medium flex items-center justify-center gap-2"
+                className="w-full py-3 px-4 bg-primary text-primary-foreground rounded-lg transition-all duration-200 font-medium flex items-center justify-center gap-2"
               >
                 <DollarSign className="w-4 h-4 " />
                 Record Payment
@@ -435,35 +432,41 @@ const PatientProfile: React.FC = () => {
                 totalDue > 0 ? (
                   <button
                     onClick={handleWhatsAppReminder}
-                    className="w-full py-2 px-4 rounded-lg bg-secondary transition-all duration-200 font-medium flex items-center justify-center gap-2"
+                    className="w-full py-2 px-4 rounded-lg bg-accent text-accent-foreground transition-all duration-200 font-medium flex items-center justify-center gap-2"
                   >
-                    <MessageCircle className="w-4 h-4" />
+                    <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
                     Send WhatsApp Reminder
                   </button>
                 ) : (
                   <button
                     disabled
-                    className="w-full py-2 px-4 rounded-lg cursor-not-allowed font-medium flex items-center justify-center gap-2"
+                    className="w-full py-2 px-4 rounded-lg bg-accent text-accent-foreground cursor-not-allowed font-medium flex items-center justify-center gap-2"
                     title="No outstanding amount to send reminder for"
                   >
-                    <MessageCircle className="w-4 h-4" />
+                    <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
                     No Outstanding Amount
                   </button>
                 )
               ) : (
                 <button
                   disabled
-                  className="w-full py-2 px-4 text-muted-foreground bg-muted rounded-lg cursor-not-allowed font-medium flex items-center justify-center gap-2"
+                  className="w-full py-2 px-4 bg-accent text-accent-foreground  rounded-lg cursor-not-allowed font-medium flex items-center justify-center gap-2"
                   title="Phone number required to send WhatsApp reminder"
                 >
-                  <MessageCircle className="w-4 h-4" />
+                  <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
                   Phone Number Required
                 </button>
               )}
-              {totalDue <= 0 && (
-                <button className="w-full py-2 px-4 rounded-lg transition-all duration-200 font-medium flex items-center justify-center gap-2">
+              {totalDue > 0 && (
+                <button
+                  onClick={() => {
+                    setIsPaymentModalOpen(true);
+                    setSelectedVisitDate(null);
+                  }}
+                  className="w-full py-2 px-4 rounded-lg bg-accent text-accent-foreground transition-all duration-200 font-medium flex items-center justify-center gap-2"
+                >
                   <CheckCircle className="w-4 h-4" />
-                  Clear Dues
+                  Clear Dues (₹{totalDue.toLocaleString()})
                 </button>
               )}
             </div>
@@ -531,7 +534,7 @@ const PatientProfile: React.FC = () => {
           </h3>
 
           {/* Calendar View */}
-          <div className="rounded-lg shadow-sm border p-4">
+          <div className="rounded-lg bg-card border border-border text-card-foreground p-4">
             <PatientCalendar
               visits={patientVisits}
               patientId={patient.id}
@@ -609,10 +612,10 @@ const PatientProfile: React.FC = () => {
             <Camera className="w-5 h-5 text-pink-400" />
             Media
           </h3>
-          <div className="rounded-lg shadow-sm border  p-8 text-center">
+          <div className="rounded-lg bg-card border border-border text-card-foreground  p-8 text-center">
             <Camera className="w-16 h-16 mx-auto mb-4 " />
-            <p className="text-muted-foreground mb-2">No media uploaded yet</p>
-            <p className="text-sm text-muted">
+            <p className="mb-2">No media uploaded yet</p>
+            <p className="text-sm text-muted-foreground">
               Upload images or videos to track progress
             </p>
           </div>
@@ -624,7 +627,7 @@ const PatientProfile: React.FC = () => {
             <MessageCircle className="w-5 h-5 text-yellow-600" />
             Reminders
           </h3>
-          <div className="rounded-lg shadow-sm border  p-4">
+          <div className="rounded-lg bg-card border border-border text-card-foreground p-4">
             <div className="space-y-4">
               <div className="flex items-center justify-between p-3  rounded-lg">
                 <div className="flex items-center gap-3">
@@ -637,21 +640,15 @@ const PatientProfile: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <div
-                    className={`w-12 h-6 rounded-full transition-colors ${
-                      patient.dailyVisitReminderEnabled
-                        ? "bg-blue-600"
-                        : "bg-gray-300"
-                    }`}
-                  >
-                    <div
-                      className={`bg-white w-5 h-5 rounded-full shadow transform transition-transform ${
-                        patient.dailyVisitReminderEnabled
-                          ? "translate-x-6"
-                          : "translate-x-0.5"
-                      } mt-0.5`}
-                    />
-                  </div>
+                  {patient.dailyVisitReminderEnabled ? (
+                    <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-secondary text-secondary-foreground">
+                      On
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-destructive text-destructive-foreground">
+                      Off
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -666,21 +663,15 @@ const PatientProfile: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <div
-                    className={`w-12 h-6 rounded-full transition-colors ${
-                      patient.paymentCollectionReminderEnabled
-                        ? "bg-green-600"
-                        : "bg-gray-300"
-                    }`}
-                  >
-                    <div
-                      className={`bg-white w-5 h-5 rounded-full shadow transform transition-transform ${
-                        patient.paymentCollectionReminderEnabled
-                          ? "translate-x-6"
-                          : "translate-x-0.5"
-                      } mt-0.5`}
-                    />
-                  </div>
+                  {patient.paymentCollectionReminderEnabled ? (
+                    <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-secondary text-secondary-foreground">
+                      On
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-destructive text-destructive-foreground">
+                      Off
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -692,26 +683,23 @@ const PatientProfile: React.FC = () => {
                   <div>
                     <p className="font-medium">Follow-up Reminder</p>
                     <p className="text-sm">
-                      Follow up after {patient.followUpReminderDays} days
+                      Follow up after{" "}
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-accent text-accent-foreground font-semibold">
+                        {patient.followUpReminderDays} days
+                      </span>
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <div
-                    className={`w-12 h-6 rounded-full transition-colors ${
-                      patient.followUpReminderEnabled
-                        ? "bg-orange-600"
-                        : "bg-gray-300"
-                    }`}
-                  >
-                    <div
-                      className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform ${
-                        patient.followUpReminderEnabled
-                          ? "translate-x-6"
-                          : "translate-x-0.5"
-                      } mt-0.5`}
-                    />
-                  </div>
+                  {patient.followUpReminderEnabled ? (
+                    <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-secondary text-secondary-foreground">
+                      On
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-destructive text-destructive-foreground">
+                      Off
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

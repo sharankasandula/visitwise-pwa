@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, ChevronDown, Save, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronDown,
+  Save,
+  X,
+  User,
+  CreditCard,
+  Stethoscope,
+  Bell,
+} from "lucide-react";
 import {
   addPatientAsync,
   updatePatientAsync,
@@ -206,27 +215,33 @@ const AddOrEditPatient: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-primary text-primary-foreground p-4 flex items-center">
+      <div className="sticky top-0 z-10 backdrop-blur-sm bg-card/80 border-b border-border/50 p-4 flex items-center">
         <button
           onClick={() => navigate("/")}
-          className="mr-3 p-1 hover:bg-primary/90 rounded-full transition-colors"
+          className="mr-3 p-2 rounded-full transition-all duration-200 hover:bg-accent hover:scale-105 active:scale-95"
         >
-          <ArrowLeft className="w-6 h-6" />
+          <ArrowLeft className="w-6 h-6 text-muted-foreground" />
         </button>
         <h1 className="text-xl font-bold">
           {isEditing ? "Edit Patient" : "Add New Patient"}
         </h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-4 space-y-6">
+      <form onSubmit={handleSubmit} className="p-4 space-y-6 max-w-4xl mx-auto">
         {/* Basic Information */}
-        <div className="bg-card rounded-lg p-4 shadow-sm">
-          <h2 className="text-lg font-semibold mb-4 text-card-foreground">
-            Basic Information
-          </h2>
+        <div className="group bg-card rounded-xl p-6 shadow-lg border border-border/50 hover:shadow-xl transition-all duration-300 hover:border-primary/20">
+          <div className="flex items-center mb-6">
+            <div className="p-2 rounded-lg mr-3">
+              <User className="w-5 h-5 text-secondary" />
+            </div>
+            <h2 className="text-lg font-semibold text-card-foreground">
+              Basic Information
+            </h2>
+          </div>
 
           <div className="space-y-4">
             <div>
@@ -238,92 +253,112 @@ const AddOrEditPatient: React.FC = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
-                  errors.name ? "border-destructive" : "border-border"
+                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-background/50 backdrop-blur-sm ${
+                  errors.name
+                    ? "border-destructive ring-destructive/20"
+                    : "border-border hover:border-primary/30"
                 }`}
                 placeholder="Enter patient name"
               />
               {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                <p className="mt-2 text-sm text-destructive flex items-center">
+                  <span className="w-1.5 h-1.5 bg-destructive rounded-full mr-2"></span>
+                  {errors.name}
+                </p>
               )}
             </div>
-            <div>
-              <label className="block text-sm font-medium text-muted-foreground mb-1">
-                Age
-              </label>
-              <input
-                type="number"
-                name="age"
-                value={formData.age}
-                onChange={handleInputChange}
-                min="1"
-                max="150"
-                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
-                  errors.age ? "border-destructive" : "border-border"
-                }`}
-                placeholder="Enter patient age"
-              />
-              {errors.age && (
-                <p className="mt-1 text-sm text-red-600">{errors.age}</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-muted-foreground mb-1">
-                Gender *
-              </label>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setIsGenderDropdownOpen(!isGenderDropdownOpen)}
-                  className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-left flex items-center justify-between ${
-                    formData.gender
-                      ? "text-card-foreground"
-                      : "text-muted-foreground"
-                  } ${errors.gender ? "border-destructive" : "border-border"}`}
-                >
-                  {formData.gender || "Select gender"}
-                  <ChevronDown
-                    className={`w-4 h-4 transition-transform ${
-                      isGenderDropdownOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-
-                {isGenderDropdownOpen && (
-                  <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-lg shadow-lg">
-                    <div className="py-1">
-                      <button
-                        type="button"
-                        onClick={() => handleGenderSelect("Male")}
-                        className="w-full px-3 py-2 text-left hover:bg-muted text-card-foreground"
-                      >
-                        Male
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleGenderSelect("Female")}
-                        className="w-full px-3 py-2 text-left hover:bg-muted text-card-foreground"
-                      >
-                        Female
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleGenderSelect("Other")}
-                        className="w-full px-3 py-2 text-left hover:bg-muted text-card-foreground"
-                      >
-                        Other
-                      </button>
-                    </div>
-                  </div>
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
+                  Age
+                </label>
+                <input
+                  type="number"
+                  name="age"
+                  value={formData.age}
+                  onChange={handleInputChange}
+                  min="1"
+                  max="150"
+                  className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-background/50 backdrop-blur-sm ${
+                    errors.age
+                      ? "border-destructive ring-destructive/20"
+                      : "border-border hover:border-primary/30"
+                  }`}
+                  placeholder="Enter patient age"
+                />
+                {errors.age && (
+                  <p className="mt-2 text-sm text-destructive flex items-center">
+                    <span className="w-1.5 h-1.5 bg-destructive rounded-full mr-2"></span>
+                    {errors.age}
+                  </p>
                 )}
               </div>
-              {errors.gender && (
-                <p className="mt-1 text-sm text-red-600">{errors.gender}</p>
-              )}
-            </div>
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
+                  Gender *
+                </label>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setIsGenderDropdownOpen(!isGenderDropdownOpen)
+                    }
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 text-left flex items-center justify-between bg-background/50 backdrop-blur-sm ${
+                      formData.gender
+                        ? "text-card-foreground border-primary/30"
+                        : "text-muted-foreground border-border hover:border-primary/30"
+                    } ${
+                      errors.gender
+                        ? "border-destructive ring-destructive/20"
+                        : ""
+                    }`}
+                  >
+                    {formData.gender || "Select gender"}
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform duration-200 ${
+                        isGenderDropdownOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
 
+                  {isGenderDropdownOpen && (
+                    <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-lg backdrop-blur-sm">
+                      <div className="py-1">
+                        <button
+                          type="button"
+                          onClick={() => handleGenderSelect("Male")}
+                          className="w-full px-3 py-2 text-left hover:bg-accent text-card-foreground transition-colors duration-150"
+                        >
+                          Male
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleGenderSelect("Female")}
+                          className="w-full px-3 py-2 text-left hover:bg-accent text-card-foreground transition-colors duration-150"
+                        >
+                          Female
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleGenderSelect("Other")}
+                          className="w-full px-3 py-2 text-left hover:bg-accent text-card-foreground transition-colors duration-150"
+                        >
+                          Other
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {errors.gender && (
+                  <p className="mt-2 text-sm text-destructive flex items-center">
+                    <span className="w-1.5 h-1.5 bg-destructive rounded-full mr-2"></span>
+                    {errors.gender}
+                  </p>
+                )}
+              </div>
+            </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Phone Number
               </label>
               <input
@@ -331,13 +366,13 @@ const AddOrEditPatient: React.FC = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-primary/30"
                 placeholder="+91 9876543210"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Google Maps Link
               </label>
               <input
@@ -345,7 +380,7 @@ const AddOrEditPatient: React.FC = () => {
                 name="googleMapsLink"
                 value={formData.googleMapsLink}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-primary/30"
                 placeholder="https://maps.google.com/?q=coordinates"
               />
             </div>
@@ -353,10 +388,15 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Financial Information */}
-        <div className="bg-card rounded-lg p-4 shadow-sm">
-          <h2 className="text-lg font-semibold mb-4 text-card-foreground">
-            Financial Details
-          </h2>
+        <div className="group bg-card rounded-xl p-6 shadow-lg border border-border/50 hover:shadow-xl transition-all duration-300 hover:border-secondary/20">
+          <div className="flex items-center mb-6">
+            <div className="p-2 rounded-lg mr-3">
+              <CreditCard className="w-5 h-5 text-secondary" />
+            </div>
+            <h2 className="text-lg font-semibold text-card-foreground">
+              Financial Details
+            </h2>
+          </div>
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-1">
@@ -371,13 +411,16 @@ const AddOrEditPatient: React.FC = () => {
               min="0"
               max="10000"
               step="1"
-              className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
-                errors.chargePerVisit ? "border-destructive" : "border-border"
+              className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-all duration-200 bg-background/50 backdrop-blur-sm ${
+                errors.chargePerVisit
+                  ? "border-destructive ring-destructive"
+                  : "border-border hover:border-secondary"
               }`}
               placeholder="500"
             />
             {errors.chargePerVisit && (
-              <p className="mt-1 text-sm text-red-600">
+              <p className="mt-2 text-sm text-destructive flex items-center">
+                <span className="w-1.5 h-1.5 bg-destructive rounded-full mr-2"></span>
                 {errors.chargePerVisit}
               </p>
             )}
@@ -385,10 +428,15 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Medical Information */}
-        <div className="bg-card rounded-lg p-4 shadow-sm">
-          <h2 className="text-lg font-semibold mb-4 text-card-foreground">
-            Medical Details
-          </h2>
+        <div className="group bg-card rounded-xl p-6 border border-border hover:shadow-xl transition-all duration-300 hover:border-accent">
+          <div className="flex items-center mb-6">
+            <div className="p-2 rounded-lg mr-3">
+              <Stethoscope className="w-5 h-5 text-secondary" />
+            </div>
+            <h2 className="text-lg font-semibold text-card-foreground">
+              Medical Details
+            </h2>
+          </div>
 
           <div className="space-y-4">
             <div>
@@ -401,7 +449,7 @@ const AddOrEditPatient: React.FC = () => {
                 value={formData.condition}
                 onChange={handleInputChange}
                 required
-                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-accent transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-accent"
                 placeholder="e.g., Lower back pain"
               />
             </div>
@@ -415,7 +463,7 @@ const AddOrEditPatient: React.FC = () => {
                 name="protocol"
                 value={formData.protocol}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-accent/30"
                 placeholder="e.g., Strengthening exercises"
               />
             </div>
@@ -429,7 +477,7 @@ const AddOrEditPatient: React.FC = () => {
                 value={formData.notes}
                 onChange={handleInputChange}
                 rows={3}
-                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-accent/30 resize-none"
                 placeholder="Additional notes about the patient"
               />
             </div>
@@ -437,13 +485,18 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Reminders */}
-        <div className="bg-card rounded-lg p-4 shadow-sm">
-          <h2 className="text-lg font-semibold mb-4 text-card-foreground">
-            Reminder Settings
-          </h2>
+        <div className="group bg-card rounded-xl p-6 shadow-lg border border-border/50 hover:shadow-xl transition-all duration-300 hover:border-primary/20">
+          <div className="flex items-center mb-6">
+            <div className="p-2 rounded-lg mr-3">
+              <Bell className="w-5 h-5 text-secondary" />
+            </div>
+            <h2 className="text-lg font-semibold text-card-foreground">
+              Reminder Settings
+            </h2>
+          </div>
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
               <span className="text-sm font-medium text-muted-foreground">
                 Daily Visit Reminder
               </span>
@@ -455,8 +508,10 @@ const AddOrEditPatient: React.FC = () => {
                     !formData.dailyVisitReminderEnabled
                   )
                 }
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  formData.dailyVisitReminderEnabled ? "bg-primary" : "bg-muted"
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${
+                  formData.dailyVisitReminderEnabled
+                    ? "bg-secondary"
+                    : "bg-muted"
                 }`}
               >
                 <span
@@ -469,7 +524,7 @@ const AddOrEditPatient: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
               <span className="text-sm font-medium text-muted-foreground">
                 Payment Collection Reminder
               </span>
@@ -481,9 +536,9 @@ const AddOrEditPatient: React.FC = () => {
                     !formData.paymentCollectionReminderEnabled
                   )
                 }
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${
                   formData.paymentCollectionReminderEnabled
-                    ? "bg-primary"
+                    ? "bg-secondary"
                     : "bg-muted"
                 }`}
               >
@@ -497,7 +552,7 @@ const AddOrEditPatient: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
               <span className="text-sm font-medium text-muted-foreground">
                 Follow-up Reminder
               </span>
@@ -510,11 +565,11 @@ const AddOrEditPatient: React.FC = () => {
                   )
                 }
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  formData.followUpReminderEnabled ? "bg-primary" : "bg-muted"
+                  formData.followUpReminderEnabled ? "bg-secondary" : "bg-muted"
                 }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 shadow-sm ${
                     formData.followUpReminderEnabled
                       ? "translate-x-6"
                       : "translate-x-1"
@@ -524,7 +579,7 @@ const AddOrEditPatient: React.FC = () => {
             </div>
 
             {formData.followUpReminderEnabled && (
-              <div>
+              <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
                 <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Follow-up after (days)
                 </label>
@@ -537,7 +592,7 @@ const AddOrEditPatient: React.FC = () => {
                       parseInt(e.target.value)
                     )
                   }
-                  className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full p-3 border border-accent/30 rounded-lg focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all duration-200 bg-background/50 backdrop-blur-sm"
                   min="1"
                   max="30"
                 />
@@ -551,7 +606,7 @@ const AddOrEditPatient: React.FC = () => {
           <button
             type="button"
             onClick={() => navigate("/")}
-            className="flex-1 flex items-center justify-center py-3 px-4 border border-border rounded-lg text-muted-foreground hover:bg-muted transition-colors"
+            className="flex-1 flex items-center justify-center py-3 px-4 border border-border rounded-lg text-muted-foreground hover:bg-muted hover:border-primary/30 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
           >
             <X className="w-5 h-5 mr-2" />
             Cancel
@@ -560,9 +615,7 @@ const AddOrEditPatient: React.FC = () => {
             type="submit"
             disabled={isSubmitting}
             className={`flex-1 flex items-center justify-center py-3 px-4 rounded-lg transition-colors text-primary-foreground ${
-              isSubmitting
-                ? "bg-muted cursor-not-allowed"
-                : "bg-primary hover:bg-primary/90"
+              isSubmitting ? "bg-muted cursor-not-allowed" : "bg-primary"
             }`}
           >
             {isSubmitting ? (
@@ -580,8 +633,11 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {errors.submit && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-600 text-sm">{errors.submit}</p>
+          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 animate-fade-in">
+            <p className="text-destructive text-sm flex items-center">
+              <span className="w-2 h-2 bg-destructive rounded-full mr-2"></span>
+              {errors.submit}
+            </p>
           </div>
         )}
       </form>

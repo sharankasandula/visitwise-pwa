@@ -69,25 +69,20 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className="bg-foreground/50 fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-card border border-border text-card-foreground rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between p-6 bg-accent text-accent-foreground">
           <div className="flex items-center space-x-3">
-            <div className="bg-green-100 p-2 rounded-full">
-              <DollarSign className="w-5 h-5 text-green-600" />
+            <div className=" p-2 rounded-full">
+              <DollarSign className="w-5 h-5 text-secondary" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                Record Payment
-              </h3>
-              <p className="text-sm text-gray-500">{patientName}</p>
+              <h3 className="text-lg font-semibold">Record Payment</h3>
+              <p className="text-sm ">{patientName}</p>
             </div>
           </div>
-          <button
-            onClick={handleCancel}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
+          <button onClick={handleCancel}>
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -96,21 +91,21 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Amount Input */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium  mb-2">
               <div className="flex items-center space-x-2">
-                <DollarSign className="w-4 h-4 text-green-600" />
+                <DollarSign className="w-4 h-4 text-secondary" />
                 <span>Amount</span>
               </div>
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 ">
                 ₹
               </span>
               <input
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                className="w-full pl-8 pr-4 py-3 border  rounded-lg focus:ring-2  transition-colors"
                 placeholder="Enter amount"
                 min="1"
                 step="0.01"
@@ -121,9 +116,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
           {/* Date Input */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium  mb-2">
               <div className="flex items-center space-x-2">
-                <Calendar className="w-4 h-4 text-blue-600" />
+                <Calendar className="w-4 h-4 text-secondary" />
                 <span>Date</span>
               </div>
             </label>
@@ -131,23 +126,23 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="w-full px-4 py-3 border  rounded-lg focus:ring-2 "
               required
             />
           </div>
 
           {/* Payment Method */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium  mb-2">
               <div className="flex items-center space-x-2">
-                <CreditCard className="w-4 h-4 text-purple-600" />
+                <CreditCard className="w-4 h-4  text-secondary" />
                 <span>Payment Method</span>
               </div>
             </label>
             <select
               value={method}
               onChange={(e) => setMethod(e.target.value as any)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+              className="w-full px-4 py-3 border  rounded-lg"
               required
             >
               <option value="cash">Cash</option>
@@ -159,9 +154,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
           {/* Notes Input */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium  mb-2">
               <div className="flex items-center space-x-2">
-                <FileText className="w-4 h-4 text-blue-600" />
+                <FileText className="w-4 h-4  text-secondary" />
                 <span>Notes (Optional)</span>
               </div>
             </label>
@@ -169,14 +164,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
+              className="w-full px-4 py-3 border rounded-lg resize-none"
               placeholder="Add notes about this payment (optional)"
             />
           </div>
 
           {/* Helper Text */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-            <p className="text-sm text-blue-700">
+          <div className="border bg-muted text-muted-foreground rounded-lg p-3">
+            <p className="text-sm">
               💡 Tip: payments allocate to oldest visits first.
             </p>
           </div>
@@ -186,18 +181,18 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             <button
               type="button"
               onClick={handleCancel}
-              className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              className="flex-1 px-4 py-3 border rounded-lg transition-colors font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!isFormValid || isSubmitting}
-              className="flex-1 px-4 py-3 bg-green-600 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              className="flex-1 px-4 py-3 rounded-lg bg-primary text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
             >
               {isSubmitting ? (
                 <div className="flex items-center justify-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-4 h-4 border-2 border-t-transparent bg-primary text-primary-foreground rounded-full animate-spin"></div>
                   <span>Saving...</span>
                 </div>
               ) : (

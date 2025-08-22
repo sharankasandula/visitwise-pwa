@@ -4,11 +4,7 @@ export type ColorScheme =
   | "royal-plum"
   | "ocean-blue"
   | "emerald-green"
-  | "sunset-orange"
-  | "midnight-purple"
-  | "rose-gold"
-  | "forest-green"
-  | "coral-red";
+  | "sunset-orange";
 
 export type ThemeMode = "light" | "dark" | "system";
 

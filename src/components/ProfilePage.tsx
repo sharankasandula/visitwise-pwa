@@ -29,7 +29,7 @@ const ProfilePage: React.FC = () => {
           <div className="flex items-center">
             <button
               onClick={() => navigate("/")}
-              className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg text-muted-foreground hover:bg-muted transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors"
             >
               <ArrowLeft className="w-8 h-4" />
             </button>
@@ -42,7 +42,7 @@ const ProfilePage: React.FC = () => {
         </div>
 
         {/* Profile Card */}
-        <Card className="p-8">
+        <div className="p-8 bg-accent rounded-lg border border-border shadow-sm">
           <div className="text-center">
             {/* Avatar Section */}
             <div className="mb-6">
@@ -63,11 +63,11 @@ const ProfilePage: React.FC = () => {
 
             {/* Account Type Badge */}
             {user.isAnonymous ? (
-              <span className="inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-800 mb-4">
+              <span className="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-3 py-1 text-sm font-medium  mb-4">
                 Guest User
               </span>
             ) : (
-              <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800 mb-4">
+              <span className="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-3 py-1 text-sm font-medium  mb-4">
                 Google Account
               </span>
             )}
@@ -115,7 +115,7 @@ const ProfilePage: React.FC = () => {
               </div>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );

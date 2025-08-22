@@ -69,27 +69,22 @@ const VisitModal: React.FC<VisitModalProps> = ({
   if (!isOpen || !selectedDate) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className="bg-foreground/50 fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-card border border-border text-card-foreground rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between p-6 bg-accent text-accent-foreground">
           <div className="flex items-center space-x-3">
-            <div className="bg-blue-100 p-2 rounded-full">
-              <Calendar className="w-5 h-5 text-blue-600" />
+            <div className="p-2 rounded-full">
+              <Calendar className="w-5 h-5 text-secondary" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                Record Visit
-              </h3>
-              <p className="text-sm text-gray-500">
+              <h3 className="text-lg font-semibold ">Record Visit</h3>
+              <p className="text-sm ">
                 {patientName} - {format(selectedDate, "EEEE, MMMM d, yyyy")}
               </p>
             </div>
           </div>
-          <button
-            onClick={handleCancel}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
+          <button onClick={handleCancel} className=" transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -98,37 +93,37 @@ const VisitModal: React.FC<VisitModalProps> = ({
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Charge Input */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               <div className="flex items-center space-x-2">
-                <DollarSign className="w-4 h-4 text-green-600" />
+                <DollarSign className="w-4 h-4 text-secondary" />
                 <span>Visit Charge</span>
               </div>
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 ">
                 ₹
               </span>
               <input
                 type="number"
                 value={charge}
                 onChange={(e) => setCharge(Number(e.target.value))}
-                className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                className="w-full pl-8 pr-4 py-3 border rounded-lg  transition-colors"
                 placeholder="Enter charge amount"
                 min="0"
                 step="0.01"
                 required
               />
             </div>
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-muted-foreground">
               Default charge: ₹{defaultCharge.toLocaleString()}
             </p>
           </div>
 
           {/* Notes Input */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium  mb-2">
               <div className="flex items-center space-x-2">
-                <FileText className="w-4 h-4 text-blue-600" />
+                <FileText className="w-4 h-4 text-secondary" />
                 <span>Visit Notes</span>
               </div>
             </label>
@@ -136,7 +131,7 @@ const VisitModal: React.FC<VisitModalProps> = ({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
+              className="w-full px-4 py-3 border  rounded-lg focus:ring-2 transition-colors resize-none"
               placeholder="Add notes about this visit (optional)"
             />
           </div>
@@ -146,14 +141,14 @@ const VisitModal: React.FC<VisitModalProps> = ({
             <button
               type="button"
               onClick={handleCancel}
-              className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              className="flex-1 px-4 py-3 border rounded-lg transition-colors font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-4 py-3 bg-blue-600  rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              className="flex-1 px-4 py-3 bg-primary text-primary-foreground rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
             >
               {isSubmitting ? "Creating..." : "Confirm Visit"}
             </button>

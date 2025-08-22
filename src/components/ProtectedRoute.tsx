@@ -17,16 +17,16 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   useEffect(() => {
     // Initialize authentication on component mount
-    dispatch(initializeAuth());
+    dispatch(initializeAuth() as any);
   }, [dispatch]);
 
   // Show loading spinner while checking authentication
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-card text-card-foreground">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-          <p className="text-gray-600">Loading...</p>
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 bg-secondary text-secondary-foreground" />
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
