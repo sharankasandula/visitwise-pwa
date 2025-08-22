@@ -52,6 +52,7 @@ const PatientProfile: React.FC = () => {
     useState(true);
   const [isVisitHistoryCollapsed, setIsVisitHistoryCollapsed] = useState(true);
   const [isArchiving, setIsArchiving] = useState(false);
+  const [expandedNotes, setExpandedNotes] = useState(false);
 
   const patientVisits = visits[id || ""] || [];
   const patientPayments = payments[id || ""] || [];
@@ -323,14 +324,21 @@ const PatientProfile: React.FC = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 bg-secondary-foreground text-secondary rounded-full flex items-center justify-center">
-                  <User className="h-12 w-12 border rounded-full p-1" />
+                  <span className="text-5xl">
+                    {patient.gender === "Male"
+                      ? "👨"
+                      : patient.gender === "Female"
+                      ? "👩"
+                      : "⚧️"}
+                  </span>
                 </div>
-                <div>
+                <div className="flex-1">
                   <h2 className="text-xl font-semibold capitalize">
-                    {patient.name} ({patient.gender === "Male" ? "M" : "F"})
+                    {patient.name}
                   </h2>
-                  <p className="capitalize">
-                    Age: {patient.age || "N/A"} • {patient.condition} •{" "}
+                  <p className="text-muted-foreground">
+                    Age: {patient.age || "N/A"} • ₹{" "}
+                    {patient.chargePerVisit.toLocaleString()} per visit •{" "}
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded-full ${
                         patient.isActive
@@ -341,9 +349,57 @@ const PatientProfile: React.FC = () => {
                       {patient.isActive ? "Active" : "Archived"}
                     </span>
                   </p>
-                  <p className="text-sm ">
-                    ₹ {patient.chargePerVisit.toLocaleString()} per visit
+                  {/* Condition Field */}
+                  <p className="text-sm text-muted-foreground capitalize">
+                    <span className="font-medium">Condition:</span>{" "}
+                    {patient.condition}
                   </p>
+
+                  {/* Protocol Field */}
+                  {patient.protocol && (
+                    <p className="text-sm text-muted-foreground">
+                      <span className="font-medium">Protocol:</span>{" "}
+                      {patient.protocol}
+                    </p>
+                  )}
+
+                  {/* Notes Field with Expand/Collapse */}
+                  {patient.notes && (
+                    <div className="">
+                      <p className="text-sm text-muted-foreground">
+                        <span className="font-medium">Notes:</span>{" "}
+                        {expandedNotes ? (
+                          <span>{patient.notes}</span>
+                        ) : (
+                          <span>
+                            {patient.notes.length > 15
+                              ? `${patient.notes.substring(0, 15)}...`
+                              : patient.notes}
+                          </span>
+                        )}
+                        {patient.notes.length > 15 && (
+                          <span
+                            role="button"
+                            tabIndex={0}
+                            aria-expanded={expandedNotes}
+                            onClick={() => setExpandedNotes(!expandedNotes)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                setExpandedNotes((v) => !v);
+                              }
+                            }}
+                            className="ml-1 inline cursor-pointer select-none text-[11px] leading-none align-baseline
+               text-secondary underline underline-offset-2 focus:outline-none focus:ring-1 focus:ring-primary/60 rounded-sm
+               hover:no-underline"
+                          >
+                            {expandedNotes ? "Show less" : "Show more"}
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  )}
+
                   <div className="flex items-center gap-2"></div>
                 </div>
               </div>

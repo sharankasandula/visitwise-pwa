@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from "react";
 import { format, isSameDay } from "date-fns";
 import { Calendar, Lock, PlusCircle } from "lucide-react";
-import { Visit } from "../store/slices/visitsSlice";
+import { deleteVisitAsync, Visit } from "../store/slices/visitsSlice";
+import { useDispatch } from "react-redux";
 
 interface PatientCalendarProps {
   visits: Visit[];
@@ -14,9 +15,11 @@ interface PatientCalendarProps {
 
 const PatientCalendar: React.FC<PatientCalendarProps> = ({
   visits,
+  patientId,
   onAddVisit,
   visitPaymentStatus = {},
 }) => {
+  const dispatch = useDispatch();
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   // Create a map of visits by date for easy lookup
@@ -32,6 +35,19 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
   const handleDateClick = (date: Date) => {
     const dateStr = format(date, "yyyy-MM-dd");
     const existingVisit = visitsByDate.get(dateStr);
+
+    if (existingVisit) {
+      // If visit exists and is completed, delete it (unselect)
+      if (existingVisit.completed) {
+        dispatch(
+          deleteVisitAsync({
+            patientId,
+            visitId: existingVisit.id,
+          }) as any
+        );
+        return;
+      }
+    }
 
     if (!existingVisit) {
       // Only allow adding visits for today or past dates
