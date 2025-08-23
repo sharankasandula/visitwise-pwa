@@ -11,6 +11,8 @@ import EarningsSummary from "./components/EarningsSummary";
 import ArchivedPatients from "./components/ArchivedPatients";
 import ProfilePage from "./components/ProfilePage";
 import SettingsPage from "./components/SettingsPage";
+import TermsOfService from "./components/TermsOfService";
+import PrivacyPolicy from "./components/PrivacyPolicy";
 import Toast from "./components/ui/Toast";
 import "./App.css";
 
@@ -20,28 +22,49 @@ function App() {
       <ThemeProvider>
         <Router>
           <div className="App">
-            <ProtectedRoute>
-              <div className="app-container">
-                <main>
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/add-patient" element={<AddOrEditPatient />} />
-                    <Route
-                      path="/edit-patient/:patientId"
-                      element={<AddOrEditPatient />}
-                    />
-                    <Route path="/patient/:id" element={<PatientProfile />} />
-                    <Route
-                      path="/archived-patients"
-                      element={<ArchivedPatients />}
-                    />
-                    <Route path="/earnings" element={<EarningsSummary />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/settings" element={<SettingsPage />} />
-                  </Routes>
-                </main>
-              </div>
-            </ProtectedRoute>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+
+              {/* Protected routes */}
+              <Route
+                path="/*"
+                element={
+                  <ProtectedRoute>
+                    <div className="app-container">
+                      <main>
+                        <Routes>
+                          <Route path="/" element={<Home />} />
+                          <Route
+                            path="/add-patient"
+                            element={<AddOrEditPatient />}
+                          />
+                          <Route
+                            path="/edit-patient/:patientId"
+                            element={<AddOrEditPatient />}
+                          />
+                          <Route
+                            path="/patient/:id"
+                            element={<PatientProfile />}
+                          />
+                          <Route
+                            path="/archived-patients"
+                            element={<ArchivedPatients />}
+                          />
+                          <Route
+                            path="/earnings"
+                            element={<EarningsSummary />}
+                          />
+                          <Route path="/profile" element={<ProfilePage />} />
+                          <Route path="/settings" element={<SettingsPage />} />
+                        </Routes>
+                      </main>
+                    </div>
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
             <Toast />
           </div>
         </Router>

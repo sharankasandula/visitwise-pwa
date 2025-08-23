@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { RootState } from "../store";
 import {
   signInWithGoogle,
@@ -27,6 +28,7 @@ import { showSuccess, showError } from "../utils/toast";
 
 const Login: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { loading, error } = useSelector((state: RootState) => state.auth);
 
   const handleGoogleSignIn = () => {
@@ -97,7 +99,7 @@ const Login: React.FC = () => {
 
         <Card className="w-full backdrop-blur-sm bg-card/80 border border-border/50 shadow-2xl">
           <CardHeader className="text-center pb-6">
-            <CardTitle className="text-2xl font-bold text-card-foreground mb-2">
+            <CardTitle className="text-2xl font-bold text-card mb-2">
               Welcome Back! 👋
             </CardTitle>
             <CardDescription className="text-muted-foreground text-base">
@@ -133,7 +135,7 @@ const Login: React.FC = () => {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-4 bg-card text-muted-foreground font-medium">
-                  or continue with
+                  or
                 </span>
               </div>
             </div>
@@ -173,8 +175,8 @@ const Login: React.FC = () => {
                   </span>
                 </div>
                 <div className="flex flex-col items-center space-y-2">
-                  <div className="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center">
-                    <Heart className="w-4 h-4 text-accent-foreground" />
+                  <div className="w-8 h-8 bg-secondary/20 rounded-lg flex items-center justify-center">
+                    <Heart className="w-4 h-4 text-secondary" />
                   </div>
                   <span className="text-xs text-muted-foreground">
                     Better Health
@@ -185,11 +187,17 @@ const Login: React.FC = () => {
 
             <p className="text-xs text-center text-muted-foreground pt-2 leading-relaxed">
               By continuing, you agree to our{" "}
-              <span className="text-primary hover:underline cursor-pointer">
+              <span
+                className="text-primary hover:underline cursor-pointer"
+                onClick={() => navigate("/terms")}
+              >
                 Terms of Service
               </span>{" "}
               and{" "}
-              <span className="text-primary hover:underline cursor-pointer">
+              <span
+                className="text-primary hover:underline cursor-pointer"
+                onClick={() => navigate("/privacy")}
+              >
                 Privacy Policy
               </span>
               .
