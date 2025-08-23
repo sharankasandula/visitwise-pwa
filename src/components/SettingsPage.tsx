@@ -76,14 +76,17 @@ const SettingsPage: React.FC = () => {
                     {user.name}
                   </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">
-                    Email
-                  </label>
-                  <div className="w-full bg-muted border border-border rounded px-3 py-2 text-card-foreground">
-                    {user.email}
+                {user.email && (
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-1">
+                      Email
+                    </label>
+
+                    <div className="w-full bg-muted border border-border rounded px-3 py-2 text-card-foreground">
+                      {user.email}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <div className="mt-4">
@@ -121,7 +124,6 @@ const SettingsPage: React.FC = () => {
               </div>
             </div>
           </div>
-
           {/* Notification Settings Section */}
           <div>
             <div className="flex items-center gap-2 mb-6">
@@ -224,7 +226,6 @@ const SettingsPage: React.FC = () => {
               </div>
             </div>
           </div>
-
           {/* Appearance Settings Section */}
           <div>
             <div className="flex items-center gap-2 mb-6">
@@ -361,9 +362,8 @@ const SettingsPage: React.FC = () => {
               </div>
             </div>
           </div>
-
           {/* Data & Storage Settings Section */}
-          <div>
+          {/* <div>
             <div className="flex items-center gap-2 mb-6">
               <Database className="h-6 w-6 text-primary" />
               <h2 className="text-xl font-semibold text-foreground">
@@ -444,8 +444,7 @@ const SettingsPage: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
-
+          </div> */}
           {/* Toast Demo Section */}
           {/* <div>
             <div className="flex items-center gap-2 mb-6">

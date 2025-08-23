@@ -97,9 +97,9 @@ const Login: React.FC = () => {
           </p>
         </div>
 
-        <Card className="w-full backdrop-blur-sm bg-card/80 border border-border/50 shadow-2xl">
+        <Card className="w-full backdrop-blur-sm bg-card border border-border/50 shadow-2xl">
           <CardHeader className="text-center pb-6">
-            <CardTitle className="text-2xl font-bold text-card mb-2">
+            <CardTitle className="text-2xl font-bold text-muted-foreground mb-2">
               Welcome Back! 👋
             </CardTitle>
             <CardDescription className="text-muted-foreground text-base">

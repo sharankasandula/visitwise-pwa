@@ -39,11 +39,7 @@ const CardHeader: React.FC<CardHeaderProps> = ({
   children,
   className = "",
 }) => {
-  return (
-    <div className={`px-6 py-4 border-b border-gray-200 ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`px-6 py-4  ${className}`}>{children}</div>;
 };
 
 const CardTitle: React.FC<CardTitleProps> = ({ children, className = "" }) => {
