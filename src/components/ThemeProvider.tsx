@@ -26,6 +26,12 @@ const themes = {
       "--border": "214 32% 91%", // slate-200
       "--input": "214 32% 91%", // slate-200
       "--ring": "262 83% 58%", // violet-500
+      "--success": "142 72% 29%",
+      "--success-foreground": "210 40% 98%",
+      "--warning": "38 92% 50%",
+      "--warning-foreground": "222 84% 5%",
+      "--danger": "0 72% 45%",
+      "--danger-foreground": "210 40% 98%",
     },
     dark: {
       "--background": "222 84% 5%", // slate-900
@@ -47,6 +53,12 @@ const themes = {
       "--border": "215 16% 47%", // slate-600
       "--input": "215 16% 47%", // slate-600
       "--ring": "262 83% 58%", // violet-500
+      "--success": "142 70% 40%",
+      "--success-foreground": "210 40% 98%",
+      "--warning": "38 92% 50%",
+      "--warning-foreground": "222 84% 5%",
+      "--danger": "0 72% 45%",
+      "--danger-foreground": "210 40% 98%",
     },
   },
   "ocean-blue": {
@@ -70,6 +82,12 @@ const themes = {
       "--border": "214 32% 91%", // slate-200
       "--input": "214 32% 91%", // slate-200
       "--ring": "221 83% 53%", // blue-500
+      "--success": "142 72% 29%",
+      "--success-foreground": "210 40% 98%",
+      "--warning": "38 92% 50%",
+      "--warning-foreground": "222 84% 5%",
+      "--danger": "0 72% 45%",
+      "--danger-foreground": "210 40% 98%",
     },
     dark: {
       "--background": "222 84% 5%", // slate-900
@@ -91,6 +109,12 @@ const themes = {
       "--border": "215 16% 47%", // slate-600
       "--input": "215 16% 47%", // slate-600
       "--ring": "221 83% 53%", // blue-500
+      "--success": "142 70% 40%",
+      "--success-foreground": "210 40% 98%",
+      "--warning": "38 92% 50%",
+      "--warning-foreground": "222 84% 5%",
+      "--danger": "0 72% 45%",
+      "--danger-foreground": "210 40% 98%",
     },
   },
   "emerald-green": {
@@ -114,6 +138,12 @@ const themes = {
       "--border": "214 32% 91%", // slate-200
       "--input": "214 32% 91%", // slate-200
       "--ring": "142 76% 36%", // emerald-600
+      "--success": "142 72% 29%",
+      "--success-foreground": "210 40% 98%",
+      "--warning": "38 92% 50%",
+      "--warning-foreground": "222 84% 5%",
+      "--danger": "0 72% 45%",
+      "--danger-foreground": "210 40% 98%",
     },
     dark: {
       "--background": "222 84% 5%", // slate-900
@@ -135,6 +165,12 @@ const themes = {
       "--border": "215 16% 47%", // slate-600
       "--input": "215 16% 47%", // slate-600
       "--ring": "142 76% 36%", // emerald-600
+      "--success": "142 70% 40%",
+      "--success-foreground": "210 40% 98%",
+      "--warning": "38 92% 50%",
+      "--warning-foreground": "222 84% 5%",
+      "--danger": "0 72% 45%",
+      "--danger-foreground": "210 40% 98%",
     },
   },
   "sunset-orange": {
@@ -158,6 +194,12 @@ const themes = {
       "--border": "214 32% 91%", // slate-200
       "--input": "214 32% 91%", // slate-200
       "--ring": "24 95% 53%", // orange-500
+      "--success": "142 72% 29%",
+      "--success-foreground": "210 40% 98%",
+      "--warning": "38 92% 50%",
+      "--warning-foreground": "222 84% 5%",
+      "--danger": "0 72% 45%",
+      "--danger-foreground": "210 40% 98%",
     },
     dark: {
       "--background": "222 84% 5%", // slate-900
@@ -179,6 +221,12 @@ const themes = {
       "--border": "215 16% 47%", // slate-600
       "--input": "215 16% 47%", // slate-600
       "--ring": "24 95% 53%", // orange-500
+      "--success": "142 70% 40%",
+      "--success-foreground": "210 40% 98%",
+      "--warning": "38 92% 50%",
+      "--warning-foreground": "222 84% 5%",
+      "--danger": "0 72% 45%",
+      "--danger-foreground": "210 40% 98%",
     },
   },
 };

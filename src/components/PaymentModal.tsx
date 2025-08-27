@@ -80,7 +80,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
   return (
     <div className="bg-foreground/50 fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-card border border-border text-card-foreground rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-card border border-border text-card-foreground rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 bg-accent text-accent-foreground">
           <div className="flex items-center space-x-3">

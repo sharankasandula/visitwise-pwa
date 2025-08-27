@@ -246,7 +246,7 @@ const AddOrEditPatient: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="p-4 space-y-6 max-w-4xl mx-auto">
         {/* Basic Information */}
-        <div className="group bg-card rounded-xl p-6 shadow-lg border border-border/50 hover:shadow-xl transition-all duration-300 hover:border-primary/20">
+        <div className="group bg-card rounded-xl p-6 border border-border/50 transition-all duration-300 hover:border-primary/20">
           <div className="flex items-center mb-6">
             <div className="p-2 rounded-lg mr-3">
               <User className="w-5 h-5 text-secondary" />
@@ -401,7 +401,7 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Financial Information */}
-        <div className="group bg-card rounded-xl p-6 shadow-lg border border-border/50 hover:shadow-xl transition-all duration-300 hover:border-secondary/20">
+        <div className="group bg-card rounded-xl p-6 border border-border/50 transition-all duration-300 hover:border-secondary/20">
           <div className="flex items-center mb-6">
             <div className="p-2 rounded-lg mr-3">
               <CreditCard className="w-5 h-5 text-secondary" />
@@ -441,7 +441,7 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Medical Information */}
-        <div className="group bg-card rounded-xl p-6 border border-border hover:shadow-xl transition-all duration-300 hover:border-accent">
+        <div className="group bg-card rounded-xl p-6 border border-border transition-all duration-300 hover:border-accent">
           <div className="flex items-center mb-6">
             <div className="p-2 rounded-lg mr-3">
               <Stethoscope className="w-5 h-5 text-secondary" />
@@ -498,7 +498,7 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Reminders */}
-        <div className="group bg-card rounded-xl p-6 shadow-lg border border-border/50 hover:shadow-xl transition-all duration-300 hover:border-primary/20">
+        <div className="group bg-card rounded-xl p-6 border border-border/50 transition-all duration-300 hover:border-primary/20">
           <div className="flex items-center mb-6">
             <div className="p-2 rounded-lg mr-3">
               <Bell className="w-5 h-5 text-secondary" />
@@ -509,86 +509,109 @@ const AddOrEditPatient: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
+            {/* <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
               <span className="text-sm font-medium text-muted-foreground">
                 Daily Visit Reminder
               </span>
-              <button
-                type="button"
-                onClick={() =>
-                  handleReminderChange(
-                    "dailyVisitReminderEnabled",
-                    !formData.dailyVisitReminderEnabled
-                  )
-                }
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${
-                  formData.dailyVisitReminderEnabled
-                    ? "bg-secondary"
-                    : "bg-muted"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  checked={formData.dailyVisitReminderEnabled}
+                  onChange={() =>
+                    handleReminderChange(
+                      "dailyVisitReminderEnabled",
+                      !formData.dailyVisitReminderEnabled
+                    )
+                  }
+                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                />
+                <div
+                  className={`block h-6 w-11 rounded-full transition-all duration-300 ${
+                    formData.dailyVisitReminderEnabled
+                      ? "bg-secondary"
+                      : "bg-muted"
+                  }`}
+                ></div>
+                <div
+                  className={`dot absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-md transition-all duration-300 ${
                     formData.dailyVisitReminderEnabled
                       ? "translate-x-6"
-                      : "translate-x-1"
+                      : "translate-x-0"
                   }`}
-                />
-              </button>
-            </div>
+                ></div>
+              </div>
+            </div> */}
 
-            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
-              <span className="text-sm font-medium text-muted-foreground">
-                Payment Collection Reminder
-              </span>
-              <button
-                type="button"
-                onClick={() =>
-                  handleReminderChange(
-                    "paymentCollectionReminderEnabled",
-                    !formData.paymentCollectionReminderEnabled
-                  )
-                }
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${
-                  formData.paymentCollectionReminderEnabled
-                    ? "bg-secondary"
-                    : "bg-muted"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+            <div className="flex items-center justify-between p-3 flex-start gap-4 rounded-lg bg-muted/30 border border-border/50">
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-medium text-muted-foreground">
+                  Payment Collection Reminder
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  Outstanding amount will be reminded to collect from the
+                  patient
+                </span>
+              </div>
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  checked={formData.paymentCollectionReminderEnabled}
+                  onChange={() =>
+                    handleReminderChange(
+                      "paymentCollectionReminderEnabled",
+                      !formData.paymentCollectionReminderEnabled
+                    )
+                  }
+                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                />
+                <div
+                  className={`block h-6 w-11 rounded-full transition-all duration-300 ${
+                    formData.paymentCollectionReminderEnabled
+                      ? "bg-secondary"
+                      : "bg-muted"
+                  }`}
+                ></div>
+                <div
+                  className={`dot absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-md transition-all duration-300 ${
                     formData.paymentCollectionReminderEnabled
                       ? "translate-x-6"
-                      : "translate-x-1"
+                      : "translate-x-0"
                   }`}
-                />
-              </button>
+                ></div>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
+            {/* <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
               <span className="text-sm font-medium text-muted-foreground">
                 Follow-up Reminder
               </span>
-              <button
-                type="button"
-                onClick={() =>
-                  handleReminderChange(
-                    "followUpReminderEnabled",
-                    !formData.followUpReminderEnabled
-                  )
-                }
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  formData.followUpReminderEnabled ? "bg-secondary" : "bg-muted"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 shadow-sm ${
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  checked={formData.followUpReminderEnabled}
+                  onChange={() =>
+                    handleReminderChange(
+                      "followUpReminderEnabled",
+                      !formData.followUpReminderEnabled
+                    )
+                  }
+                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                />
+                <div
+                  className={`block h-6 w-11 rounded-full transition-all duration-300 ${
+                    formData.followUpReminderEnabled
+                      ? "bg-secondary"
+                      : "bg-muted"
+                  }`}
+                ></div>
+                <div
+                  className={`dot absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-md transition-all duration-300 ${
                     formData.followUpReminderEnabled
                       ? "translate-x-6"
-                      : "translate-x-1"
+                      : "translate-x-0"
                   }`}
-                />
-              </button>
+                ></div>
+              </div>
             </div>
 
             {formData.followUpReminderEnabled && (
@@ -610,7 +633,7 @@ const AddOrEditPatient: React.FC = () => {
                   max="30"
                 />
               </div>
-            )}
+            )} */}
           </div>
         </div>
 

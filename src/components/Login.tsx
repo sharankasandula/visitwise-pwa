@@ -86,7 +86,7 @@ const Login: React.FC = () => {
       <div className="relative z-10 w-full max-w-md">
         {/* App Branding Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full mb-4 shadow-lg">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full mb-4">
             <Heart className="w-10 h-10 text-primary" />
           </div>
           <h1 className="text-4xl font-pacifico bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-2">
@@ -97,7 +97,7 @@ const Login: React.FC = () => {
           </p>
         </div>
 
-        <Card className="w-full backdrop-blur-sm bg-card border border-border/50 shadow-2xl">
+        <Card className="w-full backdrop-blur-sm bg-card border border-border/50">
           <CardHeader className="text-center pb-6">
             <CardTitle className="text-2xl font-bold text-muted-foreground mb-2">
               Welcome Back! 👋

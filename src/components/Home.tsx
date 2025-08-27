@@ -135,7 +135,7 @@ const Home: React.FC = () => {
 
               {/* Theme Dropdown */}
               {isThemeDropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-56 bg-card border border-border rounded-lg shadow-lg z-50">
+                <div className="absolute right-0 top-full mt-2 w-56 bg-card border border-border rounded-lg z-50">
                   <div className="p-2 space-y-1">
                     {/* Theme Mode Section */}
                     <div className="px-2 py-1">
@@ -210,35 +210,40 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      <div className="sticky  px-4 space-y-3">
-        <EarningsCard />
-      </div>
+      {/* Earnings Card */}
+      {patients.length > 0 && (
+        <div className="sticky  px-4 space-y-3">
+          <EarningsCard />
+        </div>
+      )}
 
       {/* Sticky Search Bar */}
-      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75 px-4 pb-2 pt-4">
-        <label htmlFor="active-search" className="sr-only">
-          Search patients
-        </label>
-        <div className="relative">
-          <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <Search
-              className="h-6 w-6 text-muted-foreground"
-              aria-hidden="true"
+      {patients.length > 0 && (
+        <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75 px-4 pb-2 pt-4">
+          <label htmlFor="active-search" className="sr-only">
+            Search patients
+          </label>
+          <div className="relative">
+            <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <Search
+                className="h-6 w-6 text-muted-foreground"
+                aria-hidden="true"
+              />
+            </span>
+            <input
+              id="active-search"
+              type="text"
+              value={searchTerm}
+              onChange={handleSearch}
+              placeholder="Search patients by name..."
+              className="h-11 w-full rounded-full bg-muted pl-11 pr-3
+                   text-foreground placeholder:text-muted-foreground
+                   focus:outline-none focus:ring-2 focus:ring-primary"
+              aria-label="Search patients"
             />
-          </span>
-          <input
-            id="active-search"
-            type="text"
-            value={searchTerm}
-            onChange={handleSearch}
-            placeholder="Search patients by name..."
-            className="h-11 w-full rounded-full bg-muted pl-11 pr-3
-                 text-foreground placeholder:text-muted-foreground
-                 focus:outline-none focus:ring-2 focus:ring-primary"
-            aria-label="Search patients"
-          />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Loading State */}
       {loading && (
@@ -284,7 +289,7 @@ const Home: React.FC = () => {
             >
               <div
                 onClick={() => navigate("/archived-patients")}
-                className="rounded-lg p-2 cursor-pointer hover:shadow-md transition-shadow"
+                className="rounded-lg p-2 cursor-pointer transition-shadow"
               >
                 <div className="flex items-center justify-between text-muted-foreground">
                   <div className="flex items-center gap-3">
@@ -328,30 +333,36 @@ const Home: React.FC = () => {
           ))}
 
           {activePatients.length === 0 && (
-            <div className="text-center py-12">
-              <Archive className="w-12 text-muted-foreground h-12 mx-auto mb-4" />
-              <p className="mb-6 text-muted-foreground">No active patients</p>
+            <div className="text-center ">
+              <img
+                src="/physio_illustration1.png"
+                alt="Physiotherapy Illustration"
+                className="w-auto h-auto"
+              />
+              <div className="space-y-4 max-w-md">
+                <h2 className="text-2xl font-semibold text-foreground">
+                  No Active Patients
+                </h2>
+                <p className="text-muted-foreground leading-relaxed">
+                  Welcome to{" "}
+                  <span className="font-pacifico brand-heading bg-accent rounded-lg">
+                    Visitwise
+                  </span>
+                  . Start by adding your first patient.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Once you add patients, you'll be able to track their visits,
+                  earnings, and payments all in one place.
+                </p>
+              </div>
 
-              <div className="space-y-3">
+              <div className="space-y-3 mt-8">
                 <button
                   onClick={() => navigate("/add-patient")}
                   className="w-full max-w-xs py-3 px-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium flex items-center justify-center gap-2 mx-auto"
                 >
                   <Plus className="w-5 h-5" />
                   Add Your First Patient
-                </button>
-
-                <p className="text-muted-foreground"> or </p>
-
-                <button
-                  onClick={() => {
-                    // TODO: Implement contact import functionality
-                    alert("Contact import feature coming soon!");
-                  }}
-                  className="w-full max-w-xs bg-muted text-muted-foreground py-3 px-6 rounded-lg hover:bg-muted/80 transition-colors font-medium flex items-center justify-center gap-2 mx-auto border border-border"
-                >
-                  <User className="w-5 h-5" />
-                  Import from Contacts
                 </button>
               </div>
             </div>
@@ -360,12 +371,12 @@ const Home: React.FC = () => {
       )}
 
       {/* Floating Action Button */}
-      <button
+      {/*  <button
         onClick={() => navigate("/add-patient")}
-        className="fixed bottom-6 bg-primary right-6  p-4 rounded-full shadow-lg  transition-colors animate-bounce-in"
+        className="fixed bottom-6 bg-primary right-6  p-4 rounded-full transition-colors animate-bounce-in"
       >
         <Plus className="w-6 h-6 text-primary-foreground" />
-      </button>
+      </button> */}
     </div>
   );
 };

@@ -28,7 +28,7 @@ interface CardContentProps {
 const Card: React.FC<CardProps> = ({ children, className = "" }) => {
   return (
     <div
-      className={`bg-card rounded-lg border border-border shadow-sm ${className}`}
+      className={`bg-card rounded-lg border border-border ${className}`}
     >
       {children}
     </div>

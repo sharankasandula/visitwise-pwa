@@ -42,7 +42,7 @@ const SettingsPage: React.FC = () => {
           <div className="flex items-center">
             <button
               onClick={() => navigate("/")}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors"
+              className="flex items-center gap-2 pr-4 py-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors"
             >
               <ArrowLeft className="w-8 h-4" />
             </button>
@@ -53,77 +53,6 @@ const SettingsPage: React.FC = () => {
         </div>
 
         <div className="space-y-8">
-          {/* Account Settings Section */}
-          <div>
-            <div className="flex items-center gap-2 mb-6">
-              <User className="h-6 w-6 text-primary" />
-              <h2 className="text-xl font-semibold text-foreground">
-                Account Settings
-              </h2>
-            </div>
-
-            {/* Basic Information */}
-            <div className="p-6 bg-card border border-border rounded-lg">
-              <h3 className="text-lg font-semibold text-card-foreground mb-4">
-                Basic Information
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-1">
-                    Full Name
-                  </label>
-                  <div className="w-full bg-muted border border-border rounded px-3 py-2 text-card-foreground">
-                    {user.name}
-                  </div>
-                </div>
-                {user.email && (
-                  <div>
-                    <label className="block text-sm font-medium text-muted-foreground mb-1">
-                      Email
-                    </label>
-
-                    <div className="w-full bg-muted border border-border rounded px-3 py-2 text-card-foreground">
-                      {user.email}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">
-                    Account Type:
-                  </span>
-                  {user.isAnonymous ? (
-                    <span className="inline-flex items-center rounded-full  px-2 py-1 text-xs font-medium bg-accent text-accent-foreground">
-                      Guest User
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center rounded-full  px-2 py-1 text-xs font-medium bg-accent text-accent-foreground">
-                      Google Account
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Account Actions */}
-            <div className="p-6 bg-card border border-border rounded-lg">
-              <h3 className="text-lg font-semibold text-card-foreground mb-4">
-                Account Actions
-              </h3>
-              <div className="space-y-3">
-                <button className="w-full text-left border border-border text-destructive hover:text-destructive hover:bg-destructive/10 px-4 py-3 rounded-lg transition-colors flex items-center gap-2">
-                  <Trash2 className="h-4 w-4" />
-                  Delete Account
-                </button>
-                <button className="w-full text-left border border-border text-muted-foreground hover:bg-muted px-4 py-3 rounded-lg transition-colors flex items-center gap-2">
-                  <Download className="h-4 w-4" />
-                  Export Data
-                </button>
-              </div>
-            </div>
-          </div>
           {/* Notification Settings Section */}
           <div>
             <div className="flex items-center gap-2 mb-6">
@@ -359,6 +288,78 @@ const SettingsPage: React.FC = () => {
                     }}
                   />
                 ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Account Settings Section */}
+          <div>
+            <div className="flex items-center gap-2 mb-6">
+              <User className="h-6 w-6 text-primary" />
+              <h2 className="text-xl font-semibold text-foreground">
+                Account Settings
+              </h2>
+            </div>
+
+            {/* Basic Information */}
+            {/* <div className="p-6 bg-card border border-border rounded-lg">
+              <h3 className="text-lg font-semibold text-card-foreground mb-4">
+                Basic Information
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">
+                    Full Name
+                  </label>
+                  <div className="w-full bg-muted border border-border rounded px-3 py-2 text-card-foreground">
+                    {user.name}
+                  </div>
+                </div>
+                {user.email && (
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-1">
+                      Email
+                    </label>
+
+                    <div className="w-full bg-muted border border-border rounded px-3 py-2 text-card-foreground">
+                      {user.email}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    Account Type:
+                  </span>
+                  {user.isAnonymous ? (
+                    <span className="inline-flex items-center rounded-full  px-2 py-1 text-xs font-medium bg-accent text-accent-foreground">
+                      Guest User
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center rounded-full  px-2 py-1 text-xs font-medium bg-accent text-accent-foreground">
+                      Google Account
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div> */}
+
+            {/* Account Actions */}
+            <div className="p-6 bg-card border border-border rounded-lg">
+              <h3 className="text-lg font-semibold text-card-foreground mb-4">
+                Account Actions
+              </h3>
+              <div className="space-y-3">
+                <button className="w-full text-left border border-border text-destructive hover:text-destructive hover:bg-destructive/10 px-4 py-3 rounded-lg transition-colors flex items-center gap-2">
+                  <Trash2 className="h-4 w-4" />
+                  Delete Account
+                </button>
+                <button className="w-full text-left border border-border text-muted-foreground hover:bg-muted px-4 py-3 rounded-lg transition-colors flex items-center gap-2">
+                  <Download className="h-4 w-4" />
+                  Export Data
+                </button>
               </div>
             </div>
           </div>

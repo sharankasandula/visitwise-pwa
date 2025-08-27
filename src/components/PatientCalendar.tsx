@@ -76,9 +76,9 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
 
     if (visit) {
       // Visit completed
-      dayStyles = "bg-secondary";
+      dayStyles = "bg-success/20";
       borderStyles = "";
-      textStyles = "text-secondary-foreground";
+      textStyles = "text-success";
     } else if (isPastOrToday) {
       // Can add visit
       dayStyles = "";
@@ -114,8 +114,8 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
                 <div
                   className={`w-3 h-3 rounded-full ${
                     visitPaymentStatus[visit.id] === "paid"
-                      ? "bg-destructive"
-                      : "bg-destructive-foreground"
+                      ? "bg-success"
+                      : "bg-danger"
                   }`}
                 />
               )}
@@ -217,9 +217,10 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
               />
             </svg>
           </button>
+          
           <button
             onClick={goToToday}
-            className="px-3 py-1 text-sm rounded-lg transition-colors"
+            className="px-3 py-1 text-sm bg-secondary/20 rounded-lg transition-colors"
           >
             Today
           </button>
@@ -278,7 +279,7 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
       <div className="mt-4 pt-4  border-t border-border">
         <div className="flex flex-wrap items-center font-extralight justify-center gap-3 sm:gap-6 text-xs">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 sm:w-4 sm:h-4 border bg-secondary rounded"></div>
+            <div className="w-3 h-3 sm:w-4 sm:h-4 border bg-success/20 rounded"></div>
             <span className="text-xs sm:text-xs">Visit Completed</span>
           </div>
           <div className="flex items-center gap-2">
@@ -290,11 +291,11 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
             <span className="text-xs sm:text-xs">Future Date (Locked)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-destructive rounded-full"></div>
+            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-success rounded-full"></div>
             <span className="text-xs sm:text-xs">Paid Visit</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-destructive-foreground border rounded-full"></div>
+            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-danger border rounded-full"></div>
             <span className="text-xs sm:text-xs ">Unpaid Visit</span>
           </div>
         </div>

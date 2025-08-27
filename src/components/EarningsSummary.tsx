@@ -78,7 +78,7 @@ const EarningsSummary: React.FC = () => {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-card p-4">
+      <div className="bg-accent/30 p-4">
         <div className="flex items-center">
           <button
             onClick={() => navigate("/")}
@@ -99,15 +99,17 @@ const EarningsSummary: React.FC = () => {
         {/* Summary Cards */}
         <div className="grid grid-cols-1 gap-4">
           {/* Total Earnings Card */}
-          <div className="bg-accent text-card-foreground rounded-lg p-6 shadow-sm">
+          <div className="bg-secondary/20 text-card-foreground rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className=" text-sm font-medium">Total Earnings</p>
-                <p className="text-4xl font-bold text-secondary">
+                <p className="text-accent-foreground text-sm font-medium">
+                  Total Earnings
+                </p>
+                <p className="text-4xl font-bold text-secondary ">
                   ₹{summary.total.toLocaleString()}
                 </p>
               </div>
-              <div className="bg-secondary-foreground p-4 rounded-full">
+              <div className="bg-secondary/20 p-4 rounded-full">
                 <CalendarCheck2 className="w-8 h-8 text-secondary" />
               </div>
             </div>
@@ -115,34 +117,32 @@ const EarningsSummary: React.FC = () => {
 
           {/* Collected vs Outstanding */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-accent text-card-foreground rounded-lg p-4 shadow-sm">
+            <div className="bg-success/20 text-card-foreground rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-accent-foreground text-sm font-medium">
                     Collected
                   </p>
-                  <p className="text-2xl font-bold text-secondary">
+                  <p className="text-2xl font-bold text-success">
                     ₹{summary.collected.toLocaleString()}
                   </p>
                 </div>
-                <div className="bg-secondary-foreground text-secondary p-3 rounded-full">
-                  <TrendingUp className="w-6 h-6 text-secondary" />
+                <div className="bg-success/20 text-secondary-foreground p-3 rounded-full">
+                  <TrendingUp className="w-6 h-6 text-success" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-accent text-card-foreground rounded-lg p-4 shadow-sm">
+            <div className="bg-warning/20 text-card-foreground rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-accent-foreground text-sm font-medium">
-                    Outstanding
-                  </p>
-                  <p className="text-2xl font-bold text-secondary">
+                  <p className="text-accent-foreground text-sm font-medium">Outstanding</p>
+                  <p className="text-2xl font-bold text-warning">
                     ₹{summary.outstanding.toLocaleString()}
                   </p>
                 </div>
-                <div className="bg-secondary-foreground  p-3 rounded-full">
-                  <AlertCircle className="w-6 h-6 text-secondary" />
+                <div className="bg-warning/20  p-3 rounded-full">
+                  <AlertCircle className="w-6 h-6 text-warning" />
                 </div>
               </div>
             </div>
@@ -150,7 +150,7 @@ const EarningsSummary: React.FC = () => {
         </div>
 
         {/* Progress Bar */}
-        <div className="bg-accent text-card-foreground rounded-lg p-4 shadow-sm">
+        <div className="bg-accent/30 text-card-foreground rounded-lg p-4">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-medium text-accent-foreground">
               Collection Progress
@@ -162,7 +162,7 @@ const EarningsSummary: React.FC = () => {
               %
             </span>
           </div>
-          <div className="w-full bg-white border border-border rounded-full h-3">
+          <div className="w-full bg-white rounded-full h-3">
             <div
               className="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full transition-all duration-500"
               style={{
@@ -178,14 +178,14 @@ const EarningsSummary: React.FC = () => {
 
         {/* Earnings by Patient */}
         {earningsByPatient.length > 0 ? (
-          <div className="bg-accent text-card-foreground rounded-lg shadow-sm">
-            <div className="p-4">
+          <div className="bg-accent/30 text-card-foreground rounded-lg">
+            <div className="p-4 bg-accent/10 rounded-t-lg">
               <h3 className="font-semibold">Earnings by Patient</h3>
             </div>
-            <div className="divide-y">
+            <div className="">
               {earningsByPatient.map((patient) => (
                 <div key={patient.id} className="p-4">
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-start justify-between mb-2">
                     <div>
                       <p className="font-medium">{patient.name}</p>
                       <p className="text-sm text-accent-foreground">
@@ -193,14 +193,14 @@ const EarningsSummary: React.FC = () => {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-blue-600">
-                        ₹{patient.totalEarned.toLocaleString()}
+                      <p className="font-bold text-secondary">
+                        ₹{patient.totalEarned.toLocaleString()} earned
                       </p>
-                      <p className="text-sm text-green-600">
+                      <p className="text-sm text-success">
                         ₹{patient.totalCollected.toLocaleString()} collected
                       </p>
                       {patient.totalDue > 0 && (
-                        <p className="text-sm text-orange-600">
+                        <p className="text-sm text-danger">
                           ₹{patient.totalDue.toLocaleString()} outstanding
                         </p>
                       )}
@@ -229,7 +229,7 @@ const EarningsSummary: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="bg-accent text-center py-10 text-card-foreground rounded-lg shadow-sm">
+          <div className="bg-accent/30 text-center py-10 text-card-foreground rounded-lg">
             <div className="p-4">
               <h3 className="text-accent-foreground">
                 Add a patients to see patient-wise earnings

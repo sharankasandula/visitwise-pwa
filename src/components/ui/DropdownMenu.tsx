@@ -91,7 +91,7 @@ const DropdownMenuContent: React.FC<DropdownMenuContentProps> = ({
       {(isOpen || forceMount) && (
         <div
           ref={contentRef}
-          className={`absolute top-full mt-2 z-50 min-w-[8rem] overflow-hidden rounded-md border bg-white p-1 shadow-md ${alignClasses[align]} ${className}`}
+          className={`absolute top-full mt-2 z-50 min-w-[8rem] overflow-hidden rounded-md border p-1 ${alignClasses[align]} ${className}`}
         >
           {children}
         </div>

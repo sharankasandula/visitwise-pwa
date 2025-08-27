@@ -24,6 +24,12 @@
   --border: 214 32% 91%;
   --input: 214 32% 91%;
   --ring: 262 83% 58%;
+  --success: 142 72% 29%;
+  --success-foreground: 210 40% 98%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 222 84% 5%;
+  --danger: 0 72% 45%;
+  --danger-foreground: 210 40% 98%;
 }
 
 /* Tailwind v4 theme tokens mapped to our CSS variables */
@@ -47,6 +53,12 @@
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+  --color-danger: hsl(var(--danger));
+  --color-danger-foreground: hsl(var(--danger-foreground));
 }
 
 * {

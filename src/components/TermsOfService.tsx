@@ -43,7 +43,7 @@ const TermsOfService: React.FC = () => {
           </div>
         </div>
 
-        <Card className="backdrop-blur-sm bg-card/80 border border-border/50 shadow-xl">
+        <Card className="backdrop-blur-sm bg-card/80 border border-border/50">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-center text-card-foreground">
               VisitWise Terms of Service

@@ -94,7 +94,7 @@ const EarningsCardExtended: React.FC = () => {
 
   return (
     <div
-      className="rounded-xl p-4 border  cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+      className="rounded-xl p-4 border  cursor-pointer transition-all duration-200 hover:scale-[1.02]"
       onClick={handleCardClick}
     >
       {/* Header with title and chevron */}
@@ -117,18 +117,16 @@ const EarningsCardExtended: React.FC = () => {
 
         {/* Collected */}
         <div className="text-center">
-          <p className="text-xs text-green-600 font-medium mb-1">Collected</p>
-          <p className="text-sm font-bold text-green-700">
+          <p className="text-xs text-success font-medium mb-1">Collected</p>
+          <p className="text-sm font-bold text-success">
             ₹{totalCollected.toLocaleString()}
           </p>
         </div>
 
         {/* Outstanding */}
         <div className="text-center">
-          <p className="text-xs text-orange-600 font-medium mb-1">
-            Outstanding
-          </p>
-          <p className="text-sm font-bold text-orange-700">
+          <p className="text-xs text-warning font-medium mb-1">Outstanding</p>
+          <p className="text-sm font-bold text-warning">
             ₹{totalOutstanding.toLocaleString()}
           </p>
         </div>
