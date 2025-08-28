@@ -677,7 +677,7 @@ const PatientProfile: React.FC = () => {
             <Camera className="w-12 h-12 mx-auto mb-4 text-pink-400" />
             <img
               src="./illustrations/physio_illustration1.png"
-              alt="No media"
+              alt="No Media"
               className="w-auto h-auto"
             />
             <p className="mb-2">No media uploaded yet</p>

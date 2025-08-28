@@ -338,7 +338,7 @@ const Home: React.FC = () => {
           ))}
 
           {activePatients.length === 0 && (
-            <div className="text-center ">
+            <div className="text-center flex flex-col items-center">
               <p className="text-muted-foreground text-2xl font-light leading-relaxed">
                 Welcome to
                 <span className="font-pacifico font-extralight px-2">

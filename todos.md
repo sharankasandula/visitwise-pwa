@@ -18,17 +18,31 @@
 - [x] Fix bug in App settings
 - [x] Upgrade with new styles - Different Themes and Dark Theme
 - [x] deploy for testing - Netlify
+- [x] Delete visit from patient calendar
+- [x] Show notes, protocol for patient in patient profile
+- [x] Bring themes in Home page
+- [x] Toast notifications
 - [ ] [Bug] Sometimes patient keeps loading
 - [ ] [Bug] On archiving patients patients keep loading
-- [ ] Show notes, protocol for patient in patient profile
-- [ ] Toast notifications
-- [ ] Delete visit from patient calendar
-- [ ] Store users preferences
-- [ ] Bring themes in Home page
-- [ ] Swipe down for refresh
+- [ ] Add illustrations and animations
+- [ ] Store user and user preferences in Firebase
+- [ ] Pull to refresh
 - [ ] Editable payment/visit history.
 - [ ] Media uploads
 - [ ] Import patients from contacts
 - [ ] Convert to android app
 - [ ] Analytics on Earnings and visits.
 - [ ] Testing
+
+UI Testing tasks
+
+- [ ] On reminder - select patients you visited that day
+- [ ] Business card on profile.
+- [ ] Follow up reminder on archive
+- [x] Add outstanding amount in patient card
+- [x] Remove shadows
+- [X] Change layout in earnings summary
+- [X] Remove fab button
+- [X] Remove search when empty
+- [X] Earnings this month font size
+- [X] Switches
