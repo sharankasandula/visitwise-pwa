@@ -27,9 +27,7 @@ interface CardContentProps {
 
 const Card: React.FC<CardProps> = ({ children, className = "" }) => {
   return (
-    <div
-      className={`bg-card rounded-lg border border-border ${className}`}
-    >
+    <div className={`bg-card rounded-lg border border-border ${className}`}>
       {children}
     </div>
   );
@@ -44,7 +42,7 @@ const CardHeader: React.FC<CardHeaderProps> = ({
 
 const CardTitle: React.FC<CardTitleProps> = ({ children, className = "" }) => {
   return (
-    <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>
+    <h3 className={`text-lg font-semibold text-foreground ${className}`}>
       {children}
     </h3>
   );

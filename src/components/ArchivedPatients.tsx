@@ -104,8 +104,13 @@ const ArchivedPatients: React.FC = () => {
         ))}
 
         {filteredArchivedPatients.length === 0 && (
-          <div className="text-center py-12">
-            <Archive className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+          <div className="flex flex-col items-center text-center py-6">
+            {/* <Archive className="w-16 h-16 text-muted-foreground mx-auto mb-4" /> */}
+            <img
+              src="./illustrations/physio_illustration4.png"
+              alt="Physiotherapist Illustration"
+              className="w-24 h-auto my-6"
+            />
             <p className="text-muted-foreground text-lg mb-2">
               {searchTerm.trim() === ""
                 ? "No archived patients"

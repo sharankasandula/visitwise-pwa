@@ -87,7 +87,12 @@ const PatientProfile: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center text-muted-foreground">
-          Loading patient...
+          <img
+            src="./illustrations/physio_illustration1.png"
+            alt="Loading"
+            className="w-24 h-24"
+          />
+          <p>Loading patient info...</p>
         </div>
       </div>
     );
@@ -669,7 +674,12 @@ const PatientProfile: React.FC = () => {
             Media
           </h3>
           <div className="rounded-lg bg-card border border-border text-card-foreground  p-8 text-center">
-            <Camera className="w-16 h-16 mx-auto mb-4 " />
+            <Camera className="w-12 h-12 mx-auto mb-4 text-pink-400" />
+            <img
+              src="./illustrations/physio_illustration1.png"
+              alt="No media"
+              className="w-auto h-auto"
+            />
             <p className="mb-2">No media uploaded yet</p>
             <p className="text-sm text-muted-foreground">
               Upload images or videos to track progress

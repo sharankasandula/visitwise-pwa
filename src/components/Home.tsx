@@ -211,15 +211,15 @@ const Home: React.FC = () => {
       </div>
 
       {/* Earnings Card */}
-      {patients.length > 0 && (
-        <div className="sticky  px-4 space-y-3">
+      {activePatients.length > 0 && (
+        <div className="sticky px-4 space-y-3">
           <EarningsCard />
         </div>
       )}
 
       {/* Sticky Search Bar */}
-      {patients.length > 0 && (
-        <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75 px-4 pb-2 pt-4">
+      {activePatients.length > 0 && (
+        <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75 p-4">
           <label htmlFor="active-search" className="sr-only">
             Search patients
           </label>
@@ -250,6 +250,11 @@ const Home: React.FC = () => {
         <div className="px-4 py-8 text-center">
           <div className="flex flex-col items-center justify-center space-y-4">
             <Loader2 className="w-12 h-12 text-primary animate-spin" />
+            <img
+              src="./illustrations/physio_illustration1.png"
+              alt="Loading"
+              className="w-auto h-auto"
+            />
             <p className="text-muted-foreground text-lg">Loading patients...</p>
           </div>
         </div>
@@ -334,49 +339,58 @@ const Home: React.FC = () => {
 
           {activePatients.length === 0 && (
             <div className="text-center ">
+              <p className="text-muted-foreground text-2xl font-light leading-relaxed">
+                Welcome to
+                <span className="font-pacifico font-extralight px-2">
+                  Visitwise
+                </span>
+              </p>
               <img
-                src="/physio_illustration1.png"
-                alt="Physiotherapy Illustration"
-                className="w-auto h-auto"
+                src="./illustrations/physio_illustration3.png"
+                alt="Physiotherapist Illustration"
+                className="w-auto h-auto pt-6"
               />
               <div className="space-y-4 max-w-md">
-                <h2 className="text-2xl font-semibold text-foreground">
-                  No Active Patients
+                <h2 className="text-2xl pt-4 font-light text-foreground">
+                  Start by adding your first patient.
                 </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  Welcome to{" "}
-                  <span className="font-pacifico brand-heading bg-accent rounded-lg">
-                    Visitwise
-                  </span>
-                  . Start by adding your first patient.
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Once you add patients, you'll be able to track their visits,
-                  earnings, and payments all in one place.
-                </p>
               </div>
 
-              <div className="space-y-3 mt-8">
+              <div>
                 <button
                   onClick={() => navigate("/add-patient")}
-                  className="w-full max-w-xs py-3 px-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium flex items-center justify-center gap-2 mx-auto"
+                  className="w-full mt-4 max-w-xs py-3 px-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium flex items-center justify-center gap-2 mx-auto"
                 >
                   <Plus className="w-5 h-5" />
                   Add Your First Patient
                 </button>
               </div>
+              <p className="text-sm pt-4 text-muted-foreground">
+                Once you add patients, you'll be able to track your earnings,
+                visits, and progress all in one place.
+              </p>
+              <p className="text-sm pt-4 text-muted-foreground">
+                Get started in less than a minute.
+              </p>
             </div>
           )}
         </div>
       )}
 
       {/* Floating Action Button */}
-      {/*  <button
-        onClick={() => navigate("/add-patient")}
-        className="fixed bottom-6 bg-primary right-6  p-4 rounded-full transition-colors animate-bounce-in"
-      >
-        <Plus className="w-6 h-6 text-primary-foreground" />
-      </button> */}
+      {activePatients.length >= 1 && (
+        <button
+          onClick={() => navigate("/add-patient")}
+          title="Add Patient"
+          aria-label="Add Patient"
+          aria-hidden="true"
+          data-tip="Add Patient"
+          data-place="top"
+          className="fixed bottom-6 bg-primary left-1/2 transform -translate-x-1/2 p-4 rounded-full transition-colors animate-bounce-in"
+        >
+          <Plus className="w-6 h-6 text-primary-foreground" />
+        </button>
+      )}
     </div>
   );
 };

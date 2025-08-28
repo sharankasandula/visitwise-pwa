@@ -82,13 +82,13 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     <div className="bg-foreground/50 fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-card border border-border text-card-foreground rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 bg-accent text-accent-foreground">
-          <div className="flex items-center space-x-3">
+        <div className="flex items-center justify-between p-4 bg-accent/10 text-accent-foreground">
+          <div className="flex flex-start space-x-3">
             <div className=" p-2 rounded-full">
               <DollarSign className="w-5 h-5 text-secondary" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold">Record Payment</h3>
+              <h3 className="text-lg pt-1 font-semibold">Record Payment</h3>
               <p className="text-sm ">{patientName}</p>
             </div>
           </div>

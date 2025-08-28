@@ -295,8 +295,10 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
             <span className="text-xs sm:text-xs">Paid Visit</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-danger border rounded-full"></div>
-            <span className="text-xs sm:text-xs ">Unpaid Visit</span>
+            <div className="w-3 h-3 sm:w-4 sm:h-4 bg-danger  rounded-full"></div>
+            <span className="text-xs sm:text-xs ">
+              Unpaid/Partially Paid Visit
+            </span>
           </div>
         </div>
       </div>
