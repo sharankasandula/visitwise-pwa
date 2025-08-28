@@ -20,3 +20,9 @@ export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
   prompt: "select_account",
 });
+
+// Handle CORS issues in development
+if (import.meta.env.DEV) {
+  // In development, we might need to handle CORS differently
+  console.log("Running in development mode");
+}

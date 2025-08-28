@@ -48,6 +48,17 @@ export class AuthService {
       if (error.code === "auth/popup-closed-by-user") {
         throw new Error("Sign-in was cancelled");
       }
+      if (
+        error.code === "auth/popup-blocked" ||
+        error.message?.includes("Cross-Origin-Opener-Policy")
+      ) {
+        console.warn(
+          "Popup blocked, this might be due to CORS policy. Consider using redirect method in production."
+        );
+        throw new Error(
+          "Popup blocked by browser. Please allow popups for this site."
+        );
+      }
       throw new Error(error.message || "Failed to sign in with Google");
     }
   }

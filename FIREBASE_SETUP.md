@@ -121,3 +121,42 @@ Enable debug logging by checking the browser console for:
 - Email addresses are stored but can be used for user lookup
 - Profile pictures are stored as URLs (not actual image files)
 - Anonymous users are also persisted with limited data
+
+## Localhost Development
+
+For localhost development, the current rules are intentionally permissive to avoid CORS and permission issues:
+
+- All authenticated users can read/write to any collection
+- This allows your app to work seamlessly in development
+- **Important**: These rules should be tightened for production use
+
+### Production Security Rules
+
+When deploying to production, consider implementing these stricter rules:
+
+```javascript
+// Users can only access their own data
+match /users/{userId} {
+  allow read, write: if request.auth != null && request.auth.uid == userId;
+}
+
+// Patients belong to specific users
+match /patients/{patientId} {
+  allow read, write: if request.auth != null &&
+    resource.data.userId == request.auth.uid;
+}
+
+// Subcollections inherit parent permissions
+match /patients/{patientId}/{subcollection}/{documentId} {
+  allow read, write: if request.auth != null &&
+    get(/databases/$(database)/documents/patients/$(patientId)).data.userId == request.auth.uid;
+}
+```
+
+### CORS Issues in Development
+
+If you encounter CORS errors during development:
+
+1. Ensure you're using `localhost` or `127.0.0.1` (not `0.0.0.0`)
+2. Check that your Firebase project's authorized domains include `localhost`
+3. Consider using redirect-based authentication instead of popup for development
