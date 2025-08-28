@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
 import {
@@ -24,6 +24,7 @@ import {
   setColorScheme,
   ColorScheme,
 } from "../store/slices/themeSlice";
+import { PullToRefresh } from "./ui/PullToRefresh";
 
 const Home: React.FC = () => {
   const dispatch = useDispatch();
@@ -62,6 +63,15 @@ const Home: React.FC = () => {
 
   const activePatients = patients.filter((p) => p.isActive);
   const archivedPatients = patients.filter((p) => !p.isActive);
+
+  // Handle pull-to-refresh
+  const handleRefresh = useCallback(async () => {
+    try {
+      await dispatch(fetchPatients() as any);
+    } catch (error) {
+      console.error("Failed to refresh patients:", error);
+    }
+  }, [dispatch]);
 
   // Theme preview component
   const ThemePreview = ({
@@ -210,172 +220,177 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* Earnings Card */}
-      {activePatients.length > 0 && (
-        <div className="sticky px-4 space-y-3">
-          <EarningsCard />
-        </div>
-      )}
+      {/* Main content with pull-to-refresh */}
+      <PullToRefresh onRefresh={handleRefresh}>
+        {/* Earnings Card */}
+        {activePatients.length > 0 && (
+          <div className="sticky px-4 space-y-3">
+            <EarningsCard />
+          </div>
+        )}
 
-      {/* Sticky Search Bar */}
-      {activePatients.length > 0 && (
-        <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75 p-4">
-          <label htmlFor="active-search" className="sr-only">
-            Search patients
-          </label>
-          <div className="relative">
-            <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <Search
-                className="h-6 w-6 text-muted-foreground"
-                aria-hidden="true"
-              />
-            </span>
-            <input
-              id="active-search"
-              type="text"
-              value={searchTerm}
-              onChange={handleSearch}
-              placeholder="Search patients by name..."
-              className="h-11 w-full rounded-full bg-muted pl-11 pr-3
+        {/* Sticky Search Bar */}
+        {activePatients.length > 0 && (
+          <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75 p-4">
+            <label htmlFor="active-search" className="sr-only">
+              Search patients
+            </label>
+            <div className="relative">
+              <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <Search
+                  className="h-6 w-6 text-muted-foreground"
+                  aria-hidden="true"
+                />
+              </span>
+              <input
+                id="active-search"
+                type="text"
+                value={searchTerm}
+                onChange={handleSearch}
+                placeholder="Search patients by name..."
+                className="h-11 w-full rounded-full bg-muted pl-11 pr-3
                    text-foreground placeholder:text-muted-foreground
                    focus:outline-none focus:ring-2 focus:ring-primary"
-              aria-label="Search patients"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Loading State */}
-      {loading && (
-        <div className="px-4 py-8 text-center">
-          <div className="flex flex-col items-center justify-center space-y-4">
-            <Loader2 className="w-12 h-12 text-primary animate-spin" />
-            <img
-              src="./illustrations/physio_illustration1.png"
-              alt="Loading"
-              className="w-auto h-auto"
-            />
-            <p className="text-muted-foreground text-lg">Loading patients...</p>
-          </div>
-        </div>
-      )}
-
-      {/* Error State */}
-      {error && !loading && (
-        <div className="px-4 py-6">
-          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 animate-fade-in">
-            <div className="flex items-center space-x-3">
-              <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0" />
-              <div>
-                <h3 className="text-sm font-medium text-destructive">
-                  Error loading patients
-                </h3>
-                <p className="text-sm text-destructive/80 mt-1">{error}</p>
-              </div>
+                aria-label="Search patients"
+              />
             </div>
-            <button
-              onClick={() => dispatch(fetchPatients() as any)}
-              className="mt-3 text-sm text-destructive hover:text-destructive/80 underline"
-            >
-              Try again
-            </button>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Patient List - Only show when not loading and no error */}
-      {!loading && !error && (
-        <div className="px-4 pb-4 text-muted space-y-3">
-          {/* Archived Patients Card */}
-          {archivedPatients.length > 0 && (
-            <div
-              className="animate-slide-up pl-1"
-              style={{ animationDelay: `${activePatients.length * 0.1}s` }}
-            >
-              <div
-                onClick={() => navigate("/archived-patients")}
-                className="rounded-lg p-2 cursor-pointer transition-shadow"
+        {/* Loading State */}
+        {loading && (
+          <div className="px-4 py-8 text-center">
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <Loader2 className="w-12 h-12 text-primary animate-spin" />
+              <img
+                src="./illustrations/physio_illustration1.png"
+                alt="Loading"
+                className="w-auto h-auto"
+              />
+              <p className="text-muted-foreground text-lg">
+                Loading patients...
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !loading && (
+          <div className="px-4 py-6">
+            <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 animate-fade-in">
+              <div className="flex items-center space-x-3">
+                <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0" />
+                <div>
+                  <h3 className="text-sm font-medium text-destructive">
+                    Error loading patients
+                  </h3>
+                  <p className="text-sm text-destructive/80 mt-1">{error}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => dispatch(fetchPatients() as any)}
+                className="mt-3 text-sm text-destructive hover:text-destructive/80 underline"
               >
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center">
-                      <Archive className="w-6 h-6" />
+                Try again
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Patient List - Only show when not loading and no error */}
+        {!loading && !error && (
+          <div className="px-4 pb-4 text-muted space-y-3">
+            {/* Archived Patients Card */}
+            {archivedPatients.length > 0 && (
+              <div
+                className="animate-slide-up pl-1"
+                style={{ animationDelay: `${activePatients.length * 0.1}s` }}
+              >
+                <div
+                  onClick={() => navigate("/archived-patients")}
+                  className="rounded-lg p-2 cursor-pointer transition-shadow"
+                >
+                  <div className="flex items-center justify-between text-muted-foreground">
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center">
+                        <Archive className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h3 className="">
+                          Archived Patients ({archivedPatients.length})
+                        </h3>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="">
-                        Archived Patients ({archivedPatients.length})
-                      </h3>
+                    <div className="">
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
                     </div>
-                  </div>
-                  <div className="">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {activePatients.map((patient, index) => (
-            <div
-              key={patient.id}
-              className="animate-slide-up"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <PatientCard patient={patient} />
-            </div>
-          ))}
-
-          {activePatients.length === 0 && (
-            <div className="text-center flex flex-col items-center">
-              <p className="text-muted-foreground text-2xl font-light leading-relaxed">
-                Welcome to
-                <span className="font-pacifico font-extralight px-2">
-                  Visitwise
-                </span>
-              </p>
-              <img
-                src="./illustrations/physio_illustration3.png"
-                alt="Physiotherapist Illustration"
-                className="w-auto h-auto pt-6"
-              />
-              <div className="space-y-4 max-w-md">
-                <h2 className="text-2xl pt-4 font-light text-foreground">
-                  Start by adding your first patient.
-                </h2>
+            {activePatients.map((patient, index) => (
+              <div
+                key={patient.id}
+                className="animate-slide-up"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <PatientCard patient={patient} />
               </div>
+            ))}
 
-              <div>
-                <button
-                  onClick={() => navigate("/add-patient")}
-                  className="w-full mt-4 max-w-xs py-3 px-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium flex items-center justify-center gap-2 mx-auto"
-                >
-                  <Plus className="w-5 h-5" />
-                  Add Your First Patient
-                </button>
+            {activePatients.length === 0 && (
+              <div className="text-center flex flex-col items-center">
+                <p className="text-muted-foreground text-2xl font-light leading-relaxed">
+                  Welcome to
+                  <span className="font-pacifico font-extralight px-2">
+                    Visitwise
+                  </span>
+                </p>
+                <img
+                  src="./illustrations/physio_illustration3.png"
+                  alt="Physiotherapist Illustration"
+                  className="w-auto h-auto pt-6"
+                />
+                <div className="space-y-4 max-w-md">
+                  <h2 className="text-2xl pt-4 font-light text-foreground">
+                    Start by adding your first patient.
+                  </h2>
+                </div>
+
+                <div>
+                  <button
+                    onClick={() => navigate("/add-patient")}
+                    className="w-full mt-4 max-w-xs py-3 px-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium flex items-center justify-center gap-2 mx-auto"
+                  >
+                    <Plus className="w-5 h-5" />
+                    Add Your First Patient
+                  </button>
+                </div>
+                <p className="text-sm pt-4 text-muted-foreground">
+                  Once you add patients, you'll be able to track your earnings,
+                  visits, and progress all in one place.
+                </p>
+                <p className="text-sm pt-4 text-muted-foreground">
+                  Get started in less than a minute.
+                </p>
               </div>
-              <p className="text-sm pt-4 text-muted-foreground">
-                Once you add patients, you'll be able to track your earnings,
-                visits, and progress all in one place.
-              </p>
-              <p className="text-sm pt-4 text-muted-foreground">
-                Get started in less than a minute.
-              </p>
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )}
+      </PullToRefresh>
 
       {/* Floating Action Button */}
       {activePatients.length >= 1 && (
