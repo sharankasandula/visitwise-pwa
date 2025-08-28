@@ -37,7 +37,7 @@ const CardHeader: React.FC<CardHeaderProps> = ({
   children,
   className = "",
 }) => {
-  return <div className={`px-6 py-4  ${className}`}>{children}</div>;
+  return <div className={`p-4  ${className}`}>{children}</div>;
 };
 
 const CardTitle: React.FC<CardTitleProps> = ({ children, className = "" }) => {
@@ -59,7 +59,7 @@ const CardContent: React.FC<CardContentProps> = ({
   children,
   className = "",
 }) => {
-  return <div className={`px-6 py-4 ${className}`}>{children}</div>;
+  return <div className={`p-4 ${className}`}>{children}</div>;
 };
 
 export { Card, CardHeader, CardTitle, CardDescription, CardContent };

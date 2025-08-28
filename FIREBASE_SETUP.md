@@ -1,103 +1,123 @@
-# Firebase Authentication Setup Guide
+# Firebase Setup for User Data Persistence
 
-## Prerequisites
+This document explains how to set up Firebase to persist user data when users sign in with Google OAuth.
 
-- Firebase project created at [Firebase Console](https://console.firebase.google.com/)
-- Firebase project with Authentication enabled
+## What's Been Implemented
 
-## Environment Variables
+1. **User Service** (`src/services/userService.ts`): Handles creating, updating, and retrieving user data from Firestore
+2. **Updated Auth Service**: Now automatically saves user data to Firebase when users sign in
+3. **Firestore Security Rules**: Secure access to user data
+4. **Firestore Indexes**: Optimize queries on the users collection
 
-Create a `.env` file in your project root with the following variables:
+## User Data Structure
 
-```env
-VITE_FIREBASE_API_KEY=your_api_key_here
-VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
+When a user signs in, the following data is stored in the `users` collection:
+
+```typescript
+interface UserData {
+  id: string; // Firebase Auth UID
+  name: string; // User's display name
+  email: string; // User's email address
+  photoURL?: string; // User's profile picture URL
+  isAnonymous: boolean; // Whether user signed in anonymously
+  createdAt: Date; // When the user account was created
+  lastLoginAt: Date; // When the user last signed in
+  isActive: boolean; // Whether the account is active
+}
 ```
 
-## Firebase Console Configuration
+## Firebase Configuration Files
 
-### 1. Enable Authentication
+### 1. Firestore Security Rules (`firestore.rules`)
 
-1. Go to Firebase Console > Authentication
-2. Click "Get started" if not already enabled
+These rules ensure:
 
-### 2. Enable Google Sign-in
+- Users can only read/write their own data
+- Authenticated users can read basic info of other users
+- All other access is denied by default
 
-1. In Authentication > Sign-in method
-2. Click on "Google" provider
-3. Enable it and configure:
-   - Project support email
-   - Authorized domains (add your domain)
-4. Save
+### 2. Firestore Indexes (`firestore.indexes.json`)
 
-### 3. Enable Anonymous Authentication
+Optimizes queries for:
 
-1. In Authentication > Sign-in method
-2. Click on "Anonymous" provider
-3. Enable it
-4. Save
+- Active users sorted by creation date
+- Email-based lookups
 
-### 4. Get Firebase Config
+## Deployment Steps
 
-1. Go to Project Settings (gear icon)
-2. Scroll down to "Your apps"
-3. Click on your web app or create one
-4. Copy the config object values to your `.env` file
+### 1. Deploy Firestore Security Rules
 
-## Features Implemented
+```bash
+# Install Firebase CLI if not already installed
+npm install -g firebase-tools
 
-### Authentication Methods
+# Login to Firebase
+firebase login
 
-- **Google OAuth**: Sign in with Google account
-- **Anonymous**: Sign in as guest user
-- **Persistent Sessions**: Users stay logged in across browser sessions
+# Initialize Firebase in your project (if not already done)
+firebase init firestore
 
-### Security Features
+# Deploy security rules
+firebase deploy --only firestore:rules
+```
 
-- Protected routes requiring authentication
-- Automatic session restoration
-- Secure token storage
-- User profile management
+### 2. Deploy Firestore Indexes
 
-### User Experience
+```bash
+# Deploy indexes
+firebase deploy --only firestore:indexes
+```
 
-- Clean login interface
-- Loading states and error handling
-- User profile dropdown with logout
-- Responsive design
+### 3. Verify Collection Creation
 
-## Usage
+The `users` collection will be automatically created when the first user signs in. You can verify this in the Firebase Console:
 
-### For Users
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Select your project
+3. Navigate to Firestore Database
+4. Look for the `users` collection
 
-1. Visit the app
-2. Choose to sign in with Google or continue as guest
-3. Access protected features
-4. User profile accessible via header dropdown
-5. Sign out when done
+## How It Works
 
-### For Developers
+1. **User Signs In**: When a user signs in with Google OAuth, the `AuthService.signInWithGoogle()` method is called
+2. **Data Mapping**: User data from Google is mapped to our `AuthUser` interface
+3. **Firebase Persistence**: The `UserService.createOrUpdateUser()` method saves/updates the user data in Firestore
+4. **Local Storage**: User data is also stored in localStorage for offline access
+5. **Auth State Changes**: When auth state changes, user data is automatically persisted to Firebase
 
-- Authentication state managed via Redux
-- Firebase auth service handles all auth operations
-- Protected routes automatically redirect to login
-- User data persisted in localStorage for session restoration
+## Error Handling
+
+- If Firebase operations fail, errors are logged to the console
+- Authentication continues to work even if Firebase persistence fails
+- Users can still access the app with localStorage data
+
+## Testing
+
+To test the implementation:
+
+1. Sign in with a Google account
+2. Check the Firebase Console to see if a user document was created
+3. Sign out and sign back in to verify the `lastLoginAt` field is updated
+4. Check that user data persists across browser sessions
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **"Firebase: Error (auth/popup-closed-by-user)"**: User closed the Google sign-in popup
-2. **"Firebase: Error (auth/unauthorized-domain)"**: Domain not authorized in Firebase Console
-3. **"Firebase: Error (auth/network-request-failed)"**: Network connectivity issues
+1. **Permission Denied**: Ensure Firestore security rules are deployed
+2. **Collection Not Created**: Check if the user actually signed in successfully
+3. **Index Errors**: Deploy the Firestore indexes configuration
 
-### Solutions
+### Debug Mode
 
-1. Check Firebase Console configuration
-2. Verify environment variables are correct
-3. Ensure domain is authorized for Google sign-in
-4. Check browser console for detailed error messages
+Enable debug logging by checking the browser console for:
+
+- "Error saving user to Firestore" messages
+- "Error persisting user data" messages
+
+## Security Considerations
+
+- Users can only access their own data
+- Email addresses are stored but can be used for user lookup
+- Profile pictures are stored as URLs (not actual image files)
+- Anonymous users are also persisted with limited data

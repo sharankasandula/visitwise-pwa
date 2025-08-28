@@ -17,7 +17,6 @@ import {
   MessageCircle,
   Clock,
   CheckCircle,
-  ChevronDown,
   ChevronRight,
 } from "lucide-react";
 import { RootState } from "../store";
@@ -34,6 +33,10 @@ import VisitModal from "./VisitModal";
 
 import { format } from "date-fns";
 import WhatsAppIcon from "./ui/icons/WhatsAppIcon";
+import Badge from "./ui/Badge";
+import { Card, CardContent } from "./ui/Card";
+import { Avatar, AvatarFallback } from "./ui/Avatar";
+import { ChevronUp, ChevronDown, Navigation } from "lucide-react";
 
 const PatientProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -53,6 +56,7 @@ const PatientProfile: React.FC = () => {
   const [isVisitHistoryCollapsed, setIsVisitHistoryCollapsed] = useState(true);
   const [isArchiving, setIsArchiving] = useState(false);
   const [expandedNotes, setExpandedNotes] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
   const patientVisits = visits[id || ""] || [];
   const patientPayments = payments[id || ""] || [];
@@ -187,6 +191,43 @@ const PatientProfile: React.FC = () => {
     setSelectedVisitDate(date);
     setIsVisitModalOpen(true);
   };
+
+  // Helper functions for the new patient info card design
+  const getGenderColor = (gender: string) => {
+    switch (gender?.toLowerCase()) {
+      case "male":
+        return "border-blue-500 bg-blue-50 text-blue-700";
+      case "female":
+        return "border-pink-500 bg-pink-50 text-pink-700";
+      default:
+        return "border-purple-500 bg-purple-50 text-purple-700";
+    }
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const getGenderCode = (gender: string) => {
+    switch (gender?.toLowerCase()) {
+      case "male":
+        return "M";
+      case "female":
+        return "F";
+      default:
+        return "O";
+    }
+  };
+
+  const truncatedNotes =
+    patient.notes && patient.notes.length > 15
+      ? `${patient.notes.substring(0, 15)}...`
+      : patient.notes;
 
   const handleWhatsAppReminder = () => {
     if (!patient.phone) {
@@ -324,131 +365,143 @@ const PatientProfile: React.FC = () => {
 
       <div className="p-4 space-y-6">
         {/* Patient Info Card */}
-        <div className="rounded-lg bg-card border border-border text-card-foreground">
-          <div className="p-4">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-secondary-foreground text-secondary rounded-full flex items-center justify-center">
-                  <span className="text-5xl">
-                    {patient.gender === "Male"
-                      ? "👨"
-                      : patient.gender === "Female"
-                      ? "👩"
-                      : "⚧️"}
+        <Card className="w-full border-border bg-card">
+          <CardContent className="p-3">
+            {/* Main Row */}
+            <div className="flex items-center gap-3">
+              <Avatar
+                className={`h-10 w-10 border ${getGenderColor(patient.gender)}`}
+              >
+                <AvatarFallback
+                  className={`text-xs font-medium ${getGenderColor(
+                    patient.gender
+                  )}`}
+                >
+                  {getInitials(patient.name)}
+                </AvatarFallback>
+              </Avatar>
+              {/* Patient Name */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h4 className="font-medium text-card-foreground capitalize truncate text-sm">
+                    {patient.name}
+                  </h4>
+                  <span className="text-xs text-muted-foreground">
+                    ({patient.age ?? "N/A"}
+                    {getGenderCode(patient.gender)})
+                  </span>
+                  {!patient.isActive && (
+                    <Badge className="text-xs bg-warning text-warning-foreground">
+                      Archived
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <span className="capitalize">{patient.condition}</span>
+                  <span>•</span>
+                  <span className="font-medium text-primary">
+                    ₹{patient.chargePerVisit?.toLocaleString()}
                   </span>
                 </div>
-                <div className="flex-1">
-                  <h2 className="text-xl font-semibold capitalize">
-                    {patient.name}
-                  </h2>
-                  <p className="text-muted-foreground text-sm">
-                    Age: {patient.age || "N/A"} • ₹{" "}
-                    {patient.chargePerVisit.toLocaleString()} per visit •{" "}
-                    <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        patient.isActive
-                          ? "bg-success text-success-foreground border border-success"
-                          : "bg-warning text-warning-foreground border border-warning"
-                      }`}
-                    >
-                      {patient.isActive ? "Active" : "Archived"}
-                    </span>
-                  </p>
-                  {/* Condition Field */}
-                  <p className="text-sm text-muted-foreground capitalize">
-                    <span className="font-medium">Condition:</span>{" "}
-                    {patient.condition}
-                  </p>
-
-                  {/* Protocol Field */}
-                  {patient.protocol && (
-                    <p className="text-sm text-muted-foreground">
-                      <span className="font-medium">Protocol:</span>{" "}
-                      {patient.protocol}
-                    </p>
-                  )}
-
-                  {/* Notes Field with Expand/Collapse */}
-                  {patient.notes && (
-                    <div className="">
-                      <p className="text-sm text-muted-foreground">
-                        <span className="font-medium">Notes:</span>{" "}
-                        {expandedNotes ? (
-                          <span>{patient.notes}</span>
-                        ) : (
-                          <span>
-                            {patient.notes.length > 15
-                              ? `${patient.notes.substring(0, 15)}...`
-                              : patient.notes}
-                          </span>
-                        )}
-                        {patient.notes.length > 15 && (
-                          <span
-                            role="button"
-                            tabIndex={0}
-                            aria-expanded={expandedNotes}
-                            onClick={() => setExpandedNotes(!expandedNotes)}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter" || e.key === " ") {
-                                e.preventDefault();
-                                setExpandedNotes((v) => !v);
-                              }
-                            }}
-                            className="ml-1 inline cursor-pointer select-none text-[11px] leading-none align-baseline
-               text-secondary underline underline-offset-2 focus:outline-none focus:ring-1 focus:ring-primary/60 rounded-sm
-               hover:no-underline"
-                          >
-                            {expandedNotes ? "Show less" : "Show more"}
-                          </span>
-                        )}
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="flex items-center gap-2"></div>
-                </div>
               </div>
-              <div className="flex gap-2">
-                {patient.phone ? (
-                  <button
-                    onClick={handleCall}
-                    className="flex items-center gap-2 px-4 py-2 border rounded-lg transition-colors "
-                  >
-                    <Phone className="h-4 w-4" />
-                    Call
-                  </button>
-                ) : (
-                  <button
-                    disabled
-                    className="flex items-center gap-2 px-4 py-2 border rounded-lg text-muted-foreground cursor-not-allowed"
-                    title="Phone number not available"
-                  >
-                    <Phone className="h-4 w-4" />
-                    Call
-                  </button>
-                )}
-                {patient.googleMapsLink ? (
-                  <button
-                    onClick={handleNavigate}
-                    className="flex items-center gap-2 px-4 py-2 border  rounded-lg  transition-colors "
-                  >
-                    <MapPin className="h-4 w-4" />
-                    Navigate
-                  </button>
-                ) : (
-                  <button
-                    disabled
-                    title="Location unavailable"
-                    className="flex items-center gap-2 px-4 py-2 border text-muted-foreground rounded-lg  transition-colors "
-                  >
-                    <MapPin className="h-4 w-4" />
-                    Navigate
-                  </button>
-                )}
+
+              <div className="flex items-center">
+                <button
+                  onClick={() => setShowDetails(!showDetails)}
+                  aria-expanded={showDetails}
+                  aria-label={showDetails ? "Hide details" : "Show details"}
+                  className="h-8 w-8 p-0 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                >
+                  {showDetails ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </button>
               </div>
             </div>
-          </div>
-        </div>
+
+            {/* Expandable Details */}
+            {showDetails && (
+              <div className="mt-3 pt-3 border-t border-border space-y-2">
+                {patient.protocol && (
+                  <div className="text-xs">
+                    <span className="font-medium text-card-foreground">
+                      Protocol:{" "}
+                    </span>
+                    <span className="text-muted-foreground">
+                      {patient.protocol}
+                    </span>
+                  </div>
+                )}
+
+                {patient.notes && (
+                  <div className="text-xs">
+                    <span className="font-medium text-card-foreground">
+                      Notes:{" "}
+                    </span>
+                    <span className="text-muted-foreground">
+                      {expandedNotes ? patient.notes : truncatedNotes}
+                    </span>
+                    {patient.notes.length > 15 && (
+                      <button
+                        onClick={() => setExpandedNotes(!expandedNotes)}
+                        aria-expanded={expandedNotes}
+                        aria-label={
+                          expandedNotes ? "Collapse notes" : "Expand notes"
+                        }
+                        className="ml-1 inline-flex items-center text-primary hover:text-primary/80 transition-colors"
+                      >
+                        {expandedNotes ? (
+                          <ChevronUp className="h-2 w-2" />
+                        ) : (
+                          <ChevronDown className="h-2 w-2" />
+                        )}
+                      </button>
+                    )}
+                  </div>
+                )}
+                {/* Action Buttons */}
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={handleCall}
+                    disabled={!patient.phone}
+                    className="h-8 w-8 p-0 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    title={patient.phone ? "Call patient" : "No phone number"}
+                  >
+                    <Phone className="h-6 w-6" />
+                  </button>
+
+                  <button
+                    onClick={handleWhatsAppReminder}
+                    disabled={!patient.phone}
+                    className="h-8 w-8 p-0 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    title={
+                      patient.phone
+                        ? "Send WhatsApp reminder"
+                        : "No phone number"
+                    }
+                  >
+                    <WhatsAppIcon className="h-6 w-6" />
+                  </button>
+
+                  <button
+                    onClick={handleNavigate}
+                    disabled={!patient.googleMapsLink}
+                    className="h-8 w-8 p-0 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    title={
+                      patient.googleMapsLink
+                        ? "Navigate to patient"
+                        : "No location"
+                    }
+                  >
+                    <Navigation className="h-6 w-6" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Payments Section */}
         <div className="space-y-4">
@@ -577,8 +630,17 @@ const PatientProfile: React.FC = () => {
                   ))}
                   {patientPayments.length === 0 && (
                     <div className="p-8 text-center">
-                      <DollarSign className="w-12 h-12 mx-auto mb-4 text-warning" />
-                      <p>No payments recorded yet</p>
+                      <img
+                        src="/physio_illustration1.png"
+                        alt="No Payments"
+                        className="w-20 h-20 mx-auto mb-4 opacity-60"
+                      />
+                      <p className="text-lg font-medium text-muted-foreground mb-2">
+                        No payments recorded yet
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Track payments when you complete visits
+                      </p>
                     </div>
                   )}
                 </div>
@@ -657,9 +719,18 @@ const PatientProfile: React.FC = () => {
                   );
                 })}
                 {patientVisits.length === 0 && (
-                  <div className="p-8 text-center ">
-                    <Calendar className="w-12 h-12 mx-auto mb-4 text-blue-400" />
-                    <p>No visits recorded yet</p>
+                  <div className="p-8 text-center">
+                    <img
+                      src="/physio_illustration1.png"
+                      alt="No Visits"
+                      className="w-24 h-24 mx-auto mb-4 opacity-60"
+                    />
+                    <p className="text-lg font-medium text-muted-foreground mb-2">
+                      No visits recorded yet
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Start tracking your patient's progress by adding visits
+                    </p>
                   </div>
                 )}
               </div>
@@ -673,17 +744,21 @@ const PatientProfile: React.FC = () => {
             <Camera className="w-5 h-5 text-pink-400" />
             Media
           </h3>
-          <div className="rounded-lg bg-card border border-border text-card-foreground  p-8 text-center">
-            <Camera className="w-12 h-12 mx-auto mb-4 text-pink-400" />
+          <div className="rounded-lg bg-card border border-border text-card-foreground p-8 text-center">
             <img
-              src="./illustrations/physio_illustration1.png"
+              src="/physio_illustration1.png"
               alt="No Media"
-              className="w-auto h-auto"
+              className="w-20 h-20 mx-auto mb-4 opacity-60"
             />
-            <p className="mb-2">No media uploaded yet</p>
-            <p className="text-sm text-muted-foreground">
-              Upload images or videos to track progress
+            <p className="text-lg font-medium text-muted-foreground mb-2">
+              No media uploaded yet
             </p>
+            <p className="text-sm text-muted-foreground">
+              Upload images or videos to track patient progress
+            </p>
+            <button className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm">
+              Upload Media
+            </button>
           </div>
         </div>
 

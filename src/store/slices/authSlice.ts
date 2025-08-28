@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { AuthService, AuthUser } from "../../services/authService";
+import { UserService } from "../../services/userService";
 import { clearPatients } from "./patientsSlice";
 import { clearAllVisits } from "./visitsSlice";
 
@@ -62,6 +63,10 @@ export const initializeAuth = createAsyncThunk(
     const savedUser = AuthService.getCurrentUser();
     if (savedUser) {
       dispatch(setUser(savedUser));
+      // Ensure user data is persisted in Firebase
+      UserService.createOrUpdateUser(savedUser).catch((error) => {
+        console.error("Error persisting saved user data:", error);
+      });
     }
 
     // Set up auth state listener

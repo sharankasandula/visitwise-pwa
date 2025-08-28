@@ -7,6 +7,7 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { auth, googleProvider } from "../config/firebase";
+import { UserService } from "./userService";
 
 export interface AuthUser {
   id: string;
@@ -36,6 +37,9 @@ export class AuthService {
       const result = await signInWithPopup(auth, googleProvider);
       const user = this.mapFirebaseUser(result.user);
 
+      // Store user data in Firebase Firestore
+      await UserService.createOrUpdateUser(user);
+
       // Store user data in localStorage for persistence
       localStorage.setItem("authUser", JSON.stringify(user));
 
@@ -53,6 +57,9 @@ export class AuthService {
     try {
       const result = await signInAnonymously(auth);
       const user = this.mapFirebaseUser(result.user);
+
+      // Store user data in Firebase Firestore
+      await UserService.createOrUpdateUser(user);
 
       // Store user data in localStorage for persistence
       localStorage.setItem("authUser", JSON.stringify(user));
@@ -94,6 +101,12 @@ export class AuthService {
     return onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
         const user = this.mapFirebaseUser(firebaseUser);
+
+        // Store user data in Firebase Firestore
+        UserService.createOrUpdateUser(user).catch((error) => {
+          console.error("Error persisting user data:", error);
+        });
+
         localStorage.setItem("authUser", JSON.stringify(user));
         callback(user);
       } else {
