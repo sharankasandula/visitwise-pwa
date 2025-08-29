@@ -30,6 +30,8 @@ import { fetchPaymentsAsync } from "../store/slices/paymentsSlice";
 import PaymentModal from "./PaymentModal";
 import PatientCalendar from "./PatientCalendar";
 import VisitModal from "./VisitModal";
+import EditVisitModal from "./EditVisitModal";
+import EditPaymentModal from "./EditPaymentModal";
 
 import { format } from "date-fns";
 import WhatsAppIcon from "./ui/icons/WhatsAppIcon";
@@ -57,6 +59,10 @@ const PatientProfile: React.FC = () => {
   const [isArchiving, setIsArchiving] = useState(false);
   const [expandedNotes, setExpandedNotes] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [isEditVisitModalOpen, setIsEditVisitModalOpen] = useState(false);
+  const [isEditPaymentModalOpen, setIsEditPaymentModalOpen] = useState(false);
+  const [selectedVisit, setSelectedVisit] = useState<any>(null);
+  const [selectedPayment, setSelectedPayment] = useState<any>(null);
 
   const patientVisits = visits[id || ""] || [];
   const patientPayments = payments[id || ""] || [];
@@ -190,6 +196,16 @@ const PatientProfile: React.FC = () => {
   const handleAddVisit = (date: Date) => {
     setSelectedVisitDate(date);
     setIsVisitModalOpen(true);
+  };
+
+  const handleEditVisit = (visit: any) => {
+    setSelectedVisit(visit);
+    setIsEditVisitModalOpen(true);
+  };
+
+  const handleEditPayment = (payment: any) => {
+    setSelectedPayment(payment);
+    setIsEditPaymentModalOpen(true);
   };
 
   // Helper functions for the new patient info card design
@@ -611,7 +627,8 @@ const PatientProfile: React.FC = () => {
                   {patientPayments.map((payment) => (
                     <div
                       key={payment.id}
-                      className="p-4 flex items-center justify-between"
+                      className="p-4 flex items-center justify-between cursor-pointer hover:bg-accent/50 transition-colors rounded-lg"
+                      onClick={() => handleEditPayment(payment)}
                     >
                       <div>
                         <p className="font-medium">
@@ -621,10 +638,11 @@ const PatientProfile: React.FC = () => {
                           {payment.method} • {payment.notes || "No notes"}
                         </p>
                       </div>
-                      <div className="text-right">
+                      <div className="flex items-center gap-3">
                         <p className="font-medium">
                           ₹{payment.amount.toLocaleString()}
                         </p>
+                        <Edit className="w-4 h-4 text-muted-foreground" />
                       </div>
                     </div>
                   ))}
@@ -691,14 +709,18 @@ const PatientProfile: React.FC = () => {
                   return (
                     <div
                       key={visit.id}
-                      className="p-4 flex items-center justify-between"
+                      className="p-4 flex items-center justify-between cursor-pointer hover:bg-accent/50 transition-colors rounded-lg"
+                      onClick={() => handleEditVisit(visit)}
                     >
                       <div>
                         <p className="font-medium ">
                           {format(new Date(visit.date), "EEEE, dd MMM yyyy")}
                         </p>
                         <p className="text-xs">
-                          ₹{patient?.chargePerVisit.toLocaleString() || 0}
+                          ₹
+                          {visit.charge?.toLocaleString() ||
+                            patient?.chargePerVisit?.toLocaleString() ||
+                            0}
                         </p>
                         <p className="text-xs">{visit.notes || "No notes"}</p>
                       </div>
@@ -707,13 +729,14 @@ const PatientProfile: React.FC = () => {
                           <span
                             className={`px-2 py-1 text-xs font-medium rounded-full ${
                               isPaid
-                                ? "bg-success text-success border border-success"
-                                : "bg-warning-100 text-warning-800 border border-warning-200"
+                                ? "bg-success text-success-foreground border border-success"
+                                : "bg-warning text-warning-foreground border border-warning"
                             }`}
                           >
                             {isPaid ? "Paid" : "Unpaid"}
                           </span>
                         )}
+                        <Edit className="w-4 h-4 text-muted-foreground" />
                       </div>
                     </div>
                   );
@@ -867,6 +890,28 @@ const PatientProfile: React.FC = () => {
         patientId={patient?.id || ""}
         patientName={patient?.name || ""}
         defaultCharge={patient?.chargePerVisit || 0}
+      />
+
+      {/* Edit Visit Modal */}
+      <EditVisitModal
+        isOpen={isEditVisitModalOpen}
+        onClose={() => {
+          setIsEditVisitModalOpen(false);
+          setSelectedVisit(null);
+        }}
+        visit={selectedVisit}
+        patientName={patient?.name || ""}
+      />
+
+      {/* Edit Payment Modal */}
+      <EditPaymentModal
+        isOpen={isEditPaymentModalOpen}
+        onClose={() => {
+          setIsEditPaymentModalOpen(false);
+          setSelectedPayment(null);
+        }}
+        payment={selectedPayment}
+        patientName={patient?.name || ""}
       />
     </div>
   );
