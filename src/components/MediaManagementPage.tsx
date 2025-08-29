@@ -21,6 +21,7 @@ import {
   Search,
   Filter,
 } from "lucide-react";
+import { thumbhashToDataURL } from "../utils/thumbhashUtils";
 
 const MediaManagementPage: React.FC = () => {
   const navigate = useNavigate();
@@ -189,28 +190,79 @@ const MediaManagementPage: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
             {filteredMedia.map((mediaItem) => (
               <div
                 key={mediaItem.id}
-                className="group relative border border-border rounded-lg overflow-hidden hover:shadow-lg transition-all cursor-pointer bg-card"
+                className="group relative border border-border rounded-lg overflow-hidden hover:shadow-lg transition-all cursor-pointer bg-card media-grid-item"
                 onClick={() => openMedia(mediaItem)}
               >
                 {/* Media Preview */}
-                <div className="aspect-square bg-muted flex items-center justify-center">
+                <div className="aspect-square bg-muted flex items-center justify-center relative overflow-hidden">
                   {mediaItem.fileType === "image" ? (
-                    <img
-                      src={mediaItem.fileUrl}
-                      alt={mediaItem.fileName}
-                      className="w-full h-full object-cover"
-                    />
+                    <>
+                      {/* ThumbHash placeholder */}
+                      {mediaItem.thumbHash && (
+                        <div
+                          className="absolute inset-0 w-full h-full"
+                          style={{
+                            backgroundImage: `url(${thumbhashToDataURL(
+                              mediaItem.thumbHash
+                            )})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            filter: "blur(8px)",
+                          }}
+                        />
+                      )}
+                      {/* Optimized preview image */}
+                      <img
+                        src={mediaItem.previewUrl || mediaItem.fileUrl}
+                        alt={mediaItem.fileName}
+                        className="w-full h-full object-cover relative z-10 media-preview"
+                        loading="lazy"
+                        decoding="async"
+                        onLoad={(e) => {
+                          // Hide placeholder when image loads
+                          const target = e.target as HTMLImageElement;
+                          target.classList.add("loaded");
+                        }}
+                        style={{ opacity: mediaItem.thumbHash ? "0" : "1" }}
+                      />
+                    </>
                   ) : (
                     <div className="relative w-full h-full">
-                      <video
-                        src={mediaItem.fileUrl}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                      {/* Video poster with thumbhash placeholder */}
+                      {mediaItem.posterUrl && (
+                        <>
+                          {mediaItem.thumbHash && (
+                            <div
+                              className="absolute inset-0 w-full h-full"
+                              style={{
+                                backgroundImage: `url(${thumbhashToDataURL(
+                                  mediaItem.thumbHash
+                                )})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                filter: "blur(8px)",
+                              }}
+                            />
+                          )}
+                          <img
+                            src={mediaItem.posterUrl}
+                            alt={`Poster for ${mediaItem.fileName}`}
+                            className="w-full h-full object-cover relative z-10 media-preview video-poster"
+                            loading="lazy"
+                            decoding="async"
+                            onLoad={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.classList.add("loaded");
+                            }}
+                            style={{ opacity: mediaItem.thumbHash ? "0" : "1" }}
+                          />
+                        </>
+                      )}
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 z-20">
                         <Play className="w-8 h-8 text-white" />
                       </div>
                     </div>

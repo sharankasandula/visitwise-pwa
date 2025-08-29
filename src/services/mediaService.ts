@@ -26,11 +26,17 @@ export interface MediaItem {
   fileType: "image" | "video";
   fileSize: number;
   uploadedAt: string;
-  thumbnailUrl?: string;
+  // Optimized media URLs
+  previewUrl?: string;
+  posterUrl?: string;
+  thumbHash?: string;
   metadata?: {
     width?: number;
     height?: number;
     duration?: number;
+    originalSize?: number;
+    compressedSize?: number;
+    compressionRatio?: number;
   };
 }
 
@@ -94,17 +100,101 @@ export class MediaService {
     onProgress?: (progress: UploadProgress) => void
   ): Promise<MediaItem> {
     try {
-      // Generate unique filename
+      // Validate file
+      if (!file || file.size === 0) {
+        throw new Error("Invalid file: File is empty or undefined");
+      }
+
+      if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+        throw new Error(
+          "Unsupported file type. Only images and videos are allowed."
+        );
+      }
+
       const timestamp = Date.now();
       const fileExtension = file.name.split(".").pop();
       const fileName = `media_${timestamp}.${fileExtension}`;
-      const filePath = `patients/${patientId}/media/${fileName}`;
 
-      // Upload file to storage
-      const fileUrl = await this.storageProvider.uploadFile(file, filePath);
+      let fileUrl: string;
+      let previewUrl: string | undefined;
+      let posterUrl: string | undefined;
+      let thumbHash: string | undefined;
+      let metadata: any = {};
+
+      if (file.type.startsWith("image/")) {
+        // Import optimization utilities dynamically to avoid circular dependencies
+        const { imageWorker } = await import("../utils/mediaOptimization");
+
+        // Process image for optimization
+        const optimizedImage = await imageWorker.processImage(file);
+
+        // Validate optimization results
+        if (!optimizedImage.master || !optimizedImage.preview) {
+          throw new Error("Image optimization failed: Missing optimized files");
+        }
+
+        // Upload master image
+        const masterPath = `patients/${patientId}/media/${fileName}`;
+        fileUrl = await this.storageProvider.uploadFile(
+          optimizedImage.master,
+          masterPath
+        );
+
+        // Upload preview image
+        const previewFileName = `preview_${fileName.replace(
+          /\.[^/.]+$/,
+          ".webp"
+        )}`;
+        const previewPath = `patients/${patientId}/media/${previewFileName}`;
+        previewUrl = await this.storageProvider.uploadFile(
+          optimizedImage.preview,
+          previewPath
+        );
+
+        thumbHash = optimizedImage.thumbHash || undefined;
+        metadata = {
+          ...metadata,
+          ...optimizedImage.metadata,
+        };
+      } else if (file.type.startsWith("video/")) {
+        // Import optimization utilities dynamically
+        const { VideoPosterExtractor } = await import(
+          "../utils/mediaOptimization"
+        );
+
+        // Upload original video
+        const videoPath = `patients/${patientId}/media/${fileName}`;
+        fileUrl = await this.storageProvider.uploadFile(file, videoPath);
+
+        // Extract and upload poster
+        const poster = await VideoPosterExtractor.extractPoster(file);
+
+        // Validate poster extraction
+        if (!poster.poster) {
+          throw new Error(
+            "Video poster extraction failed: Missing poster file"
+          );
+        }
+
+        const posterFileName = `poster_${fileName.replace(
+          /\.[^/.]+$/,
+          ".webp"
+        )}`;
+        const posterPath = `patients/${patientId}/media/${posterFileName}`;
+        posterUrl = await this.storageProvider.uploadFile(
+          poster.poster,
+          posterPath
+        );
+
+        thumbHash = poster.thumbHash || undefined;
+      } else {
+        // Fallback for unsupported file types
+        const filePath = `patients/${patientId}/media/${fileName}`;
+        fileUrl = await this.storageProvider.uploadFile(file, filePath);
+      }
 
       // Create media item in Firestore
-      const mediaData = {
+      const mediaData: any = {
         patientId,
         fileName: file.name,
         fileUrl,
@@ -113,8 +203,13 @@ export class MediaService {
           : ("video" as const),
         fileSize: file.size,
         uploadedAt: new Date().toISOString(),
-        metadata: {},
+        metadata,
       };
+
+      // Only add optional fields if they have values
+      if (previewUrl) mediaData.previewUrl = previewUrl;
+      if (posterUrl) mediaData.posterUrl = posterUrl;
+      if (thumbHash) mediaData.thumbHash = thumbHash;
 
       const docRef = await addDoc(collection(db, "media"), mediaData);
 

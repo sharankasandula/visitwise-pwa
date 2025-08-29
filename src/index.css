@@ -271,3 +271,36 @@ select:focus {
 .dark .brand-heading {
   text-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
 }
+
+/* Media optimization styles */
+.media-grid-item {
+  content-visibility: auto;
+  contain-intrinsic-size: 200px;
+}
+
+.media-preview {
+  will-change: opacity;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.media-placeholder {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Enhanced image loading */
+img[loading="lazy"] {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+img[loading="lazy"].loaded {
+  opacity: 1;
+}
+
+/* Video poster optimization */
+.video-poster {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

@@ -7,11 +7,17 @@ import {
   X,
   FileVideo,
   FileImage,
+  Loader2,
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { uploadMediaAsync } from "../store/slices/mediaSlice";
 import { AppDispatch } from "../store";
 import { showSuccess, showError } from "../utils/toast";
+import {
+  getOptimizedCameraConstraints,
+  getMediaRecorderOptions,
+} from "../utils/mediaOptimization";
+import OptimizedCameraCapture from "./OptimizedCameraCapture";
 
 interface MediaUploadProps {
   isOpen: boolean;
@@ -33,8 +39,12 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isCompressing, setIsCompressing] = useState(false);
+  const [compressionProgress, setCompressionProgress] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [showCamera, setShowCamera] = useState(false);
+  const [cameraMode, setCameraMode] = useState<"photo" | "video">("photo");
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -153,7 +163,10 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
 
               {/* Camera */}
               <button
-                onClick={openCamera}
+                onClick={() => {
+                  setCameraMode("photo");
+                  setShowCamera(true);
+                }}
                 className="p-6 border-2 border-dashed border-border rounded-lg hover:border-primary transition-colors text-center group"
               >
                 <Camera className="w-12 h-12 mx-auto mb-3 text-muted-foreground group-hover:text-primary" />
@@ -165,11 +178,13 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
 
               {/* Video Recording */}
               <button
-                onClick={openVideoRecorder}
+                onClick={() => {
+                  setCameraMode("video");
+                  setShowCamera(true);
+                }}
                 className="p-6 border-2 border-dashed border-border rounded-lg hover:border-primary transition-colors text-center group"
               >
                 <Video className="w-12 h-12 mx-auto mb-3 text-muted-foreground group-hover:text-primary" />
-                <h4 className="font-medium mb-2">Record Video</h4>
                 <p className="text-sm text-muted-foreground">
                   Record a new video
                 </p>
@@ -207,7 +222,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
 
                 {/* Preview */}
                 {previewUrl && (
-                  <div className="mt-4">
+                  <div className="mt-4 space-y-3">
                     {selectedFile.type.startsWith("image/") ? (
                       <img
                         src={previewUrl}
@@ -221,6 +236,16 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
                         className="max-w-full h-48 object-cover rounded-lg mx-auto"
                       />
                     )}
+
+                    {/* Compression Info */}
+                    <div className="text-xs text-muted-foreground bg-muted p-3 rounded-lg">
+                      <div className="font-medium mb-1">Optimization Info:</div>
+                      <div>• Images will be compressed to WebP format</div>
+                      <div>• Master: 1280-1600px max, quality 70%</div>
+                      <div>• Preview: 320px max, quality 50%</div>
+                      <div>• Videos will get optimized poster frames</div>
+                      <div>• Estimated compression: 60-80% smaller</div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -228,10 +253,22 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
               {/* Upload Button */}
               <button
                 onClick={handleUpload}
-                disabled={isUploading}
+                disabled={isUploading || isCompressing}
                 className="w-full px-4 py-3 bg-primary text-primary-foreground rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
               >
-                {isUploading ? "Uploading..." : "Upload Media"}
+                {isCompressing ? (
+                  <div className="flex items-center justify-center space-x-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Compressing... {compressionProgress}%</span>
+                  </div>
+                ) : isUploading ? (
+                  <div className="flex items-center justify-center space-x-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Uploading...</span>
+                  </div>
+                ) : (
+                  "Upload Media"
+                )}
               </button>
             </div>
           )}
@@ -262,6 +299,18 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
           />
         </div>
       </div>
+
+      {/* Optimized Camera Capture */}
+      <OptimizedCameraCapture
+        isOpen={showCamera}
+        mode={cameraMode}
+        onCapture={(file) => {
+          setSelectedFile(file);
+          createPreview(file);
+          setShowCamera(false);
+        }}
+        onClose={() => setShowCamera(false)}
+      />
     </div>
   );
 };

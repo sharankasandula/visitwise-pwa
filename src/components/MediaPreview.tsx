@@ -88,7 +88,7 @@ const MediaPreview: React.FC<MediaPreviewProps> = ({
       ) : (
         <div className="space-y-4">
           {/* Preview Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
             {previewItems.map((mediaItem) => (
               <div
                 key={mediaItem.id}
@@ -124,12 +124,12 @@ const MediaPreview: React.FC<MediaPreviewProps> = ({
             ))}
 
             {/* More Items Indicator */}
-            {patientMedia.length > 4 && (
+            {patientMedia.length > 5 && (
               <div className="relative aspect-square border border-border rounded-lg overflow-hidden bg-muted flex items-center justify-center">
                 <div className="text-center">
                   <div className="w-8 h-8 bg-muted-foreground rounded-full flex items-center justify-center mx-auto mb-2">
                     <span className="text-xs font-medium text-muted-foreground">
-                      +{patientMedia.length - 4}
+                      +{patientMedia.length - 5}
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground">More</p>
