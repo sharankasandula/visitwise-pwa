@@ -1,0 +1,22 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow authenticated users to read and write their own media files
+    // Users can only access media for patients they own
+    match /patients/{patientId}/media/{fileName} {
+      allow read, write: if request.auth != null 
+        && exists(/databases/$(firestore.default)/documents/patients/$(patientId))
+        && request.auth.uid == resource.metadata.owner;
+    }
+    
+    // Allow authenticated users to read and write media metadata
+    match /media/{mediaId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Default rule - deny all other access
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

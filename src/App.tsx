@@ -13,6 +13,7 @@ import ProfilePage from "./components/ProfilePage";
 import SettingsPage from "./components/SettingsPage";
 import TermsOfService from "./components/TermsOfService";
 import PrivacyPolicy from "./components/PrivacyPolicy";
+import MediaManagementPage from "./components/MediaManagementPage";
 import Toast from "./components/ui/Toast";
 import "./App.css";
 
@@ -49,6 +50,10 @@ function App() {
                             element={<PatientProfile />}
                           />
                           <Route
+                            path="/patient/:id/media"
+                            element={<PatientProfile />}
+                          />
+                          <Route
                             path="/archived-patients"
                             element={<ArchivedPatients />}
                           />
@@ -58,6 +63,10 @@ function App() {
                           />
                           <Route path="/profile" element={<ProfilePage />} />
                           <Route path="/settings" element={<SettingsPage />} />
+                          <Route
+                            path="/media"
+                            element={<MediaManagementPage />}
+                          />
                         </Routes>
                       </main>
                     </div>

@@ -32,6 +32,9 @@ import PatientCalendar from "./PatientCalendar";
 import VisitModal from "./VisitModal";
 import EditVisitModal from "./EditVisitModal";
 import EditPaymentModal from "./EditPaymentModal";
+import MediaPreview from "./MediaPreview";
+import MediaUpload from "./MediaUpload";
+import MediaGallery from "./MediaGallery";
 
 import { format } from "date-fns";
 import WhatsAppIcon from "./ui/icons/WhatsAppIcon";
@@ -63,6 +66,8 @@ const PatientProfile: React.FC = () => {
   const [isEditPaymentModalOpen, setIsEditPaymentModalOpen] = useState(false);
   const [selectedVisit, setSelectedVisit] = useState<any>(null);
   const [selectedPayment, setSelectedPayment] = useState<any>(null);
+  const [isMediaUploadModalOpen, setIsMediaUploadModalOpen] = useState(false);
+  const [isMediaGalleryModalOpen, setIsMediaGalleryModalOpen] = useState(false);
 
   const patientVisits = visits[id || ""] || [];
   const patientPayments = payments[id || ""] || [];
@@ -206,6 +211,19 @@ const PatientProfile: React.FC = () => {
   const handleEditPayment = (payment: any) => {
     setSelectedPayment(payment);
     setIsEditPaymentModalOpen(true);
+  };
+
+  const handleMediaUpload = () => {
+    setIsMediaUploadModalOpen(true);
+  };
+
+  const handleMediaViewAll = () => {
+    setIsMediaGalleryModalOpen(true);
+  };
+
+  const handleMediaUploadComplete = () => {
+    // Refresh media data if needed
+    // The Redux state will automatically update
   };
 
   // Helper functions for the new patient info card design
@@ -762,28 +780,12 @@ const PatientProfile: React.FC = () => {
         </div>
 
         {/* Media Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold  flex items-center gap-2">
-            <Camera className="w-5 h-5 text-pink-400" />
-            Media
-          </h3>
-          <div className="rounded-lg bg-card border border-border text-card-foreground p-8 text-center">
-            <img
-              src="/physio_illustration1.png"
-              alt="No Media"
-              className="w-20 h-20 mx-auto mb-4 opacity-60"
-            />
-            <p className="text-lg font-medium text-muted-foreground mb-2">
-              No media uploaded yet
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Upload images or videos to track patient progress
-            </p>
-            <button className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm">
-              Upload Media
-            </button>
-          </div>
-        </div>
+        <MediaPreview
+          patientId={patient.id}
+          patientName={patient.name}
+          onViewAll={handleMediaViewAll}
+          onUpload={handleMediaUpload}
+        />
 
         {/* Reminders Section */}
         <div className="space-y-4">
@@ -913,6 +915,27 @@ const PatientProfile: React.FC = () => {
         payment={selectedPayment}
         patientName={patient?.name || ""}
       />
+
+      {/* Media Upload Modal */}
+      {patient && patient.id && patient.name && (
+        <MediaUpload
+          isOpen={isMediaUploadModalOpen}
+          onClose={() => setIsMediaUploadModalOpen(false)}
+          patientId={patient.id}
+          patientName={patient.name}
+          onUploadComplete={handleMediaUploadComplete}
+        />
+      )}
+
+      {/* Media Gallery Modal */}
+      {patient && patient.id && patient.name && (
+        <MediaGallery
+          isOpen={isMediaGalleryModalOpen}
+          patientId={patient.id}
+          patientName={patient.name}
+          onClose={() => setIsMediaGalleryModalOpen(false)}
+        />
+      )}
     </div>
   );
 };
