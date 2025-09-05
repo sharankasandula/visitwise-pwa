@@ -110,9 +110,7 @@ const Home: React.FC = () => {
       <button
         onClick={onClick}
         className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-colors ${
-          isSelected
-            ? "bg-primary/10 text-primary"
-            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          isSelected ? "bg-primary/10 text-primary" : "text-muted-foreground"
         }`}
       >
         <div className="flex items-center gap-1">
@@ -138,7 +136,7 @@ const Home: React.FC = () => {
             <div className="relative">
               <button
                 onClick={() => setIsThemeDropdownOpen(!isThemeDropdownOpen)}
-                className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                className="p-2 rounded-lg text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="Theme settings"
               >
                 <Palette className="h-5 w-5" />
@@ -146,7 +144,7 @@ const Home: React.FC = () => {
 
               {/* Theme Dropdown */}
               {isThemeDropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-56 bg-card border border-border rounded-lg z-50">
+                <div className="absolute right-0 top-full mt-2 w-56 bg-card border border-border shadow-3xl rounded-lg z-50">
                   <div className="p-2 space-y-1">
                     {/* Theme Mode Section */}
                     <div className="px-2 py-1">
@@ -159,7 +157,7 @@ const Home: React.FC = () => {
                           className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-colors ${
                             mode === "light"
                               ? "bg-primary/10 text-primary"
-                              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                              : "text-muted-foreground"
                           }`}
                         >
                           <Sun className="h-4 w-4" />
@@ -174,7 +172,7 @@ const Home: React.FC = () => {
                           className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-colors ${
                             mode === "dark"
                               ? "bg-primary/10 text-primary"
-                              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                              : "text-muted-foreground"
                           }`}
                         >
                           <Moon className="h-4 w-4" />
@@ -231,7 +229,7 @@ const Home: React.FC = () => {
             {/* Media Management Link */}
             <div
               onClick={() => navigate("/media")}
-              className="rounded-lg p-4 cursor-pointer transition-all hover:bg-accent/50 border border-border bg-card"
+              className="rounded-lg p-4 cursor-pointer transition-all bg-accent/20"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -284,7 +282,7 @@ const Home: React.FC = () => {
                 value={searchTerm}
                 onChange={handleSearch}
                 placeholder="Search patients by name..."
-                className="h-11 w-full rounded-full bg-muted pl-11 pr-3
+                className="h-11 w-full rounded-lg bg-accent/20 pl-11 pr-3
                    text-foreground placeholder:text-muted-foreground
                    focus:outline-none focus:ring-2 focus:ring-primary"
                 aria-label="Search patients"

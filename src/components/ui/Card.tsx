@@ -27,9 +27,7 @@ interface CardContentProps {
 
 const Card: React.FC<CardProps> = ({ children, className = "" }) => {
   return (
-    <div className={`bg-card rounded-lg border border-border ${className}`}>
-      {children}
-    </div>
+    <div className={`bg-accent/20 rounded-lg ${className}`}>{children}</div>
   );
 };
 

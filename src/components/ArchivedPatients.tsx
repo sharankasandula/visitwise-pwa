@@ -95,8 +95,8 @@ const ArchivedPatients: React.FC = () => {
               value={searchTerm}
               onChange={handleSearch}
               placeholder="Search archived patients by name..."
-              className="h-11 w-full rounded-lg shadow-md border border-border
-                   bg-background pl-11 pr-3
+              className="h-11 w-full rounded-lg shadow-md 
+                   bg-accent/20 pl-11 pr-3
                    text-foreground placeholder:text-muted-foreground
                    focus:outline-none focus:ring-2 focus:ring-primary"
             />

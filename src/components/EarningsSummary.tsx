@@ -136,7 +136,9 @@ const EarningsSummary: React.FC = () => {
             <div className="bg-warning/20 text-card-foreground rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-accent-foreground text-sm font-medium">Outstanding</p>
+                  <p className="text-accent-foreground text-sm font-medium">
+                    Outstanding
+                  </p>
                   <p className="text-2xl font-bold text-warning">
                     ₹{summary.outstanding.toLocaleString()}
                   </p>
@@ -179,7 +181,7 @@ const EarningsSummary: React.FC = () => {
         {/* Earnings by Patient */}
         {earningsByPatient.length > 0 ? (
           <div className="bg-accent/30 text-card-foreground rounded-lg">
-            <div className="p-4 bg-accent/10 rounded-t-lg">
+            <div className="p-4 bg-accent/20 rounded-t-lg">
               <h3 className="font-semibold">Earnings by Patient</h3>
             </div>
             <div className="">

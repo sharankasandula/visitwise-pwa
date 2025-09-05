@@ -88,15 +88,20 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
   };
 
   return (
-    <div className="bg-card rounded-lg  overflow-hidden">
-      <div className="py-4 px-2">
+    <div className="bg-accent/20 rounded-lg  overflow-hidden">
+      <div className="p-4 lg:p-6 xl:p-8 ">
         <div className="flex items-center justify-between mb-3">
           <div className="flex-1" onClick={handlePatientClick}>
-            <h3 className="font-semibold capitalize text-card-foreground cursor-pointer hover:text-primary transition-colors">
-              {patient.name}
+            <h3 className="font-semibold capitalize text-card-foreground cursor-pointer hover:text-primary transition-colors ellipsis">
+              {patient.name.length > 20
+                ? `${patient.name.slice(0, 20)}...`
+                : patient.name}
             </h3>
             <p className="text-sm text-muted-foreground capitalize">
-              {patient.condition} {patient.isActive}
+              {patient.condition.length > 15
+                ? `${patient.condition.slice(0, 15)}...`
+                : patient.condition}
+              {patient.isActive}
             </p>
             {outstandingAmount > 0 && (
               <div className="flex items-center gap-1 mt-1">

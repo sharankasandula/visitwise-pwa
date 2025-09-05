@@ -88,7 +88,7 @@ const CalendarStrip: React.FC<CalendarStripProps> = ({ patientId }) => {
                   ? "ring-2 ring-primary animate-fade-in"
                   : isToday
                   ? "bg-primary/10 text-primary border-2 border-primary/30"
-                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  : "bg-accent/20 text-muted-foreground"
               }`}
               title={`${format(date, "EEEE, MMMM d")} - ${
                 isCompleted

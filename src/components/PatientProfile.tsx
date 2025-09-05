@@ -399,7 +399,7 @@ const PatientProfile: React.FC = () => {
 
       <div className="p-4 space-y-6">
         {/* Patient Info Card */}
-        <Card className="w-full border-border bg-card">
+        <Card className="w-full ">
           <CardContent className="p-3">
             {/* Main Row */}
             <div className="flex items-center gap-3">
@@ -418,10 +418,12 @@ const PatientProfile: React.FC = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <h4 className="font-medium text-card-foreground capitalize truncate text-sm">
-                    {patient.name}
+                    {patient.name.length > 20
+                      ? `${patient.name.slice(0, 20)}...`
+                      : patient.name}
                   </h4>
-                  <span className="text-xs text-muted-foreground">
-                    ({patient.age ?? "N/A"}
+                  <span className="text-xs font-medium text-muted-foreground">
+                    ({patient.age ?? ""}
                     {getGenderCode(patient.gender)})
                   </span>
                   {!patient.isActive && (
@@ -545,7 +547,7 @@ const PatientProfile: React.FC = () => {
           </h3>
 
           {/* Payment Summary */}
-          <div className="rounded-lg bg-card border border-border text-card-foreground  p-4">
+          <div className="rounded-lg bg-accent/20 text-card-foreground  p-4">
             <div className="grid grid-cols-3 gap-4 mb-4">
               <div className="text-center">
                 <p className="text-xs font-medium mb-1">Total Earned</p>
@@ -693,7 +695,7 @@ const PatientProfile: React.FC = () => {
           </h3>
 
           {/* Calendar View */}
-          <div className="rounded-lg bg-card border border-border text-card-foreground p-4">
+          <div className="rounded-lg bg-accent/20 text-card-foreground p-4">
             <PatientCalendar
               visits={patientVisits}
               patientId={patient.id}
@@ -793,9 +795,9 @@ const PatientProfile: React.FC = () => {
             <MessageCircle className="w-5 h-5 text-yellow-600" />
             Reminders
           </h3>
-          <div className="rounded-lg bg-card border border-border text-card-foreground p-4">
+          <div className="rounded-lg bg-accent/20 text-card-foreground p-4">
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-3  rounded-lg">
+              {/*  <div className="flex items-center justify-between p-3  rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center">
                     <Calendar className="w-5 h-5 text-blue-400" />
@@ -839,7 +841,7 @@ const PatientProfile: React.FC = () => {
                     </span>
                   )}
                 </div>
-              </div>
+              </div> */}
 
               <div className="flex items-center justify-between p-3 rounded-lg">
                 <div className="flex items-center gap-3">

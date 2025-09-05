@@ -93,16 +93,20 @@ const EditPaymentModal: React.FC<EditPaymentModalProps> = ({
 
   return (
     <div className="bg-foreground/50 fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-card border border-border text-card-foreground rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-card text-card-foreground rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 bg-accent/10 text-accent-foreground">
+        <div className="flex items-center justify-between p-4 bg-accent/20 text-accent-foreground">
           <div className="flex flex-start space-x-3">
             <div className=" p-2 rounded-full">
               <Edit className="w-5 h-5 text-secondary" />
             </div>
             <div>
               <h3 className="text-lg pt-1 font-semibold">Edit Payment</h3>
-              <p className="text-sm ">{patientName}</p>
+              <p className="text-sm ">
+                {patientName.length > 30
+                  ? `${patientName.slice(0, 30)}...`
+                  : patientName}
+              </p>
             </div>
           </div>
           <button onClick={handleCancel}>
@@ -128,7 +132,7 @@ const EditPaymentModal: React.FC<EditPaymentModalProps> = ({
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full pl-8 pr-4 py-3 border  rounded-lg focus:ring-2  transition-colors"
+                className="w-full pl-8 pr-4 py-3 bg-accent/10  rounded-lg focus:ring-2  transition-colors"
                 placeholder="Enter amount"
                 min="1"
                 step="0.01"
@@ -149,7 +153,7 @@ const EditPaymentModal: React.FC<EditPaymentModalProps> = ({
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-4 py-3 border  rounded-lg focus:ring-2 "
+              className="w-full px-4 py-3 bg-accent/10  rounded-lg focus:ring-2 "
               required
             />
           </div>
@@ -165,7 +169,7 @@ const EditPaymentModal: React.FC<EditPaymentModalProps> = ({
             <select
               value={method}
               onChange={(e) => setMethod(e.target.value as any)}
-              className="w-full px-4 py-3 border  rounded-lg"
+              className="w-full px-4 py-3 bg-accent/10  rounded-lg"
               required
             >
               <option value="cash">Cash</option>
@@ -187,7 +191,7 @@ const EditPaymentModal: React.FC<EditPaymentModalProps> = ({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              className="w-full px-4 py-3 border rounded-lg resize-none"
+              className="w-full px-4 py-3 bg-accent/10 rounded-lg resize-none"
               placeholder="Add notes about this payment (optional)"
             />
           </div>
@@ -197,7 +201,7 @@ const EditPaymentModal: React.FC<EditPaymentModalProps> = ({
             <button
               type="button"
               onClick={handleCancel}
-              className="flex-1 px-4 py-3 border rounded-lg transition-colors font-medium"
+              className="flex-1 px-4 py-3 bg-accent/10 rounded-lg transition-colors font-medium"
             >
               Cancel
             </button>

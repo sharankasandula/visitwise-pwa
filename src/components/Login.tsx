@@ -48,62 +48,28 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-muted/20 to-background px-4 relative overflow-hidden">
-      {/* Background Art Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Floating Icons */}
-        <div
-          className="absolute top-20 left-10 text-primary/20 animate-bounce"
-          style={{ animationDelay: "0s" }}
-        >
-          <Heart className="w-16 h-16" />
-        </div>
-        <div
-          className="absolute top-32 right-16 text-secondary/20 animate-bounce"
-          style={{ animationDelay: "1s" }}
-        >
-          <Stethoscope className="w-12 h-12" />
-        </div>
-        <div
-          className="absolute bottom-32 left-20 text-accent/20 animate-bounce"
-          style={{ animationDelay: "2s" }}
-        >
-          <Calendar className="w-14 h-14" />
-        </div>
-        <div
-          className="absolute bottom-20 right-24 text-primary/20 animate-bounce"
-          style={{ animationDelay: "0.5s" }}
-        >
-          <Users className="w-10 h-10" />
-        </div>
-
-        {/* Gradient Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-gradient-to-r from-secondary/10 to-accent/10 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-to-r from-accent/10 to-primary/10 rounded-full blur-2xl"></div>
-      </div>
-
       {/* Main Content */}
       <div className="relative z-10 w-full max-w-md">
         {/* App Branding Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full mb-4">
+        <div className="text-center mb-4">
+          {/* <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full mb-4">
             <Heart className="w-10 h-10 text-primary" />
-          </div>
+          </div> */}
           <h1 className="text-4xl font-pacifico bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-2">
             VisitWise
           </h1>
           <p className="text-lg text-muted-foreground font-medium">
-            Smart Patient Management
+            Smart Visits Management
           </p>
         </div>
 
-        <Card className="w-full backdrop-blur-sm bg-card border border-border/50">
+        <Card className="w-full backdrop-blur-sm bg-accent/10">
           <CardHeader className="text-center pb-6">
             <CardTitle className="text-2xl font-bold text-muted-foreground mb-2">
-              Welcome Back! 👋
+              Welcome! 👋
             </CardTitle>
             <CardDescription className="text-muted-foreground text-base">
-              Sign in to access your patient management dashboard
+              Sign in to manage your visits
             </CardDescription>
           </CardHeader>
 
@@ -134,7 +100,7 @@ const Login: React.FC = () => {
                 <span className="w-full border-t border-border/50" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-card text-muted-foreground font-medium">
+                <span className="px-4 text-muted-foreground bg-accent/70 rounded-lg font-medium">
                   or
                 </span>
               </div>

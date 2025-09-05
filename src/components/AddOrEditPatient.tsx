@@ -246,7 +246,7 @@ const AddOrEditPatient: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="p-4 space-y-6 max-w-4xl mx-auto">
         {/* Basic Information */}
-        <div className="group bg-card rounded-xl p-6 border border-border/50 transition-all duration-300 hover:border-primary/20">
+        <div className="group rounded-lg p-6 bg-accent/20 transition-all duration-300">
           <div className="flex items-center mb-6">
             <div className="p-2 rounded-lg mr-3">
               <User className="w-5 h-5 text-secondary" />
@@ -266,7 +266,7 @@ const AddOrEditPatient: React.FC = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-background/50 backdrop-blur-sm ${
+                className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-background/50 backdrop-blur-sm ${
                   errors.name
                     ? "border-destructive ring-destructive/20"
                     : "border-border hover:border-primary/30"
@@ -292,7 +292,7 @@ const AddOrEditPatient: React.FC = () => {
                   onChange={handleInputChange}
                   min="1"
                   max="150"
-                  className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-background/50 backdrop-blur-sm ${
+                  className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-background/50 backdrop-blur-sm ${
                     errors.age
                       ? "border-destructive ring-destructive/20"
                       : "border-border hover:border-primary/30"
@@ -316,7 +316,7 @@ const AddOrEditPatient: React.FC = () => {
                     onClick={() =>
                       setIsGenderDropdownOpen(!isGenderDropdownOpen)
                     }
-                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 text-left flex items-center justify-between bg-background/50 backdrop-blur-sm ${
+                    className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 text-left flex items-center justify-between bg-background/50 backdrop-blur-sm ${
                       formData.gender
                         ? "text-card-foreground border-primary/30"
                         : "text-muted-foreground border-border hover:border-primary/30"
@@ -335,7 +335,7 @@ const AddOrEditPatient: React.FC = () => {
                   </button>
 
                   {isGenderDropdownOpen && (
-                    <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-lg backdrop-blur-sm">
+                    <div className="absolute z-50 w-full mt-1 bg-card rounded-lg backdrop-blur-sm">
                       <div className="py-1">
                         <button
                           type="button"
@@ -379,7 +379,7 @@ const AddOrEditPatient: React.FC = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-primary/30"
+                className="w-full p-3 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-primary/30"
                 placeholder="+91 9876543210"
               />
             </div>
@@ -393,7 +393,7 @@ const AddOrEditPatient: React.FC = () => {
                 name="googleMapsLink"
                 value={formData.googleMapsLink}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-primary/30"
+                className="w-full p-3 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-primary/30"
                 placeholder="https://maps.google.com/?q=coordinates"
               />
             </div>
@@ -401,7 +401,7 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Financial Information */}
-        <div className="group bg-card rounded-xl p-6 border border-border/50 transition-all duration-300 hover:border-secondary/20">
+        <div className="group rounded-lg p-6 bg-accent/20 transition-all duration-300 hover:border-secondary/20">
           <div className="flex items-center mb-6">
             <div className="p-2 rounded-lg mr-3">
               <CreditCard className="w-5 h-5 text-secondary" />
@@ -424,7 +424,7 @@ const AddOrEditPatient: React.FC = () => {
               min="0"
               max="10000"
               step="1"
-              className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-all duration-200 bg-background/50 backdrop-blur-sm ${
+              className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-all duration-200 bg-background/50 backdrop-blur-sm ${
                 errors.chargePerVisit
                   ? "border-destructive ring-destructive"
                   : "border-border hover:border-secondary"
@@ -441,7 +441,7 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Medical Information */}
-        <div className="group bg-card rounded-xl p-6 border border-border transition-all duration-300 hover:border-accent">
+        <div className="group rounded-lg p-6 bg-accent/20 transition-all duration-300 hover:border-accent">
           <div className="flex items-center mb-6">
             <div className="p-2 rounded-lg mr-3">
               <Stethoscope className="w-5 h-5 text-secondary" />
@@ -462,7 +462,7 @@ const AddOrEditPatient: React.FC = () => {
                 value={formData.condition}
                 onChange={handleInputChange}
                 required
-                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-accent transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-accent"
+                className="w-full p-3 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-accent"
                 placeholder="e.g., Lower back pain"
               />
             </div>
@@ -476,7 +476,7 @@ const AddOrEditPatient: React.FC = () => {
                 name="protocol"
                 value={formData.protocol}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-accent/30"
+                className="w-full p-3 rounded-lg focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-accent/30"
                 placeholder="e.g., Strengthening exercises"
               />
             </div>
@@ -490,7 +490,7 @@ const AddOrEditPatient: React.FC = () => {
                 value={formData.notes}
                 onChange={handleInputChange}
                 rows={3}
-                className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-accent/30 resize-none"
+                className="w-full p-3 rounded-lg focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all duration-200 bg-background/50 backdrop-blur-sm hover:border-accent/30 resize-none"
                 placeholder="Additional notes about the patient"
               />
             </div>
@@ -498,7 +498,7 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Reminders */}
-        <div className="group bg-card rounded-xl p-6 border border-border/50 transition-all duration-300 hover:border-primary/20">
+        <div className="group rounded-lg p-6 bg-accent/20 transition-all duration-300 hover:border-primary/20">
           <div className="flex items-center mb-6">
             <div className="p-2 rounded-lg mr-3">
               <Bell className="w-5 h-5 text-secondary" />
@@ -509,7 +509,7 @@ const AddOrEditPatient: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            {/* <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
+            {/* <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border-border/50">
               <span className="text-sm font-medium text-muted-foreground">
                 Daily Visit Reminder
               </span>
@@ -542,7 +542,7 @@ const AddOrEditPatient: React.FC = () => {
               </div>
             </div> */}
 
-            <div className="flex items-center justify-between p-3 flex-start gap-4 rounded-lg bg-muted/30 border border-border/50">
+            <div className="flex items-center justify-between p-3 flex-start gap-4 rounded-lg bg-accent/30 ">
               <div className="flex flex-col gap-1">
                 <span className="text-sm font-medium text-muted-foreground">
                   Payment Collection Reminder
@@ -581,7 +581,7 @@ const AddOrEditPatient: React.FC = () => {
               </div>
             </div>
 
-            {/* <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
+            {/* <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border-border/50">
               <span className="text-sm font-medium text-muted-foreground">
                 Follow-up Reminder
               </span>
@@ -615,7 +615,7 @@ const AddOrEditPatient: React.FC = () => {
             </div>
 
             {formData.followUpReminderEnabled && (
-              <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
+              <div className="p-3 rounded-lg bg-accent/10 border-accent/20">
                 <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Follow-up after (days)
                 </label>
@@ -628,7 +628,7 @@ const AddOrEditPatient: React.FC = () => {
                       parseInt(e.target.value)
                     )
                   }
-                  className="w-full p-3 border border-accent/30 rounded-lg focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all duration-200 bg-background/50 backdrop-blur-sm"
+                  className="w-full p-3 border-accent/30 rounded-lg focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all duration-200 bg-background/50 backdrop-blur-sm"
                   min="1"
                   max="30"
                 />
@@ -642,7 +642,7 @@ const AddOrEditPatient: React.FC = () => {
           <button
             type="button"
             onClick={() => navigate("/")}
-            className="flex-1 flex items-center justify-center py-3 px-4 border border-border rounded-lg text-muted-foreground hover:bg-muted hover:border-primary/30 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+            className="flex-1 flex items-center justify-center py-3 px-4 rounded-lg text-muted-foreground hover:bg-muted hover:border-primary/30 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
           >
             <X className="w-5 h-5 mr-2" />
             Cancel
@@ -669,7 +669,7 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {errors.submit && (
-          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 animate-fade-in">
+          <div className="bg-destructive/10 border-destructive/20 rounded-lg p-4 animate-fade-in">
             <p className="text-destructive text-sm flex items-center">
               <span className="w-2 h-2 bg-destructive rounded-full mr-2"></span>
               {errors.submit}
