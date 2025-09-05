@@ -41,46 +41,63 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
   const [compressionProgress, setCompressionProgress] = useState(0);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
   const [showCamera, setShowCamera] = useState(false);
   const [cameraMode, setCameraMode] = useState<"photo" | "video">("photo");
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      createPreview(file);
+    const files = Array.from(event.target.files || []);
+    if (files.length > 0) {
+      // If we already have files selected, append new ones
+      if (selectedFiles.length > 0) {
+        const newFiles = [...selectedFiles, ...files];
+        setSelectedFiles(newFiles);
+        createPreviews(files); // Only create previews for new files
+      } else {
+        setSelectedFiles(files);
+        createPreviews(files);
+      }
     }
+    // Reset the input so the same file can be selected again if needed
+    event.target.value = "";
   };
 
-  const createPreview = (file: File) => {
-    if (file.type.startsWith("image/")) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    } else if (file.type.startsWith("video/")) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    }
+  const createPreviews = (files: File[]) => {
+    const newPreviewUrls: Record<string, string> = {};
+    files.forEach((file) => {
+      if (file.type.startsWith("image/") || file.type.startsWith("video/")) {
+        const url = URL.createObjectURL(file);
+        newPreviewUrls[file.name] = url;
+      }
+    });
+    setPreviewUrls((prev) => ({ ...prev, ...newPreviewUrls }));
   };
 
   const handleUpload = async () => {
-    if (!selectedFile) return;
+    if (selectedFiles.length === 0) return;
 
     setIsUploading(true);
     try {
-      await dispatch(
-        uploadMediaAsync({
-          file: selectedFile,
-          patientId,
-        }) as any
-      );
+      // Upload files sequentially to avoid overwhelming the server
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        await dispatch(
+          uploadMediaAsync({
+            file,
+            patientId,
+          }) as any
+        );
+      }
 
+      const fileNames = selectedFiles.map((f) => f.name).join(", ");
       showSuccess(
         "Media Uploaded Successfully!",
-        `${selectedFile.name} has been uploaded for ${patientName}.`
+        `${selectedFiles.length} file(s) (${fileNames}) have been uploaded for ${patientName}.`
       );
 
+      // Clear the selected files and previews after successful upload
+      clearSelection();
       onUploadComplete?.();
       onClose();
     } catch (error) {
@@ -107,10 +124,25 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
   };
 
   const clearSelection = () => {
-    setSelectedFile(null);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
+    // Revoke all object URLs to prevent memory leaks
+    Object.values(previewUrls).forEach((url) => URL.revokeObjectURL(url));
+    setSelectedFiles([]);
+    setPreviewUrls({});
+  };
+
+  const removeFile = (fileName: string) => {
+    const fileToRemove = selectedFiles.find((f) => f.name === fileName);
+    if (fileToRemove) {
+      const newFiles = selectedFiles.filter((f) => f.name !== fileName);
+      setSelectedFiles(newFiles);
+
+      // Revoke the object URL for the removed file
+      if (previewUrls[fileName]) {
+        URL.revokeObjectURL(previewUrls[fileName]);
+        const newPreviewUrls = { ...previewUrls };
+        delete newPreviewUrls[fileName];
+        setPreviewUrls(newPreviewUrls);
+      }
     }
   };
 
@@ -129,7 +161,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
     <div className="bg-foreground/50 fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-card border border-border text-card-foreground rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 bg-accent/10 text-accent-foreground">
+        <div className="flex items-center justify-between p-4 bg-accent/20 text-accent-foreground">
           <div className="flex flex-start space-x-3">
             <div className="p-2 rounded-full">
               <Upload className="w-5 h-5 text-secondary" />
@@ -147,7 +179,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Upload Options */}
-          {!selectedFile && (
+          {selectedFiles.length === 0 && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Gallery Upload */}
               <button
@@ -157,7 +189,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
                 <FileImage className="w-12 h-12 mx-auto mb-3 text-muted-foreground group-hover:text-primary" />
                 <h4 className="font-medium mb-2">Browse Gallery</h4>
                 <p className="text-sm text-muted-foreground">
-                  Select images or videos from your device
+                  Select multiple images or videos from your device
                 </p>
               </button>
 
@@ -193,61 +225,98 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
           )}
 
           {/* File Preview */}
-          {selectedFile && (
+          {selectedFiles.length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h4 className="font-medium">Selected File</h4>
-                <button
-                  onClick={clearSelection}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                <h4 className="font-medium">
+                  Selected Files ({selectedFiles.length})
+                </h4>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={openFilePicker}
+                    className="text-sm text-primary hover:text-primary/80 transition-colors"
+                  >
+                    + Add More
+                  </button>
+                  <button
+                    onClick={clearSelection}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
-              <div className="border rounded-lg p-4">
-                <div className="flex items-center space-x-3">
-                  {selectedFile.type.startsWith("image/") ? (
-                    <FileImage className="w-8 h-8 text-blue-500" />
-                  ) : (
-                    <FileVideo className="w-8 h-8 text-red-500" />
-                  )}
-                  <div className="flex-1">
-                    <p className="font-medium">{selectedFile.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {formatFileSize(selectedFile.size)} • {selectedFile.type}
-                    </p>
-                  </div>
-                </div>
+              <div className="bg-accent/20 rounded-lg p-4 max-h-96 overflow-y-auto">
+                <div className="grid grid-cols-3 gap-3">
+                  {selectedFiles.map((file, index) => (
+                    <div
+                      key={`${file.name}-${index}`}
+                      className="relative group"
+                    >
+                      {/* Preview */}
+                      {previewUrls[file.name] && (
+                        <div className="relative">
+                          {file.type.startsWith("image/") ? (
+                            <img
+                              src={previewUrls[file.name]}
+                              alt={`Preview of ${file.name}`}
+                              className="w-full h-24 object-cover rounded-lg"
+                            />
+                          ) : (
+                            <video
+                              src={previewUrls[file.name]}
+                              controls
+                              className="w-full h-24 object-cover rounded-lg"
+                            />
+                          )}
 
-                {/* Preview */}
-                {previewUrl && (
-                  <div className="mt-4 space-y-3">
-                    {selectedFile.type.startsWith("image/") ? (
-                      <img
-                        src={previewUrl}
-                        alt="Preview"
-                        className="max-w-full h-48 object-cover rounded-lg mx-auto"
-                      />
-                    ) : (
-                      <video
-                        src={previewUrl}
-                        controls
-                        className="max-w-full h-48 object-cover rounded-lg mx-auto"
-                      />
-                    )}
+                          {/* File type icon overlay */}
+                          <div className="absolute top-1 left-1">
+                            {file.type.startsWith("image/") ? (
+                              <FileImage className="w-4 h-4 text-white drop-shadow-lg" />
+                            ) : (
+                              <FileVideo className="w-4 h-4 text-white drop-shadow-lg" />
+                            )}
+                          </div>
 
-                    {/* Compression Info */}
-                    <div className="text-xs text-muted-foreground bg-muted p-3 rounded-lg">
-                      <div className="font-medium mb-1">Optimization Info:</div>
-                      <div>• Images will be compressed to WebP format</div>
-                      <div>• Master: 1280-1600px max, quality 70%</div>
-                      <div>• Preview: 320px max, quality 50%</div>
-                      <div>• Videos will get optimized poster frames</div>
-                      <div>• Estimated compression: 60-80% smaller</div>
+                          {/* Remove button overlay */}
+                          <button
+                            onClick={() => removeFile(file.name)}
+                            className="absolute top-1 right-1 bg-red-500/80 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      )}
+
+                      {/* File info */}
+                      <div className="mt-1 text-center">
+                        <p
+                          className="text-xs font-medium truncate"
+                          title={file.name}
+                        >
+                          {file.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {formatFileSize(file.size)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  ))}
+                </div>
+              </div>
+
+              <div className="text-xs text-muted-foreground bg-muted/25 p-3 rounded-lg">
+                <div className="font-medium mb-1">
+                  Note: All media will be optimized for faster loading.
+                </div>
+                <div className="text-xs">
+                  Total size:{" "}
+                  {formatFileSize(
+                    selectedFiles.reduce((total, file) => total + file.size, 0)
+                  )}
+                </div>
               </div>
 
               {/* Upload Button */}
@@ -264,10 +333,12 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
                 ) : isUploading ? (
                   <div className="flex items-center justify-center space-x-2">
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Uploading...</span>
+                    <span>Uploading {selectedFiles.length} file(s)...</span>
                   </div>
                 ) : (
-                  "Upload Media"
+                  `Upload ${selectedFiles.length} File${
+                    selectedFiles.length > 1 ? "s" : ""
+                  }`
                 )}
               </button>
             </div>
@@ -278,6 +349,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
             ref={fileInputRef}
             type="file"
             accept="image/*,video/*"
+            multiple
             onChange={handleFileSelect}
             className="hidden"
           />
@@ -305,8 +377,8 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
         isOpen={showCamera}
         mode={cameraMode}
         onCapture={(file) => {
-          setSelectedFile(file);
-          createPreview(file);
+          setSelectedFiles([file]);
+          createPreviews([file]);
           setShowCamera(false);
         }}
         onClose={() => setShowCamera(false)}

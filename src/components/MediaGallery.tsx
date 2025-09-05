@@ -124,7 +124,7 @@ const MediaGallery: React.FC<MediaGalleryProps> = ({
       <div className="bg-foreground/50 fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-card border border-border text-card-foreground rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 bg-accent/10 text-accent-foreground">
+          <div className="flex items-center justify-between p-4 bg-accent/20 text-accent-foreground">
             <div className="flex flex-start space-x-3">
               <div className="p-2 rounded-full">
                 <ImageIcon className="w-5 h-5 text-secondary" />
@@ -152,7 +152,7 @@ const MediaGallery: React.FC<MediaGalleryProps> = ({
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-5 gap-4">
                 {patientMedia.map((mediaItem) => (
                   <div
                     key={mediaItem.id}
@@ -213,11 +213,11 @@ const MediaGallery: React.FC<MediaGalleryProps> = ({
                         ) : (
                           <VideoIcon className="w-4 h-4 text-red-500" />
                         )}
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-[10px] sm:text-xs text-muted-foreground">
                           {formatFileSize(mediaItem.fileSize)}
                         </p>
                       </div>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-[10px] sm:text-xs text-muted-foreground">
                         {format(new Date(mediaItem.uploadedAt), "MMM d, yyyy")}
                       </p>
                     </div>
