@@ -17,6 +17,8 @@ import { AppDispatch } from "../store";
 import { showSuccess, showError } from "../utils/toast";
 import { MediaItem } from "../services/mediaService";
 import { format } from "date-fns";
+import { MediaViewerModal, LoadingSpinner } from "./ui";
+import { formatFileSize, downloadMedia } from "../utils/formatUtils";
 
 interface MediaGalleryProps {
   isOpen: boolean;
@@ -85,23 +87,6 @@ const MediaGallery: React.FC<MediaGalleryProps> = ({
     setSelectedMedia(null);
   };
 
-  const downloadMedia = (mediaItem: MediaItem) => {
-    const link = document.createElement("a");
-    link.href = mediaItem.fileUrl;
-    link.download = mediaItem.fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  };
-
   if (!isOpen || isOpen === undefined || !patientId || !patientName)
     return null;
 
@@ -110,8 +95,7 @@ const MediaGallery: React.FC<MediaGalleryProps> = ({
       <div className="bg-foreground/50 fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-card border border-border text-card-foreground rounded-xl p-8">
           <div className="text-center">
-            <div className="w-8 h-8 border-2 border-t-transparent border-primary rounded-full animate-spin mx-auto mb-4"></div>
-            <p>Loading media...</p>
+            <LoadingSpinner size="md" text="Loading media..." />
           </div>
         </div>
       </div>
@@ -231,69 +215,15 @@ const MediaGallery: React.FC<MediaGalleryProps> = ({
       </div>
 
       {/* Media Viewer Modal */}
-      {selectedMedia && (
-        <div className="bg-foreground/90 fixed inset-0 bg-opacity-90 flex items-center justify-center z-[60] p-4">
-          <div className="relative max-w-4xl w-full max-h-[90vh]">
-            {/* Close Button */}
-            <button
-              onClick={closeMedia}
-              className="absolute top-4 right-4 z-10 p-2 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-70 transition-all"
-            >
-              <X className="w-6 h-6" />
-            </button>
-
-            {/* Media Content */}
-            <div className="bg-card border border-border rounded-xl overflow-hidden">
-              {selectedMedia.fileType === "image" ? (
-                <img
-                  src={selectedMedia.fileUrl}
-                  alt={selectedMedia.fileName}
-                  className="w-full h-auto max-h-[80vh] object-contain"
-                />
-              ) : (
-                <video
-                  src={selectedMedia.fileUrl}
-                  controls
-                  className="w-full h-auto max-h-[80vh]"
-                />
-              )}
-
-              {/* Media Details */}
-              <div className="p-4 border-t">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium">{selectedMedia.fileName}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {formatFileSize(selectedMedia.fileSize)} •{" "}
-                      {format(
-                        new Date(selectedMedia.uploadedAt),
-                        "EEEE, MMMM d, yyyy"
-                      )}
-                    </p>
-                  </div>
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => downloadMedia(selectedMedia)}
-                      className="px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm"
-                    >
-                      <Download className="w-4 h-4 inline mr-2" />
-                      Download
-                    </button>
-                    <button
-                      onClick={() => handleDelete(selectedMedia)}
-                      disabled={isDeleting === selectedMedia.id}
-                      className="px-3 py-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors text-sm disabled:opacity-50"
-                    >
-                      <Trash2 className="w-4 h-4 inline mr-2" />
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <MediaViewerModal
+        isOpen={!!selectedMedia}
+        mediaItem={selectedMedia}
+        onClose={closeMedia}
+        onDownload={downloadMedia}
+        onDelete={handleDelete}
+        isDeleting={isDeleting === selectedMedia?.id}
+        showPatientInfo={false}
+      />
     </>
   );
 };

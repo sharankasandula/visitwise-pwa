@@ -60,7 +60,7 @@ export const PullToRefresh = forwardRef<HTMLDivElement, PullToRefreshProps>(
     return (
       <div
         ref={combinedRef}
-        className={`relative overflow-hidden ${className}`}
+        className={`relative ${className}`}
         style={{
           ...style,
           touchAction: "pan-y",
