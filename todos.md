@@ -7,7 +7,6 @@
 - [x] Earnings this month card
 - [x] Record Payments
 - [x] [Bug] Archive and Delete Patient not working as expected.
-- [x] Reminders
 - [x] Modal to write notes for the visit
 - [x] Revamp Patient profile
 - [x] Integrate Calendarx View to view visits in Patient Profile - react day picker
@@ -22,27 +21,31 @@
 - [x] Show notes, protocol for patient in patient profile
 - [x] Bring themes in Home page
 - [x] Toast notifications
-- [ ] [Bug] Sometimes patient keeps loading
-- [ ] [Bug] On archiving patients patients keep loading
-- [ ] Add illustrations and animations
-- [ ] Store user and user preferences in Firebase
-- [ ] Pull to refresh
-- [ ] Editable payment/visit history.
-- [ ] Media uploads
-- [ ] Import patients from contacts
+- [x] Add illustrations and animations
+- [x] Store user and user preferences in Firebase
+
+- [x] Pull to refresh
+- [x] Editable payment/visit history.
+- [x] Media support
+- [ ] Multiple media upload support
+- [ ] Reminders
 - [ ] Convert to android app
 - [ ] Analytics on Earnings and visits.
 - [ ] Testing
 
 UI Testing tasks
-
-- [ ] On reminder - select patients you visited that day
-- [ ] Business card on profile.
-- [ ] Follow up reminder on archive
 - [x] Add outstanding amount in patient card
 - [x] Remove shadows
-- [X] Change layout in earnings summary
-- [X] Remove fab button
-- [X] Remove search when empty
-- [X] Earnings this month font size
-- [X] Switches
+- [x] Change layout in earnings summary
+- [x] Remove fab button
+- [x] Remove search when empty
+- [x] Earnings this month font size
+- [x] Switches
+- [X] Follow up reminder on archive
+- [ ] On reminder - select patients you visited that day
+
+
+Bugs
+- [X] Sometimes patient keeps loading
+- [X] On archiving patients patients keep loading
+- [X] Fix Patient info in patient profile.

@@ -16,6 +16,7 @@ import EditPaymentModal from "../EditPaymentModal";
 import MediaPreview from "../MediaPreview";
 import MediaUpload from "../modals/MediaUpload";
 import MediaGallery from "../MediaGallery";
+import { FollowUpReminderModal } from "../modals";
 import PatientHeader from "../sections/PatientHeader";
 import PatientInfo from "../sections/PatientInfo";
 import PaymentsSection from "../sections/PaymentsSection";
@@ -42,6 +43,7 @@ const PatientProfile: React.FC = () => {
   const [selectedPayment, setSelectedPayment] = useState<any>(null);
   const [isMediaUploadModalOpen, setIsMediaUploadModalOpen] = useState(false);
   const [isMediaGalleryModalOpen, setIsMediaGalleryModalOpen] = useState(false);
+  const [isFollowUpModalOpen, setIsFollowUpModalOpen] = useState(false);
 
   const patientVisits = visits[id || ""] || [];
   const patientPayments = payments[id || ""] || [];
@@ -105,39 +107,71 @@ const PatientProfile: React.FC = () => {
   const handleArchive = async () => {
     if (!patient || isArchiving) return;
 
+    if (patient.isActive) {
+      // Show follow-up reminder modal when archiving
+      setIsFollowUpModalOpen(true);
+    } else {
+      // Directly restore when unarchiving
+      try {
+        setIsArchiving(true);
+        const result = await dispatch(
+          setPatientActiveStatus({
+            patientId: patient.id,
+            isActive: true,
+          }) as any
+        );
+
+        if (result.meta.requestStatus === "fulfilled") {
+          alert(`Patient ${patient.name} has been activated successfully!`);
+          setPatient((prev) => (prev ? { ...prev, isActive: true } : null));
+          navigate("/");
+        } else if (result.meta.requestStatus === "rejected") {
+          alert(
+            `Failed to activate patient: ${
+              result.error?.message || "Unknown error"
+            }`
+          );
+        }
+      } catch (error) {
+        console.error("Error activating patient:", error);
+        alert("Failed to activate patient. Please try again.");
+      } finally {
+        setIsArchiving(false);
+      }
+    }
+  };
+
+  const handleFollowUpConfirm = async (days: number) => {
+    if (!patient) return;
+
     try {
       setIsArchiving(true);
       const result = await dispatch(
         setPatientActiveStatus({
           patientId: patient.id,
-          isActive: !patient.isActive,
+          isActive: false,
         }) as any
       );
 
       if (result.meta.requestStatus === "fulfilled") {
-        const status = result.payload.isActive ? "activated" : "archived";
-        alert(`Patient ${patient.name} has been ${status} successfully!`);
-        // Update local patient state before navigating
-        setPatient((prev) =>
-          prev ? { ...prev, isActive: result.payload.isActive } : null
+        alert(
+          `Patient ${patient.name} has been archived with a ${days}-day follow-up reminder!`
         );
+        setPatient((prev) => (prev ? { ...prev, isActive: false } : null));
         navigate("/");
       } else if (result.meta.requestStatus === "rejected") {
         alert(
-          `Failed to ${patient.isActive ? "archive" : "activate"} patient: ${
+          `Failed to archive patient: ${
             result.error?.message || "Unknown error"
           }`
         );
       }
     } catch (error) {
       console.error("Error archiving patient:", error);
-      alert(
-        `Failed to ${
-          patient.isActive ? "archive" : "activate"
-        } patient. Please try again.`
-      );
+      alert("Failed to archive patient. Please try again.");
     } finally {
       setIsArchiving(false);
+      setIsFollowUpModalOpen(false);
     }
   };
 
@@ -402,6 +436,16 @@ const PatientProfile: React.FC = () => {
           patientId={patient.id}
           patientName={patient.name}
           onClose={() => setIsMediaGalleryModalOpen(false)}
+        />
+      )}
+
+      {/* Follow-up Reminder Modal */}
+      {patient && (
+        <FollowUpReminderModal
+          isOpen={isFollowUpModalOpen}
+          onClose={() => setIsFollowUpModalOpen(false)}
+          onConfirm={handleFollowUpConfirm}
+          patientName={patient.name}
         />
       )}
     </div>

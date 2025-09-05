@@ -377,6 +377,7 @@ const patientsSlice = createSlice({
           state,
           action: PayloadAction<{ patientId: string; isActive: boolean }>
         ) => {
+          state.loading = false;
           const patient = state.patients.find(
             (p) => p.id === action.payload.patientId
           );

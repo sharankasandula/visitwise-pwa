@@ -14,6 +14,7 @@ import { fetchPaymentsAsync } from "../store/slices/paymentsSlice";
 import { RootState } from "../store";
 import CalendarStrip from "./CalendarStrip";
 import PaymentModal from "./PaymentModal";
+import { FollowUpReminderModal } from "./modals";
 import { showSuccess, showInfo } from "../utils/toast";
 
 interface PatientCardProps {
@@ -26,6 +27,7 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
   const { visits } = useSelector((state: RootState) => state.visits);
   const { payments } = useSelector((state: RootState) => state.payments);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isFollowUpModalOpen, setIsFollowUpModalOpen] = useState(false);
 
   // Fetch visits when component mounts
   useEffect(() => {
@@ -59,24 +61,39 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
   }, [visits, payments, patient.id]);
 
   const handleArchive = () => {
-    dispatch(
-      setPatientActiveStatus({
-        patientId: patient.id,
-        isActive: !patient.isActive,
-      }) as any
-    );
-
     if (patient.isActive) {
-      showInfo(
-        "Patient Archived",
-        `${patient.name} has been moved to archived patients.`
-      );
+      // Show follow-up reminder modal when archiving
+      setIsFollowUpModalOpen(true);
     } else {
+      // Directly restore when unarchiving
+      dispatch(
+        setPatientActiveStatus({
+          patientId: patient.id,
+          isActive: true,
+        }) as any
+      );
       showSuccess(
         "Patient Restored",
         `${patient.name} has been restored to active patients.`
       );
     }
+  };
+
+  const handleFollowUpConfirm = (days: number) => {
+    // Archive the patient
+    dispatch(
+      setPatientActiveStatus({
+        patientId: patient.id,
+        isActive: false,
+      }) as any
+    );
+
+    showInfo(
+      "Patient Archived",
+      `${patient.name} has been moved to archived patients with a ${days}-day follow-up reminder.`
+    );
+
+    setIsFollowUpModalOpen(false);
   };
 
   const handleCall = () => {
@@ -168,6 +185,14 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
         patientId={patient.id}
+        patientName={patient.name}
+      />
+
+      {/* Follow-up Reminder Modal */}
+      <FollowUpReminderModal
+        isOpen={isFollowUpModalOpen}
+        onClose={() => setIsFollowUpModalOpen(false)}
+        onConfirm={handleFollowUpConfirm}
         patientName={patient.name}
       />
     </div>
