@@ -47,6 +47,13 @@ export const dismissAllToasts = () => {
   toast.dismiss();
 };
 
+export const showDemoToast = (message: string, description?: string) => {
+  return toast.info(message, {
+    description,
+    duration: 4000,
+  });
+};
+
 // Promise-based success/error handling
 export const handlePromise = <T>(
   promise: Promise<T>,

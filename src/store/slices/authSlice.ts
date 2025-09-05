@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { AuthService, AuthUser } from "../../services/authService";
-import { UserService } from "../../services/userService";
+import { UserService, UserData } from "../../services/userService";
 import { clearPatients } from "./patientsSlice";
 import { clearAllVisits } from "./visitsSlice";
 
 interface AuthState {
   isAuthenticated: boolean;
   user: AuthUser | null;
+  userData: UserData | null;
   loading: boolean;
   error: string | null;
 }
@@ -14,6 +15,7 @@ interface AuthState {
 const initialState: AuthState = {
   isAuthenticated: false,
   user: null,
+  userData: null,
   loading: true,
   error: null,
 };
@@ -56,6 +58,17 @@ export const signOut = createAsyncThunk(
   }
 );
 
+export const fetchUserData = createAsyncThunk(
+  "auth/fetchUserData",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      return await UserService.getUserData(userId);
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const initializeAuth = createAsyncThunk(
   "auth/initialize",
   async (_, { dispatch }) => {
@@ -63,6 +76,8 @@ export const initializeAuth = createAsyncThunk(
     const savedUser = AuthService.getCurrentUser();
     if (savedUser) {
       dispatch(setUser(savedUser));
+      // Fetch user data from Firebase
+      dispatch(fetchUserData(savedUser.id) as any);
       // Ensure user data is persisted in Firebase
       UserService.createOrUpdateUser(savedUser).catch((error) => {
         console.error("Error persisting saved user data:", error);
@@ -74,6 +89,7 @@ export const initializeAuth = createAsyncThunk(
       const unsubscribe = AuthService.onAuthStateChanged((user) => {
         if (user) {
           dispatch(setUser(user));
+          dispatch(fetchUserData(user.id) as any);
         } else {
           dispatch(clearUser());
         }
@@ -101,8 +117,12 @@ const authSlice = createSlice({
     clearUser: (state) => {
       state.isAuthenticated = false;
       state.user = null;
+      state.userData = null;
       state.loading = false;
       state.error = null;
+    },
+    setUserData: (state, action: PayloadAction<UserData>) => {
+      state.userData = action.payload;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -161,6 +181,18 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+      // Fetch User Data
+      .addCase(fetchUserData.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchUserData.fulfilled, (state, action) => {
+        state.userData = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchUserData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
       // Initialize Auth
       .addCase(initializeAuth.pending, (state) => {
         state.loading = true;
@@ -171,6 +203,12 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, clearUser, setLoading, setError, clearError } =
-  authSlice.actions;
+export const {
+  setUser,
+  clearUser,
+  setUserData,
+  setLoading,
+  setError,
+  clearError,
+} = authSlice.actions;
 export default authSlice.reducer;

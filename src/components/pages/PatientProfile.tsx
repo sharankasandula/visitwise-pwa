@@ -372,7 +372,7 @@ const PatientProfile: React.FC = () => {
         />
 
         {/* Reminders Section */}
-        <RemindersSection patient={patient} />
+        <RemindersSection patientId={patient.id} patientName={patient.name} />
       </div>
 
       {/* Payment Modal */}

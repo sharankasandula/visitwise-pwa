@@ -1,11 +1,16 @@
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { AuthUser } from "./authService";
+import {
+  ReminderSettings,
+  DEFAULT_REMINDER_SETTINGS,
+} from "../types/reminders";
 
 export interface UserData extends AuthUser {
-  createdAt: Date;
-  lastLoginAt: Date;
+  createdAt: string; // ISO string for Redux compatibility
+  lastLoginAt: string; // ISO string for Redux compatibility
   isActive: boolean;
+  reminderSettings?: ReminderSettings;
 }
 
 export class UserService {
@@ -26,13 +31,19 @@ export class UserService {
         });
       } else {
         // Create new user
+        const now = new Date();
         const userData: UserData = {
           ...user,
-          createdAt: new Date(),
-          lastLoginAt: new Date(),
+          createdAt: now.toISOString(),
+          lastLoginAt: now.toISOString(),
           isActive: true,
+          reminderSettings: DEFAULT_REMINDER_SETTINGS,
         };
-        await setDoc(userRef, userData);
+        await setDoc(userRef, {
+          ...userData,
+          createdAt: now,
+          lastLoginAt: now,
+        });
       }
     } catch (error: any) {
       console.error("Error saving user to Firestore:", error);
@@ -50,8 +61,12 @@ export class UserService {
         const data = userDoc.data();
         return {
           ...data,
-          createdAt: data.createdAt.toDate(),
-          lastLoginAt: data.lastLoginAt.toDate(),
+          createdAt:
+            data.createdAt?.toDate()?.toISOString() || new Date().toISOString(),
+          lastLoginAt:
+            data.lastLoginAt?.toDate()?.toISOString() ||
+            new Date().toISOString(),
+          reminderSettings: data.reminderSettings || DEFAULT_REMINDER_SETTINGS,
         } as UserData;
       }
       return null;
@@ -84,6 +99,33 @@ export class UserService {
     } catch (error: any) {
       console.error("Error deactivating user:", error);
       throw new Error("Failed to deactivate user");
+    }
+  }
+
+  // Update user reminder settings
+  static async updateReminderSettings(
+    userId: string,
+    reminderSettings: ReminderSettings
+  ): Promise<void> {
+    try {
+      const userRef = doc(db, "users", userId);
+      await updateDoc(userRef, {
+        reminderSettings,
+      });
+    } catch (error: any) {
+      console.error("Error updating reminder settings:", error);
+      throw new Error("Failed to update reminder settings");
+    }
+  }
+
+  // Get user reminder settings
+  static async getReminderSettings(userId: string): Promise<ReminderSettings> {
+    try {
+      const userData = await this.getUserData(userId);
+      return userData?.reminderSettings || DEFAULT_REMINDER_SETTINGS;
+    } catch (error: any) {
+      console.error("Error fetching reminder settings:", error);
+      return DEFAULT_REMINDER_SETTINGS;
     }
   }
 }
