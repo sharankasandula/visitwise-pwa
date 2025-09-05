@@ -67,9 +67,9 @@ const MediaPreview: React.FC<MediaPreviewProps> = ({
         {patientMedia.length === 0 ? (
           <div className="rounded-lg bg-accent/20 text-card-foreground p-8 text-center">
             <img
-              src="/illustrations/physio_illustration1.png"
+              src="/illustrations/physio_illustration5.png"
               alt="No Media"
-              className="w-20 h-20 mx-auto mb-4 opacity-60"
+              className="w-auto h-30 mx-auto mb-4 "
             />
             <p className="text-lg font-medium text-muted-foreground mb-2">
               No media uploaded yet

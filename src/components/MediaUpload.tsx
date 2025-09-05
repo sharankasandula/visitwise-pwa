@@ -48,6 +48,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
+    console.log("Files selected:", files);
     if (files.length > 0) {
       // If we already have files selected, append new ones
       if (selectedFiles.length > 0) {
@@ -67,11 +68,24 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
     const newPreviewUrls: Record<string, string> = {};
     files.forEach((file) => {
       if (file.type.startsWith("image/") || file.type.startsWith("video/")) {
-        const url = URL.createObjectURL(file);
-        newPreviewUrls[file.name] = url;
+        try {
+          const url = URL.createObjectURL(file);
+          newPreviewUrls[file.name] = url;
+          console.log(`Created preview URL for ${file.name}:`, url);
+        } catch (error) {
+          console.error(
+            `Failed to create preview URL for ${file.name}:`,
+            error
+          );
+        }
       }
     });
-    setPreviewUrls((prev) => ({ ...prev, ...newPreviewUrls }));
+    console.log("New preview URLs:", newPreviewUrls);
+    setPreviewUrls((prev) => {
+      const updated = { ...prev, ...newPreviewUrls };
+      console.log("Updated preview URLs:", updated);
+      return updated;
+    });
   };
 
   const handleUpload = async () => {
@@ -249,26 +263,45 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
 
               <div className="bg-accent/20 rounded-lg p-4 max-h-96 overflow-y-auto">
                 <div className="grid grid-cols-3 gap-3">
-                  {selectedFiles.map((file, index) => (
-                    <div
-                      key={`${file.name}-${index}`}
-                      className="relative group"
-                    >
-                      {/* Preview */}
-                      {previewUrls[file.name] && (
+                  {selectedFiles.map((file, index) => {
+                    console.log(
+                      `Rendering file ${file.name}, has preview URL:`,
+                      !!previewUrls[file.name]
+                    );
+                    return (
+                      <div
+                        key={`${file.name}-${index}`}
+                        className="relative group"
+                      >
+                        {/* Preview */}
                         <div className="relative">
-                          {file.type.startsWith("image/") ? (
-                            <img
-                              src={previewUrls[file.name]}
-                              alt={`Preview of ${file.name}`}
-                              className="w-full h-24 object-cover rounded-lg"
-                            />
+                          {previewUrls[file.name] ? (
+                            file.type.startsWith("image/") ? (
+                              <img
+                                src={previewUrls[file.name]}
+                                alt={`Preview of ${file.name}`}
+                                className="w-full h-24 object-cover rounded-lg"
+                              />
+                            ) : (
+                              <video
+                                src={previewUrls[file.name]}
+                                controls
+                                className="w-full h-24 object-cover rounded-lg"
+                              />
+                            )
                           ) : (
-                            <video
-                              src={previewUrls[file.name]}
-                              controls
-                              className="w-full h-24 object-cover rounded-lg"
-                            />
+                            <div className="w-full h-24 bg-muted rounded-lg flex items-center justify-center">
+                              <div className="text-center">
+                                {file.type.startsWith("image/") ? (
+                                  <FileImage className="w-8 h-8 text-muted-foreground mx-auto mb-1" />
+                                ) : (
+                                  <FileVideo className="w-8 h-8 text-muted-foreground mx-auto mb-1" />
+                                )}
+                                <p className="text-xs text-muted-foreground">
+                                  Loading...
+                                </p>
+                              </div>
+                            </div>
                           )}
 
                           {/* File type icon overlay */}
@@ -276,7 +309,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
                             {file.type.startsWith("image/") ? (
                               <FileImage className="w-4 h-4 text-white drop-shadow-lg" />
                             ) : (
-                              <FileVideo className="w-4 h-4 text-white drop-shadow-lg" />
+                              <FileVideo className="w-4 h-4 text-red-500 drop-shadow-lg" />
                             )}
                           </div>
 
@@ -288,22 +321,22 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
                             <X className="w-3 h-3" />
                           </button>
                         </div>
-                      )}
 
-                      {/* File info */}
-                      <div className="mt-1 text-center">
-                        <p
-                          className="text-xs font-medium truncate"
-                          title={file.name}
-                        >
-                          {file.name}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {formatFileSize(file.size)}
-                        </p>
+                        {/* File info */}
+                        <div className="mt-1 text-center">
+                          <p
+                            className="text-xs font-medium truncate"
+                            title={file.name}
+                          >
+                            {file.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {formatFileSize(file.size)}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 

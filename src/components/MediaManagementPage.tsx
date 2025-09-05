@@ -6,6 +6,7 @@ import {
   fetchAllMediaAsync,
   deleteMediaAsync,
 } from "../store/slices/mediaSlice";
+import { fetchPatients } from "../store/slices/patientsSlice";
 import { AppDispatch } from "../store";
 import { showSuccess, showError } from "../utils/toast";
 import { MediaItem } from "../services/mediaService";
@@ -27,7 +28,9 @@ const MediaManagementPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { allMedia, loading } = useSelector((state: RootState) => state.media);
-  const { patients } = useSelector((state: RootState) => state.patients);
+  const { patients, loading: patientsLoading } = useSelector(
+    (state: RootState) => state.patients
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<"all" | "image" | "video">(
     "all"
@@ -37,7 +40,10 @@ const MediaManagementPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchAllMediaAsync() as any);
+    dispatch(fetchPatients() as any);
   }, [dispatch]);
+
+  useEffect(() => {}, [patients]);
 
   const filteredMedia = allMedia.filter((media) => {
     const matchesSearch =
@@ -116,7 +122,7 @@ const MediaManagementPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-card border-b border-border">
+      <div className="bg-card">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -152,13 +158,13 @@ const MediaManagementPage: React.FC = () => {
                 placeholder="Search by filename or patient name..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 bg-accent/20 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value as any)}
-              className="px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="px-4 py-2 bg-accent/20 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
             >
               <option value="all">All Types</option>
               <option value="image">Images Only</option>
@@ -172,10 +178,10 @@ const MediaManagementPage: React.FC = () => {
         </div>
 
         {/* Media Grid */}
-        {loading ? (
+        {loading || patientsLoading ? (
           <div className="text-center py-12">
             <div className="w-8 h-8 border-2 border-t-transparent border-primary rounded-full animate-spin mx-auto mb-4"></div>
-            <p>Loading media...</p>
+            <p>Loading {loading ? "media" : "patients"}...</p>
           </div>
         ) : filteredMedia.length === 0 ? (
           <div className="text-center py-12">
@@ -194,7 +200,7 @@ const MediaManagementPage: React.FC = () => {
             {filteredMedia.map((mediaItem) => (
               <div
                 key={mediaItem.id}
-                className="group relative border border-border rounded-lg overflow-hidden hover:shadow-lg transition-all cursor-pointer bg-card media-grid-item"
+                className="group relative bg-accent/20 rounded-lg overflow-hidden hover:shadow-lg transition-all cursor-pointer media-grid-item"
                 onClick={() => openMedia(mediaItem)}
               >
                 {/* Media Preview */}
@@ -219,15 +225,19 @@ const MediaManagementPage: React.FC = () => {
                       <img
                         src={mediaItem.previewUrl || mediaItem.fileUrl}
                         alt={mediaItem.fileName}
-                        className="w-full h-full object-cover relative z-10 media-preview"
+                        className={`w-full h-full object-cover relative z-10 media-preview ${
+                          mediaItem.thumbHash ? "" : "loaded"
+                        }`}
                         loading="lazy"
                         decoding="async"
                         onLoad={(e) => {
                           // Hide placeholder when image loads
                           const target = e.target as HTMLImageElement;
                           target.classList.add("loaded");
+                          // Remove inline style to allow CSS to take over
+                          target.style.opacity = "";
                         }}
-                        style={{ opacity: mediaItem.thumbHash ? "0" : "1" }}
+                        style={mediaItem.thumbHash ? { opacity: "0" } : {}}
                       />
                     </>
                   ) : (
@@ -251,14 +261,23 @@ const MediaManagementPage: React.FC = () => {
                           <img
                             src={mediaItem.posterUrl}
                             alt={`Poster for ${mediaItem.fileName}`}
-                            className="w-full h-full object-cover relative z-10 media-preview video-poster"
+                            className={`w-full h-full object-cover relative z-10 media-preview video-poster ${
+                              mediaItem.thumbHash ? "" : "loaded"
+                            }`}
                             loading="lazy"
                             decoding="async"
                             onLoad={(e) => {
                               const target = e.target as HTMLImageElement;
                               target.classList.add("loaded");
+                              // Remove inline style to allow CSS to take over
+                              target.style.opacity = "";
                             }}
-                            style={{ opacity: mediaItem.thumbHash ? "0" : "1" }}
+                            onError={(e) => {
+                              console.error(
+                                `Video poster failed to load: ${mediaItem.fileName}`
+                              );
+                            }}
+                            style={mediaItem.thumbHash ? { opacity: "0" } : {}}
                           />
                         </>
                       )}
@@ -324,7 +343,7 @@ const MediaManagementPage: React.FC = () => {
 
       {/* Media Viewer Modal */}
       {selectedMedia && (
-        <div className="bg-foreground/90 fixed inset-0 bg-opacity-90 flex items-center justify-center z-[60] p-4">
+        <div className="bg-background/90 fixed inset-0 bg-opacity-90 flex items-center justify-center z-[60] p-4">
           <div className="relative max-w-4xl w-full max-h-[90vh]">
             {/* Close Button */}
             <button
@@ -352,22 +371,21 @@ const MediaManagementPage: React.FC = () => {
 
               {/* Media Details */}
               <div className="p-4 border-t">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium">{selectedMedia.fileName}</h4>
+                <div className="flex flex-col items-start justify-between">
+                  <div className="text-left">
+                    <h4 className="font-sm">{selectedMedia.fileName}</h4>
                     <p className="text-sm text-muted-foreground">
                       {formatFileSize(selectedMedia.fileSize)} •{" "}
-                      {selectedMedia.fileType} •{" "}
                       {format(
                         new Date(selectedMedia.uploadedAt),
-                        "EEEE, MMMM d, yyyy"
+                        "EEEE, d/M/yyyy"
                       )}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       Patient: {getPatientName(selectedMedia.patientId)}
                     </p>
                   </div>
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-2 pt-4 ">
                     <button
                       onClick={() => downloadMedia(selectedMedia)}
                       className="px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm"

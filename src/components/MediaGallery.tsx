@@ -122,7 +122,7 @@ const MediaGallery: React.FC<MediaGalleryProps> = ({
     <>
       {/* Main Gallery Modal */}
       <div className="bg-foreground/50 fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-card border border-border text-card-foreground rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="bg-card text-card-foreground rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
           {/* Header */}
           <div className="flex items-center justify-between p-4 bg-accent/20 text-accent-foreground">
             <div className="flex flex-start space-x-3">
@@ -156,7 +156,7 @@ const MediaGallery: React.FC<MediaGalleryProps> = ({
                 {patientMedia.map((mediaItem) => (
                   <div
                     key={mediaItem.id}
-                    className="group relative border border-border rounded-lg overflow-hidden hover:shadow-lg transition-all cursor-pointer"
+                    className="group relative bg-accent/40 rounded-lg overflow-hidden hover:shadow-lg transition-all cursor-pointer"
                     onClick={() => openMedia(mediaItem)}
                   >
                     {/* Media Preview */}
@@ -181,45 +181,46 @@ const MediaGallery: React.FC<MediaGalleryProps> = ({
                     </div>
 
                     {/* Overlay Actions */}
-                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            downloadMedia(mediaItem);
-                          }}
-                          className="p-2 bg-white bg-opacity-90 rounded-full hover:bg-opacity-100 transition-all"
-                        >
-                          <Download className="w-4 h-4 text-gray-700" />
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(mediaItem);
-                          }}
-                          disabled={isDeleting === mediaItem.id}
-                          className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all disabled:opacity-50"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(mediaItem);
+                      }}
+                      disabled={isDeleting === mediaItem.id}
+                      className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full transition-all disabled:opacity-50 flex items-center justify-center w-3 h-3"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      {/* <span className="text-sm">X</span> */}
+                    </button>
 
                     {/* Media Info */}
-                    <div className="p-3 bg-card">
-                      <div className="flex items-center space-x-2 mb-1">
+                    <div className="px-3 pt-2 flex justify-between items-baseline bg-accent/20">
+                      <div className="flex items-center space-x-2">
                         {mediaItem.fileType === "image" ? (
-                          <ImageIcon className="w-4 h-4 text-blue-500" />
+                          <ImageIcon className="w-6 h-6 text-blue-500" />
                         ) : (
-                          <VideoIcon className="w-4 h-4 text-red-500" />
+                          <VideoIcon className="w-6 h-6 text-red-500" />
                         )}
-                        <p className="text-[10px] sm:text-xs text-muted-foreground">
-                          {formatFileSize(mediaItem.fileSize)}
-                        </p>
+                        <div>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">
+                            {mediaItem.fileName.length > 10
+                              ? mediaItem.fileName.slice(0, 10) + "..."
+                              : mediaItem.fileName}
+                          </p>
+                          <p className="text-[8px] sm:text-xs text-muted-foreground">
+                            {formatFileSize(mediaItem.fileSize)}
+                          </p>
+                        </div>
                       </div>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground">
-                        {format(new Date(mediaItem.uploadedAt), "MMM d, yyyy")}
-                      </p>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          downloadMedia(mediaItem);
+                        }}
+                        className="px-2 text-card-foreground rounded-full hover:bg-opacity-100 transition-all flex items-center justify-center"
+                      >
+                        <Download className="w-4 h-4 text-card-foreground" />
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -264,7 +265,6 @@ const MediaGallery: React.FC<MediaGalleryProps> = ({
                     <h4 className="font-medium">{selectedMedia.fileName}</h4>
                     <p className="text-sm text-muted-foreground">
                       {formatFileSize(selectedMedia.fileSize)} •{" "}
-                      {selectedMedia.fileType} •{" "}
                       {format(
                         new Date(selectedMedia.uploadedAt),
                         "EEEE, MMMM d, yyyy"
