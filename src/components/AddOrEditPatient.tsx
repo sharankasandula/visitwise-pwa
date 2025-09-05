@@ -232,7 +232,7 @@ const AddOrEditPatient: React.FC = () => {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="sticky top-0 z-10 backdrop-blur-sm bg-card/80 border-b border-border/50 p-4 flex items-center">
+      <div className="sticky top-0 z-10 backdrop-blur-sm bg-card/80 p-4 flex items-center">
         <button
           onClick={() => navigate("/")}
           className="mr-3 p-2 rounded-full transition-all duration-200 hover:bg-accent hover:scale-105 active:scale-95"
@@ -246,7 +246,7 @@ const AddOrEditPatient: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="p-4 space-y-6 max-w-4xl mx-auto">
         {/* Basic Information */}
-        <div className="group rounded-lg p-6 bg-accent/20 transition-all duration-300">
+        <div className="group rounded-lg p-4 bg-accent/20 transition-all duration-300">
           <div className="flex items-center mb-6">
             <div className="p-2 rounded-lg mr-3">
               <User className="w-5 h-5 text-secondary" />
@@ -401,7 +401,7 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Financial Information */}
-        <div className="group rounded-lg p-6 bg-accent/20 transition-all duration-300 hover:border-secondary/20">
+        <div className="group rounded-lg p-4 bg-accent/20 transition-all duration-300 hover:border-secondary/20">
           <div className="flex items-center mb-6">
             <div className="p-2 rounded-lg mr-3">
               <CreditCard className="w-5 h-5 text-secondary" />
@@ -441,7 +441,7 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Medical Information */}
-        <div className="group rounded-lg p-6 bg-accent/20 transition-all duration-300 hover:border-accent">
+        <div className="group rounded-lg p-4 bg-accent/20 transition-all duration-300 hover:border-accent">
           <div className="flex items-center mb-6">
             <div className="p-2 rounded-lg mr-3">
               <Stethoscope className="w-5 h-5 text-secondary" />
@@ -494,146 +494,6 @@ const AddOrEditPatient: React.FC = () => {
                 placeholder="Additional notes about the patient"
               />
             </div>
-          </div>
-        </div>
-
-        {/* Reminders */}
-        <div className="group rounded-lg p-6 bg-accent/20 transition-all duration-300 hover:border-primary/20">
-          <div className="flex items-center mb-6">
-            <div className="p-2 rounded-lg mr-3">
-              <Bell className="w-5 h-5 text-secondary" />
-            </div>
-            <h2 className="text-lg font-semibold text-card-foreground">
-              Reminder Settings
-            </h2>
-          </div>
-
-          <div className="space-y-4">
-            {/* <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border-border/50">
-              <span className="text-sm font-medium text-muted-foreground">
-                Daily Visit Reminder
-              </span>
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  checked={formData.dailyVisitReminderEnabled}
-                  onChange={() =>
-                    handleReminderChange(
-                      "dailyVisitReminderEnabled",
-                      !formData.dailyVisitReminderEnabled
-                    )
-                  }
-                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                />
-                <div
-                  className={`block h-6 w-11 rounded-full transition-all duration-300 ${
-                    formData.dailyVisitReminderEnabled
-                      ? "bg-secondary"
-                      : "bg-muted"
-                  }`}
-                ></div>
-                <div
-                  className={`dot absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-md transition-all duration-300 ${
-                    formData.dailyVisitReminderEnabled
-                      ? "translate-x-6"
-                      : "translate-x-0"
-                  }`}
-                ></div>
-              </div>
-            </div> */}
-
-            <div className="flex items-center justify-between p-3 flex-start gap-4 rounded-lg bg-accent/30 ">
-              <div className="flex flex-col gap-1">
-                <span className="text-sm font-medium text-muted-foreground">
-                  Payment Collection Reminder
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  Outstanding amount will be reminded to collect from the
-                  patient
-                </span>
-              </div>
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  checked={formData.paymentCollectionReminderEnabled}
-                  onChange={() =>
-                    handleReminderChange(
-                      "paymentCollectionReminderEnabled",
-                      !formData.paymentCollectionReminderEnabled
-                    )
-                  }
-                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                />
-                <div
-                  className={`block h-6 w-11 rounded-full transition-all duration-300 ${
-                    formData.paymentCollectionReminderEnabled
-                      ? "bg-secondary"
-                      : "bg-muted"
-                  }`}
-                ></div>
-                <div
-                  className={`dot absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-md transition-all duration-300 ${
-                    formData.paymentCollectionReminderEnabled
-                      ? "translate-x-6"
-                      : "translate-x-0"
-                  }`}
-                ></div>
-              </div>
-            </div>
-
-            {/* <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border-border/50">
-              <span className="text-sm font-medium text-muted-foreground">
-                Follow-up Reminder
-              </span>
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  checked={formData.followUpReminderEnabled}
-                  onChange={() =>
-                    handleReminderChange(
-                      "followUpReminderEnabled",
-                      !formData.followUpReminderEnabled
-                    )
-                  }
-                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                />
-                <div
-                  className={`block h-6 w-11 rounded-full transition-all duration-300 ${
-                    formData.followUpReminderEnabled
-                      ? "bg-secondary"
-                      : "bg-muted"
-                  }`}
-                ></div>
-                <div
-                  className={`dot absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-md transition-all duration-300 ${
-                    formData.followUpReminderEnabled
-                      ? "translate-x-6"
-                      : "translate-x-0"
-                  }`}
-                ></div>
-              </div>
-            </div>
-
-            {formData.followUpReminderEnabled && (
-              <div className="p-3 rounded-lg bg-accent/10 border-accent/20">
-                <label className="block text-sm font-medium text-muted-foreground mb-1">
-                  Follow-up after (days)
-                </label>
-                <input
-                  type="number"
-                  value={formData.followUpReminderDays}
-                  onChange={(e) =>
-                    handleReminderChange(
-                      "followUpReminderDays",
-                      parseInt(e.target.value)
-                    )
-                  }
-                  className="w-full p-3 border-accent/30 rounded-lg focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all duration-200 bg-background/50 backdrop-blur-sm"
-                  min="1"
-                  max="30"
-                />
-              </div>
-            )} */}
           </div>
         </div>
 

@@ -370,9 +370,6 @@ const PatientProfile: React.FC = () => {
           onViewAll={handleMediaViewAll}
           onUpload={handleMediaUpload}
         />
-
-        {/* Reminders Section */}
-        <RemindersSection patientId={patient.id} patientName={patient.name} />
       </div>
 
       {/* Payment Modal */}

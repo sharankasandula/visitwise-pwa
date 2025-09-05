@@ -217,7 +217,7 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
               />
             </svg>
           </button>
-          
+
           <button
             onClick={goToToday}
             className="px-3 py-1 text-sm bg-secondary/20 rounded-lg transition-colors"
@@ -288,7 +288,7 @@ const PatientCalendar: React.FC<PatientCalendarProps> = ({
           </div>
           <div className="flex items-center gap-2">
             <Lock className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span className="text-xs sm:text-xs">Future Date (Locked)</span>
+            <span className="text-xs sm:text-xs">Future Date</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 sm:w-4 sm:h-4 bg-success rounded-full"></div>
