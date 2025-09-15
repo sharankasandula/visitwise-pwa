@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store";
 import {
@@ -22,10 +22,64 @@ const Home: React.FC = () => {
   const { patients, loading, error } = useSelector(
     (state: RootState) => state.patients
   );
+  const visitsByPatient = useSelector(
+    (state: RootState) => state.visits.visits
+  );
+  const paymentsByPatient = useSelector(
+    (state: RootState) => state.payments.payments
+  );
 
   useEffect(() => {
     dispatch(fetchPatients() as any);
   }, [dispatch]);
+
+  // Calculate earnings for visibility condition
+  const { totalEarnings, totalCollected, totalOutstanding } = useMemo(() => {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    let earningsSum = 0;
+    let collectedSum = 0;
+
+    patients.forEach((patient: any) => {
+      const visits = visitsByPatient[patient.id] || [];
+      const payments = paymentsByPatient[patient.id] || [];
+
+      const visitsThisMonth = visits.filter((v: any) => {
+        const d = new Date(v.date);
+        return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+      });
+
+      // Calculate earnings from visits this month
+      visitsThisMonth.forEach((visit: any) => {
+        const visitCharge = Number(visit.charge) || 0;
+        if (visitCharge > 0) {
+          earningsSum += visitCharge;
+        } else {
+          earningsSum += patient.chargePerVisit || 0;
+        }
+      });
+
+      // Calculate payments collected this month
+      const paymentsThisMonth = payments.filter((p: any) => {
+        const d = new Date(p.date);
+        return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+      });
+
+      paymentsThisMonth.forEach((payment: any) => {
+        collectedSum += payment.amount;
+      });
+    });
+
+    const outstanding = Math.max(0, earningsSum - collectedSum);
+
+    return {
+      totalEarnings: earningsSum,
+      totalCollected: collectedSum,
+      totalOutstanding: outstanding,
+    };
+  }, [patients, visitsByPatient, paymentsByPatient]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
@@ -39,6 +93,13 @@ const Home: React.FC = () => {
 
   const activePatients = patients.filter((p) => p.isActive);
   const archivedPatients = patients.filter((p) => !p.isActive);
+
+  // Search bar visibility logic:
+  // - Hidden: when no patients AND no search term
+  // - Visible: when there are patients (regardless of search term)
+  // - Visible: when no patients BUT there is a search term
+  const shouldShowSearchBar =
+    activePatients.length > 0 || searchTerm.trim() !== "";
 
   // Handle pull-to-refresh
   const handleRefresh = useCallback(async () => {
@@ -57,19 +118,25 @@ const Home: React.FC = () => {
       {/* Main content with pull-to-refresh */}
       <PullToRefresh onRefresh={handleRefresh}>
         {/* Earnings Card and Media Management Link */}
-        {activePatients.length > 0 && (
-          <div className="sticky px-4 space-y-3">
-            <EarningsCard />
-            {/* <MediaManagementLink /> */}
-          </div>
-        )}
+        {activePatients.length > 0 &&
+          totalEarnings > 0 &&
+          totalCollected > 0 &&
+          totalOutstanding > 0 && (
+            <div className="sticky px-4 space-y-3">
+              <EarningsCard />
+              {/* <MediaManagementLink /> */}
+            </div>
+          )}
 
         {/* Search Bar */}
-        <SearchBar
-          searchTerm={searchTerm}
-          onSearchChange={handleSearch}
-          showSearch={true}
-        />
+
+        {shouldShowSearchBar && (
+          <SearchBar
+            searchTerm={searchTerm}
+            onSearchChange={handleSearch}
+            showSearch={true}
+          />
+        )}
 
         {/* Loading State */}
         {loading && <LoadingState />}
