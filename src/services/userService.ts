@@ -20,29 +20,28 @@ export class UserService {
       const userRef = doc(db, "users", user.id);
       const userDoc = await getDoc(userRef);
 
+      // Filter out undefined and empty values for Firestore
+      const userDataForFirestore = {
+        name: user.name,
+        isActive: true,
+        lastLoginAt: new Date(),
+        ...(user.email && { email: user.email }),
+        ...(user.photoURL && { photoURL: user.photoURL }),
+        ...(user.isAnonymous !== undefined && {
+          isAnonymous: user.isAnonymous,
+        }),
+      };
+
       if (userDoc.exists()) {
         // Update existing user
-        await updateDoc(userRef, {
-          name: user.name,
-          email: user.email,
-          photoURL: user.photoURL,
-          lastLoginAt: new Date(),
-          isActive: true,
-        });
+        await updateDoc(userRef, userDataForFirestore);
       } else {
         // Create new user
         const now = new Date();
-        const userData: UserData = {
-          ...user,
-          createdAt: now.toISOString(),
-          lastLoginAt: now.toISOString(),
-          isActive: true,
-          reminderSettings: DEFAULT_REMINDER_SETTINGS,
-        };
         await setDoc(userRef, {
-          ...userData,
+          ...userDataForFirestore,
           createdAt: now,
-          lastLoginAt: now,
+          reminderSettings: DEFAULT_REMINDER_SETTINGS,
         });
       }
     } catch (error: any) {
