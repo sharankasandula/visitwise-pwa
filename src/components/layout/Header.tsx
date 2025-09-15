@@ -8,6 +8,7 @@ import {
   ColorScheme,
 } from "../../store/slices/themeSlice";
 import UserProfile from "../UserProfile";
+import { Logo } from "../ui";
 
 const Header: React.FC = () => {
   const dispatch = useDispatch();
@@ -77,7 +78,7 @@ const Header: React.FC = () => {
     <div className="px-2">
       <div className="flex justify-between items-center h-16">
         <div className="flex items-center">
-          <h1 className="text-3xl font-pacifico brand-heading">Visitwise</h1>
+          <Logo size="lg" variant="primary" />
         </div>
         <div className="flex items-center gap-2">
           {/* Theme Mode Selection Button */}

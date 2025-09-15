@@ -15,3 +15,4 @@ export { withPullToRefresh } from "./withPullToRefresh";
 
 // Icons
 export { default as WhatsAppIcon } from "./icons/WhatsAppIcon";
+export { Logo } from "./icons/Logo";
