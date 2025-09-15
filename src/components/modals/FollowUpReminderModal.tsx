@@ -28,8 +28,8 @@ const FollowUpReminderModal: React.FC<FollowUpReminderModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="bg-foreground/50 fixed inset-0 bg-opacity-50 flex items-center justify-center z-[100] p-4">
-      <div className="bg-card border border-border text-card-foreground rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
+      <div className="bg-card border border-border text-card-foreground rounded-xl max-w-md w-full max-h-[85vh] overflow-y-auto shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between p-4 bg-accent/20 text-accent-foreground">
           <div className="flex flex-start space-x-3">
