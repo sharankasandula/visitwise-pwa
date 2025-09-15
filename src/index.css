@@ -304,3 +304,27 @@ img[loading="lazy"].loaded {
   background-position: center;
   background-repeat: no-repeat;
 }
+
+/* Custom responsive breakpoints for CalendarStrip */
+@media (max-width: 359px) {
+  .calendar-day-0,
+  .calendar-day-1 {
+    display: none !important;
+  }
+}
+
+@media (min-width: 360px) and (max-width: 411px) {
+  .calendar-day-0 {
+    display: none !important;
+  }
+  .calendar-day-1 {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 412px) {
+  .calendar-day-0,
+  .calendar-day-1 {
+    display: flex !important;
+  }
+}

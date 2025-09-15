@@ -71,21 +71,38 @@ const CalendarStrip: React.FC<CalendarStripProps> = ({ patientId }) => {
 
   return (
     <>
-      <div className="flex justify-between overflow-x-auto pb-2">
+      <div className="flex overflow-x-auto pb-2 gap-1 sm:gap-2">
         {days.map((date, index) => {
           const isToday = isSameDay(date, today);
           const isCompleted = isVisitCompleted(date);
           const isScheduled = hasVisitScheduled(date);
 
+          // Determine visibility based on screen size using custom CSS classes
+          // Index 0: hidden on < 412px, visible on 412px+
+          // Index 1: hidden on < 360px, visible on 360px+
+          // All other days: always visible
+          const getVisibilityClasses = () => {
+            if (index === 0) {
+              // First day: only visible on screens 412px+
+              return "calendar-day-0";
+            } else if (index === 1) {
+              // Second day: visible on screens 360px+
+              return "calendar-day-1";
+            } else {
+              // All other days: always visible
+              return "flex";
+            }
+          };
+
           return (
             <button
               key={index}
               onClick={() => handleDateClick(date)}
-              className={`flex-shrink-0 flex flex-col items-center p-2 rounded-lg min-w-[50px] transition-all duration-300 ${
+              className={`flex-shrink-0 flex flex-col items-center p-1.5 sm:p-2 rounded-lg min-w-[45px] sm:min-w-[50px] transition-all duration-300 ${getVisibilityClasses()} ${
                 isCompleted
-                  ? "bg-secondary text-secondary-foreground animate-fade-in"
+                  ? "bg-success text-success-foreground animate-fade-in"
                   : isScheduled
-                  ? "ring-2 ring-secondary animate-fade-in"
+                  ? "ring-2 ring-success animate-fade-in"
                   : isToday
                   ? "bg-secondary/10 text-secondary border-2 border-secondary/30"
                   : "bg-accent/20 text-muted-foreground"
@@ -98,8 +115,12 @@ const CalendarStrip: React.FC<CalendarStripProps> = ({ patientId }) => {
                   : "Click to schedule"
               }`}
             >
-              <span className="text-xs font-medium">{format(date, "EEE")}</span>
-              <span className="text-sm font-bold">{format(date, "d")}</span>
+              <span className="text-xs sm:text-xs font-medium">
+                {format(date, "EEE")}
+              </span>
+              <span className="text-sm sm:text-sm font-bold">
+                {format(date, "d")}
+              </span>
             </button>
           );
         })}
