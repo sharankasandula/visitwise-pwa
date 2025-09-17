@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store";
 import {
   fetchPatients,
   searchPatients,
 } from "../../store/slices/patientsSlice";
-import { PullToRefresh } from "../ui/PullToRefresh";
 import Header from "../layout/Header";
 import SearchBar from "../sections/SearchBar";
 import PatientList from "../sections/PatientList";
@@ -100,22 +99,13 @@ const Home: React.FC = () => {
   const shouldShowSearchBar =
     activePatients.length > 0 || searchTerm.trim() !== "";
 
-  // Handle pull-to-refresh
-  const handleRefresh = useCallback(async () => {
-    try {
-      await dispatch(fetchPatients() as any);
-    } catch (error) {
-      console.error("Failed to refresh patients:", error);
-    }
-  }, [dispatch]);
-
   return (
     <div className="min-h-screen">
       {/* Header */}
       <Header />
 
-      {/* Main content with pull-to-refresh */}
-      <PullToRefresh onRefresh={handleRefresh}>
+      {/* Main content */}
+      <div className="pb-16">
         {/* Earnings Card and Media Management Link */}
         {activePatients.length > 0 &&
           totalEarnings > 0 &&
@@ -181,7 +171,7 @@ const Home: React.FC = () => {
             )}
           </>
         )}
-      </PullToRefresh>
+      </div>
 
       {/* Floating Action Button */}
       <FloatingActionButton show={activePatients.length >= 1} />

@@ -244,10 +244,13 @@ const AddOrEditPatient: React.FC = () => {
         </h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-4 space-y-6 max-w-4xl mx-auto">
+      <form
+        onSubmit={handleSubmit}
+        className="px-4 space-y-6 max-w-4xl mx-auto"
+      >
         {/* Basic Information */}
-        <div className="group rounded-lg p-4 bg-accent/20 transition-all duration-300">
-          <div className="flex items-center mb-6">
+        <div className="rounded-lg p-4 bg-accent/20 transition-all duration-300">
+          <div className="flex items-center mb-4">
             <div className="p-2 rounded-lg mr-3">
               <User className="w-5 h-5 text-secondary" />
             </div>
@@ -401,8 +404,8 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Financial Information */}
-        <div className="group rounded-lg p-4 bg-accent/20 transition-all duration-300 hover:border-secondary/20">
-          <div className="flex items-center mb-6">
+        <div className="rounded-lg p-4 bg-accent/20 transition-all duration-300 hover:border-secondary/20">
+          <div className="flex items-center mb-4">
             <div className="p-2 rounded-lg mr-3">
               <CreditCard className="w-5 h-5 text-secondary" />
             </div>
@@ -441,8 +444,8 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Medical Information */}
-        <div className="group rounded-lg p-4 bg-accent/20 transition-all duration-300 hover:border-accent">
-          <div className="flex items-center mb-6">
+        <div className="rounded-lg p-4 bg-accent/20 transition-all duration-300 hover:border-accent">
+          <div className="flex items-center mb-4">
             <div className="p-2 rounded-lg mr-3">
               <Stethoscope className="w-5 h-5 text-secondary" />
             </div>
@@ -498,7 +501,7 @@ const AddOrEditPatient: React.FC = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex space-x-4 pt-4">
+        <div className="flex space-x-4 pb-4">
           <button
             type="button"
             onClick={() => navigate("/")}

@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
 import { Archive, ArrowLeft, Search, User } from "lucide-react";
 import PatientCard from "./PatientCard";
 import { useNavigate } from "react-router-dom";
 import { fetchPatients, searchPatients } from "../store/slices/patientsSlice";
-import { PullToRefresh } from "./ui/PullToRefresh";
 
 const ArchivedPatients: React.FC = () => {
   const dispatch = useDispatch();
@@ -38,15 +37,6 @@ const ArchivedPatients: React.FC = () => {
           p.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
-  // Handle pull-to-refresh
-  const handleRefresh = useCallback(async () => {
-    try {
-      await dispatch(fetchPatients() as any);
-    } catch (error) {
-      console.error("Failed to refresh archived patients:", error);
-    }
-  }, [dispatch]);
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -75,8 +65,8 @@ const ArchivedPatients: React.FC = () => {
         </div>
       </div>
 
-      {/* Main content with pull-to-refresh */}
-      <PullToRefresh onRefresh={handleRefresh}>
+      {/* Main content */}
+      <div>
         {/* Sticky Search (Archived) */}
         <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75 px-4 py-4">
           <label htmlFor="archived-search" className="sr-only">
@@ -136,7 +126,7 @@ const ArchivedPatients: React.FC = () => {
             </div>
           )}
         </div>
-      </PullToRefresh>
+      </div>
     </div>
   );
 };
