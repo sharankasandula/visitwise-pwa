@@ -89,14 +89,19 @@ export const usePatientModals = (): UsePatientModalsReturn => {
     selectedPayment,
     openPaymentModal,
     closePaymentModal,
-    openVisitModal,
-    closeVisitModal,
-    openEditVisitModal,
-    closeEditVisitModal,
+
     openEditPaymentModal,
     closeEditPaymentModal,
+
+    openVisitModal,
+    closeVisitModal,
+
+    openEditVisitModal,
+    closeEditVisitModal,
+
     openMediaUploadModal,
     closeMediaUploadModal,
+
     openMediaGalleryModal,
     closeMediaGalleryModal,
   };

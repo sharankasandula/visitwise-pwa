@@ -1,4 +1,20 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  createContext,
+  useContext,
+} from "react";
+
+interface DropdownMenuContextType {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  triggerRef: React.RefObject<HTMLDivElement>;
+}
+
+const DropdownMenuContext = createContext<DropdownMenuContextType | undefined>(
+  undefined
+);
 
 interface DropdownMenuProps {
   children: React.ReactNode;
@@ -33,14 +49,35 @@ interface DropdownMenuSeparatorProps {
 }
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({ children }) => {
-  return <>{children}</>;
+  const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <DropdownMenuContext.Provider value={{ isOpen, setIsOpen, triggerRef }}>
+      <div className="relative">{children}</div>
+    </DropdownMenuContext.Provider>
+  );
 };
 
 const DropdownMenuTrigger: React.FC<DropdownMenuTriggerProps> = ({
   children,
   asChild = false,
 }) => {
-  return <>{children}</>;
+  const context = useContext(DropdownMenuContext);
+  if (!context)
+    throw new Error("DropdownMenuTrigger must be used within DropdownMenu");
+
+  const { isOpen, setIsOpen, triggerRef } = context;
+
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return (
+    <div ref={triggerRef} onClick={handleClick}>
+      {children}
+    </div>
+  );
 };
 
 const DropdownMenuContent: React.FC<DropdownMenuContentProps> = ({
@@ -49,8 +86,11 @@ const DropdownMenuContent: React.FC<DropdownMenuContentProps> = ({
   align = "start",
   forceMount = false,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const triggerRef = useRef<HTMLDivElement>(null);
+  const context = useContext(DropdownMenuContext);
+  if (!context)
+    throw new Error("DropdownMenuContent must be used within DropdownMenu");
+
+  const { isOpen, setIsOpen, triggerRef } = context;
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -65,11 +105,22 @@ const DropdownMenuContent: React.FC<DropdownMenuContentProps> = ({
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isOpen, setIsOpen, triggerRef]);
 
   const alignClasses = {
     start: "left-0",
@@ -77,25 +128,20 @@ const DropdownMenuContent: React.FC<DropdownMenuContentProps> = ({
     end: "right-0",
   };
 
-  return (
-    <div className="relative">
-      <div ref={triggerRef} onClick={toggleMenu}>
-        {React.Children.map(children, (child) => {
-          if (React.isValidElement(child)) {
-            return React.cloneElement(child, { onClick: toggleMenu });
-          }
-          return child;
-        })}
-      </div>
+  if (!isOpen && !forceMount) return null;
 
-      {(isOpen || forceMount) && (
-        <div
-          ref={contentRef}
-          className={`absolute top-full mt-2 z-50 min-w-[8rem] overflow-hidden rounded-md border p-1 ${alignClasses[align]} ${className}`}
-        >
-          {children}
-        </div>
-      )}
+  return (
+    <div
+      ref={contentRef}
+      className={`absolute top-full mt-2 z-[9999] min-w-[8rem] overflow-hidden rounded-md border bg-card text-card-foreground shadow-lg p-1 ${alignClasses[align]} ${className}`}
+      style={{
+        position: "absolute",
+        zIndex: 9999,
+        minWidth: "12rem",
+        maxWidth: "16rem",
+      }}
+    >
+      {children}
     </div>
   );
 };
@@ -106,9 +152,16 @@ const DropdownMenuItem: React.FC<DropdownMenuItemProps> = ({
   disabled = false,
   onClick,
 }) => {
+  const context = useContext(DropdownMenuContext);
+  if (!context)
+    throw new Error("DropdownMenuItem must be used within DropdownMenu");
+
+  const { setIsOpen } = context;
+
   const handleClick = () => {
-    if (!disabled && onClick) {
-      onClick();
+    if (!disabled) {
+      onClick?.();
+      setIsOpen(false);
     }
   };
 

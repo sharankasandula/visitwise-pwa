@@ -7,6 +7,10 @@ import {
   Phone,
   DollarSign,
   AlertCircle,
+  MoreVertical,
+  Edit,
+  Trash2,
+  MessageCircle,
 } from "lucide-react";
 import { Patient, setPatientActiveStatus } from "../store/slices/patientsSlice";
 import { fetchVisitsAsync } from "../store/slices/visitsSlice";
@@ -16,6 +20,16 @@ import CalendarStrip from "./CalendarStrip";
 import PaymentModal from "./PaymentModal";
 import { FollowUpReminderModal } from "./modals";
 import { showSuccess, showInfo } from "../utils/toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "./ui/DropdownMenu";
+import { usePatientOperations } from "../hooks/usePatientOperations";
+import { usePatientModals } from "../hooks/usePatientModals";
+import { confirmDeletePatient } from "../services/patientService";
 
 interface PatientCardProps {
   patient: Patient;
@@ -26,8 +40,22 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
   const navigate = useNavigate();
   const { visits } = useSelector((state: RootState) => state.visits);
   const { payments } = useSelector((state: RootState) => state.payments);
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [isFollowUpModalOpen, setIsFollowUpModalOpen] = useState(false);
+
+  // Use patient operations hook for common functionality
+  const {
+    paymentSummary,
+    handleArchive,
+    handleFollowUpConfirm,
+    handleEdit,
+    handleDelete,
+    handleWhatsAppReminder,
+    isFollowUpModalOpen,
+    setIsFollowUpModalOpen,
+  } = usePatientOperations({ patientId: patient.id });
+
+  // Use patient modals hook for modal management
+  const { isPaymentModalOpen, openPaymentModal, closePaymentModal } =
+    usePatientModals();
 
   // Fetch visits when component mounts
   useEffect(() => {
@@ -60,7 +88,24 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
     return totalCharges - totalPayments;
   }, [visits, payments, patient.id]);
 
-  const handleArchive = () => {
+  const handleCall = () => {
+    window.open(`tel:${patient.phone}`, "_self");
+  };
+
+  const handlePatientClick = () => {
+    navigate(`/patient/${patient.id}`);
+  };
+
+  // Menu action handlers
+  const handleRecordPayment = () => {
+    openPaymentModal();
+  };
+
+  const handleSendReminder = () => {
+    handleWhatsAppReminder();
+  };
+
+  const handleArchivePatient = () => {
     if (patient.isActive) {
       // Show follow-up reminder modal when archiving
       setIsFollowUpModalOpen(true);
@@ -79,33 +124,18 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
     }
   };
 
-  const handleFollowUpConfirm = (days: number) => {
-    // Archive the patient
-    dispatch(
-      setPatientActiveStatus({
-        patientId: patient.id,
-        isActive: false,
-      }) as any
-    );
-
-    showInfo(
-      "Patient Archived",
-      `${patient.name} has been moved to archived patients with a ${days}-day follow-up reminder.`
-    );
-
-    setIsFollowUpModalOpen(false);
+  const handleEditPatient = () => {
+    handleEdit();
   };
 
-  const handleCall = () => {
-    window.open(`tel:${patient.phone}`, "_self");
-  };
-
-  const handlePatientClick = () => {
-    navigate(`/patient/${patient.id}`);
+  const handleDeletePatient = () => {
+    confirmDeletePatient(patient.name, () => {
+      handleDelete();
+    });
   };
 
   return (
-    <div className="bg-accent/20 rounded-lg  overflow-hidden">
+    <div className="bg-accent/20 rounded-lg overflow-visible">
       <div className="p-4 lg:p-6 xl:p-8 ">
         <div className="flex items-center justify-between mb-3">
           <div className="flex-1" onClick={handlePatientClick}>
@@ -132,21 +162,6 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
           <div className="flex items-center text-card-foreground rounded-lg gap-2">
             <button
               type="button"
-              onClick={() => setIsPaymentModalOpen(true)}
-              title="Record Payment"
-              aria-label="Record Payment"
-              className="inline-flex h-10 w-10 items-center  justify-center rounded-full leading-none
-               hover:bg-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-               active:scale-95 motion-reduce:active:scale-100"
-            >
-              <DollarSign
-                className="size-5 block shrink-0 pointer-events-none"
-                aria-hidden="true"
-              />
-            </button>
-
-            <button
-              type="button"
               onClick={handleCall}
               title="Call Patient"
               aria-label="Call Patient"
@@ -160,20 +175,50 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
               />
             </button>
 
-            <button
-              type="button"
-              onClick={handleArchive}
-              title="Archive Patient"
-              aria-label="Archive Patient"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full leading-none
-               hover:bg-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-               active:scale-95 motion-reduce:active:scale-100"
-            >
-              <Archive
-                className="size-5 block shrink-0 pointer-events-none"
-                aria-hidden="true"
-              />
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <button
+                  type="button"
+                  title="More Actions"
+                  aria-label="More Actions"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full leading-none
+                   hover:bg-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+                   active:scale-95 motion-reduce:active:scale-100"
+                >
+                  <MoreVertical
+                    className="size-5 block shrink-0 pointer-events-none"
+                    aria-hidden="true"
+                  />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={handleRecordPayment}>
+                  <DollarSign className="w-4 h-4 mr-2" />
+                  Record Payment
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSendReminder}>
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  Send Payment Reminder
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleArchivePatient}>
+                  <Archive className="w-4 h-4 mr-2" />
+                  {patient.isActive ? "Archive Patient" : "Restore Patient"}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleEditPatient}>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit Patient
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleDeletePatient}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete Patient
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -183,7 +228,7 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient }) => {
       {/* Payment Modal */}
       <PaymentModal
         isOpen={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
+        onClose={closePaymentModal}
         patientId={patient.id}
         patientName={patient.name}
       />

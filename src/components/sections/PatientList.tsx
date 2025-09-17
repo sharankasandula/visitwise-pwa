@@ -21,7 +21,7 @@ const PatientList: React.FC<PatientListProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className="px-4 pb-4 text-muted space-y-3">
+    <div className="px-4 pb-4 text-muted space-y-3 overflow-visible">
       {/* Archived Patients Card */}
       {archivedPatients.length > 0 && (
         <div
