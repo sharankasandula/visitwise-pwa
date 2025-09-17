@@ -8,7 +8,6 @@ import {
 import { PullToRefresh } from "../ui/PullToRefresh";
 import Header from "../layout/Header";
 import SearchBar from "../sections/SearchBar";
-import MediaManagementLink from "../sections/MediaManagementLink";
 import PatientList from "../sections/PatientList";
 import EmptyState from "../sections/EmptyState";
 import LoadingState from "../sections/LoadingState";

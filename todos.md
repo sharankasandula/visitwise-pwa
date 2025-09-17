@@ -49,3 +49,11 @@ Bugs
 - [X] Sometimes patient keeps loading
 - [X] On archiving patients patients keep loading
 - [X] Fix Patient info in patient profile.
+
+
+I would like to refactor the patient card. Instead of 3 icons on the right; make payment, call and archive, I would like to just add a 3 dot menu which upon clicking shows the following list of actions - Record Payment - Send Payment Reminder - Archive Patient - Edit Patient - Delete Patient All of the actions should need appropriate confirmation dialogs, except the record payment, which should open the modal for recording payments.
+
+Make sure absolutely sure to reuse already implemented parts of the code. For example Send whatsapp reminder is already implmented in PatientProfile component. Refer to that component berfore refactoring patientcard. If need be, refactor parts of patient profile so that you can reuse those parts in patient card. 
+
+
+I would like to refactor patient profile component. It is humongous. Make all the shareable functions reusable. For example Send payment reminder, record payment, edit, archive functions reusable. Keep patient profile component minimal offloading functionality to utilities or other places. 

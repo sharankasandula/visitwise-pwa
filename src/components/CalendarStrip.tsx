@@ -100,9 +100,9 @@ const CalendarStrip: React.FC<CalendarStripProps> = ({ patientId }) => {
               onClick={() => handleDateClick(date)}
               className={`flex-shrink-0 flex flex-col items-center p-1.5 sm:p-2 rounded-lg min-w-[45px] sm:min-w-[50px] transition-all duration-300 ${getVisibilityClasses()} ${
                 isCompleted
-                  ? "bg-success text-success-foreground animate-fade-in"
+                  ? "bg-secondary/70 text-secondary-foreground animate-fade-in"
                   : isScheduled
-                  ? "ring-2 ring-success animate-fade-in"
+                  ? "ring-2 ring-secondary/70 animate-fade-in"
                   : isToday
                   ? "bg-secondary/10 text-secondary border-2 border-secondary/30"
                   : "bg-accent/20 text-muted-foreground"
