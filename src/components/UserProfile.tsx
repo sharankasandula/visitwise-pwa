@@ -83,11 +83,6 @@ const UserProfile: React.FC = () => {
                 <p className="text-xs text-muted-foreground truncate">
                   {user.email || "No email"}
                 </p>
-                {user.isAnonymous && (
-                  <span className="inline-flex items-center rounded-full bg-accent text-accent-foreground px-2 py-0.5 text-xs font-medium mt-1">
-                    Guest User
-                  </span>
-                )}
               </div>
             </div>
           </div>

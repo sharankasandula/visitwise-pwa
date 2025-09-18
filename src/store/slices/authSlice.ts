@@ -32,17 +32,6 @@ export const signInWithGoogle = createAsyncThunk(
   }
 );
 
-export const signInAnonymously = createAsyncThunk(
-  "auth/signInAnonymously",
-  async (_, { rejectWithValue }) => {
-    try {
-      return await AuthService.signInAnonymously();
-    } catch (error: any) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
 export const signOut = createAsyncThunk(
   "auth/signOut",
   async (_, { dispatch, rejectWithValue }) => {
@@ -149,21 +138,6 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(signInWithGoogle.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-      // Anonymous Sign In
-      .addCase(signInAnonymously.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(signInAnonymously.fulfilled, (state, action) => {
-        state.isAuthenticated = true;
-        state.user = action.payload;
-        state.loading = false;
-        state.error = null;
-      })
-      .addCase(signInAnonymously.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

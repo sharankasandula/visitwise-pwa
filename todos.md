@@ -24,7 +24,7 @@
 - [x] Add illustrations and animations
 - [x] Store user and user preferences in Firebase
 
-- [x] Pull to refresh
+- [x] ~~Pull to refresh~~ (Removed - browsers have native support)
 - [x] Editable payment/visit history.
 - [x] Media support
 - [ ] Multiple media upload support
@@ -34,6 +34,7 @@
 - [ ] Testing
 
 UI Testing tasks
+
 - [x] Add outstanding amount in patient card
 - [x] Remove shadows
 - [x] Change layout in earnings summary
@@ -41,19 +42,19 @@ UI Testing tasks
 - [x] Remove search when empty
 - [x] Earnings this month font size
 - [x] Switches
-- [X] Follow up reminder on archive
+- [x] Follow up reminder on archive
 - [ ] On reminder - select patients you visited that day
 
-
 Bugs
-- [X] Sometimes patient keeps loading
-- [X] On archiving patients patients keep loading
-- [X] Fix Patient info in patient profile.
 
+- [x] Sometimes patient keeps loading
+- [x] On archiving patients patients keep loading
+- [x] Fix Patient info in patient profile.
 
-I would like to refactor the patient card. Instead of 3 icons on the right; make payment, call and archive, I would like to just add a 3 dot menu which upon clicking shows the following list of actions - Record Payment - Send Payment Reminder - Archive Patient - Edit Patient - Delete Patient All of the actions should need appropriate confirmation dialogs, except the record payment, which should open the modal for recording payments.
+I would like to refactor the patient card. Instead of 3 icons on the right; make payment, call and archive, I would like to just add a 3 dot menu which upon clicking shows the following list of actions - Record Payment - Send Payment Reminder - Archive Patient - Edit Patient - Delete Patient All of the actions should need appropriate confirmation dialogs, except the record payment, which should open the modal for recording payments. Modals you need to use are in usePatientmodal component. WHatsapp reminder is in usePatientoperations etc. So look for functionality already present in patient profile or other utils/service and try to reuse already present code as much as possible.
 
-Make sure absolutely sure to reuse already implemented parts of the code. For example Send whatsapp reminder is already implmented in PatientProfile component. Refer to that component berfore refactoring patientcard. If need be, refactor parts of patient profile so that you can reuse those parts in patient card. 
+Make sure absolutely sure to reuse already implemented parts of the code. For example Send whatsapp reminder is already implmented in PatientProfile component. Refer to that component berfore refactoring patientcard.
 
+I would like to refactor patient profile component. It is humongous. Make all the shareable functions reusable. For example Send payment reminder, record payment, edit, archive functions reusable. Keep patient profile component minimal offloading functionality to utilities or other places.
 
-I would like to refactor patient profile component. It is humongous. Make all the shareable functions reusable. For example Send payment reminder, record payment, edit, archive functions reusable. Keep patient profile component minimal offloading functionality to utilities or other places. 
+I would like to completely remove pull to refresh functionality all throughout the app. I just realised that pull to refresh works on most browsers. Carry out this operation carefully without breaking any existing functionality.

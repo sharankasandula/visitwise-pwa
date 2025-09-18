@@ -145,15 +145,9 @@ const ProfilePage: React.FC = () => {
             <p className="text-muted-foreground mb-4">{user.email}</p>
 
             {/* Account Type Badge */}
-            {user.isAnonymous ? (
-              <span className="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-3 py-1 text-sm font-medium">
-                Guest User
-              </span>
-            ) : (
-              <span className="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-3 py-1 text-sm font-medium4">
-                Google Account
-              </span>
-            )}
+            <span className="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-3 py-1 text-sm font-medium">
+              Google Account
+            </span>
           </div>
         </div>
 

@@ -27,9 +27,6 @@ export class UserService {
         lastLoginAt: new Date(),
         ...(user.email && { email: user.email }),
         ...(user.photoURL && { photoURL: user.photoURL }),
-        ...(user.isAnonymous !== undefined && {
-          isAnonymous: user.isAnonymous,
-        }),
       };
 
       if (userDoc.exists()) {

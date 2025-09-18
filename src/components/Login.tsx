@@ -2,11 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../store";
-import {
-  signInWithGoogle,
-  signInAnonymously,
-  clearError,
-} from "../store/slices/authSlice";
+import { signInWithGoogle, clearError } from "../store/slices/authSlice";
 import {
   Card,
   CardContent,
@@ -18,7 +14,6 @@ import { Alert, AlertDescription } from "./ui/Alert";
 import {
   Loader2,
   Chrome,
-  User,
   Heart,
   Stethoscope,
   Calendar,
@@ -38,12 +33,6 @@ const Login: React.FC = () => {
       "Please wait while we authenticate you with Google."
     );
     dispatch(signInWithGoogle() as any);
-  };
-
-  const handleAnonymousSignIn = () => {
-    dispatch(clearError());
-    showSuccess("Signing in...", "Welcome! You're signing in as a guest user.");
-    dispatch(signInAnonymously() as any);
   };
 
   return (
@@ -95,32 +84,6 @@ const Login: React.FC = () => {
               </div>
             </button>
 
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border/50" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 text-muted-foreground bg-accent/70 rounded-lg font-medium">
-                  or
-                </span>
-              </div>
-            </div>
-
-            <button
-              onClick={handleAnonymousSignIn}
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-accent to-muted hover:from-accent/90 hover:to-muted/90 text-accent-foreground font-semibold py-4 px-6 rounded-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none border border-border/50"
-            >
-              <div className="flex items-center justify-center">
-                {loading ? (
-                  <Loader2 className="mr-3 h-5 w-5 animate-spin" />
-                ) : (
-                  <User className="mr-3 h-5 w-5" />
-                )}
-                Continue as Guest
-              </div>
-            </button>
-
             {/* Feature Highlights */}
             <div className="pt-4 border-t border-border/30">
               <div className="grid grid-cols-3 gap-4 text-center">
@@ -168,9 +131,6 @@ const Login: React.FC = () => {
               </span>
               .
               <br />
-              <span className="text-accent-foreground">
-                Guest users have limited access to features.
-              </span>
             </p>
           </CardContent>
         </Card>

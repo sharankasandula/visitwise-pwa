@@ -19,7 +19,6 @@ interface UserData {
   name: string; // User's display name
   email: string; // User's email address
   photoURL?: string; // User's profile picture URL
-  isAnonymous: boolean; // Whether user signed in anonymously
   createdAt: Date; // When the user account was created
   lastLoginAt: Date; // When the user last signed in
   isActive: boolean; // Whether the account is active
@@ -120,7 +119,6 @@ Enable debug logging by checking the browser console for:
 - Users can only access their own data
 - Email addresses are stored but can be used for user lookup
 - Profile pictures are stored as URLs (not actual image files)
-- Anonymous users are also persisted with limited data
 
 ## Localhost Development
 

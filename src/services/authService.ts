@@ -1,6 +1,5 @@
 import {
   signInWithPopup,
-  signInAnonymously,
   signOut,
   onAuthStateChanged,
   User as FirebaseUser,
@@ -13,7 +12,6 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
-  isAnonymous: boolean;
   photoURL?: string;
 }
 
@@ -22,11 +20,8 @@ export class AuthService {
   private static mapFirebaseUser(firebaseUser: FirebaseUser): AuthUser {
     return {
       id: firebaseUser.uid,
-      name:
-        firebaseUser.displayName ||
-        (firebaseUser.isAnonymous ? "Anonymous User" : "Unknown User"),
+      name: firebaseUser.displayName || "Unknown User",
       email: firebaseUser.email || "",
-      isAnonymous: firebaseUser.isAnonymous,
       photoURL: firebaseUser.photoURL || undefined,
     };
   }
@@ -60,24 +55,6 @@ export class AuthService {
         );
       }
       throw new Error(error.message || "Failed to sign in with Google");
-    }
-  }
-
-  // Sign in anonymously
-  static async signInAnonymously(): Promise<AuthUser> {
-    try {
-      const result = await signInAnonymously(auth);
-      const user = this.mapFirebaseUser(result.user);
-
-      // Store user data in Firebase Firestore
-      await UserService.createOrUpdateUser(user);
-
-      // Store user data in localStorage for persistence
-      localStorage.setItem("authUser", JSON.stringify(user));
-
-      return user;
-    } catch (error: any) {
-      throw new Error(error.message || "Failed to sign in anonymously");
     }
   }
 
