@@ -108,9 +108,7 @@ const Home: React.FC = () => {
       <div className="pb-16">
         {/* Earnings Card and Media Management Link */}
         {activePatients.length > 0 &&
-          totalEarnings > 0 &&
-          totalCollected > 0 &&
-          totalOutstanding > 0 && (
+          (totalEarnings > 0 || totalCollected > 0 || totalOutstanding > 0) && (
             <div className="sticky px-4 space-y-3">
               <EarningsCard />
               {/* <MediaManagementLink /> */}

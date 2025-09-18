@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
 import { initializeAuth } from "../store/slices/authSlice";
 import Login from "./Login";
-import { Loader2 } from "lucide-react";
+import { LoadingScreen } from "./ui";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -20,15 +20,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     dispatch(initializeAuth() as any);
   }, [dispatch]);
 
-  // Show loading spinner while checking authentication
+  // Show beautiful loading screen while checking authentication
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-card text-card-foreground">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 bg-secondary text-secondary-foreground" />
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
+      <LoadingScreen
+        text="Initializing Visitwise..."
+        showLogo={true}
+        variant="gradient"
+      />
     );
   }
 

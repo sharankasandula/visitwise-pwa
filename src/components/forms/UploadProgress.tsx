@@ -1,5 +1,5 @@
 import React from "react";
-import { Loader2 } from "lucide-react";
+import { BeautifulLoader } from "../ui";
 
 interface UploadProgressProps {
   isUploading: boolean;
@@ -23,13 +23,13 @@ const UploadProgress: React.FC<UploadProgressProps> = ({
       className="w-full px-4 py-3 bg-primary text-primary-foreground rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
     >
       {isCompressing ? (
-        <div className="flex items-center justify-center space-x-2">
-          <Loader2 className="w-4 h-4 animate-spin" />
+        <div className="flex items-center justify-center space-x-3">
+          <BeautifulLoader size="sm" variant="primary" />
           <span>Compressing... {compressionProgress}%</span>
         </div>
       ) : isUploading ? (
-        <div className="flex items-center justify-center space-x-2">
-          <Loader2 className="w-4 h-4 animate-spin" />
+        <div className="flex items-center justify-center space-x-3">
+          <BeautifulLoader size="sm" variant="primary" />
           <span>Uploading {fileCount} file(s)...</span>
         </div>
       ) : (
